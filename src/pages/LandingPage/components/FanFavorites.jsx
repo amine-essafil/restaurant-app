@@ -3,7 +3,7 @@ import "./FanFavorites.css";
 import { useCart } from "../../../context/CartContext";
 import {motion,scale } from "framer-motion"
 
-const FanFavorites = () => {
+const FanFavorites = ({ onViewMenu }) => {
   const { addToCart } = useCart();
 const [plats,setplats]= useState([]); //recuperation des plats
 useEffect(()=>{
@@ -11,13 +11,13 @@ useEffect(()=>{
    /* 
    waiting for api
    try {
-        const response = await ClientApi.GetPlats();  
+        const response = await ClientApi.getMeals();  
         console.log(response.data)
         setplats(response.data);  
       } catch (err) {
         console.error("Erreur lors de la récupération des plats:", err);
       } 
-    
+
         */ 
     };
 
@@ -87,7 +87,7 @@ useEffect(()=>{
         </div>
 
         <div className="favorites-cta">
-          <button className="view-full-menu-button" >
+          <button className="view-full-menu-button" onClick={onViewMenu}>
             View Full Menu
           </button>
         </div>
