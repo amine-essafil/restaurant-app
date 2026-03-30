@@ -43,11 +43,13 @@ export const CartProvider = ({ children }) => {
   });
 };
 
-
+// Calculate the total number of items in the cart
+  const cartCount = cartItems.reduce((total, item) => total + item.quantite, 0);
 
 
   // The "value" is what all child components will have access to
   const value = {
+    cartCount,
     addToCart,
   };
 
