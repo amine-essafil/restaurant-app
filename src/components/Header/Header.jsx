@@ -1,4 +1,5 @@
 
+import { useCart } from "../../context/CartContext";
 import "./Header.css";
 
 // Special offer item — defined here until backend provides a dedicated endpoint

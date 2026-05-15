@@ -4,6 +4,7 @@ import { CartProvider } from "./context/CartContext";
 
 import Navbar from "./components/Navbar/Navbar";
 import AppRoutes from "./routes/AppRoutes";
+import Footer from "./components/Footer/Footer";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Router>
           <Navbar />
           <AppRoutes />
+          <Footer/>
         </Router>
       </CartProvider>
     </AuthProvider>
