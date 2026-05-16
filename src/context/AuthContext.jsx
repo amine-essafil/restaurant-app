@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
+import { getLogin } from "../api/Auth.api";
 
 const AuthContext = createContext();
 
@@ -14,28 +15,27 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
 
   // LOGIN
-  const login = async (email, password) => {
-    setLoading(true);
-    try {
-
-      // fake auth simulation
-      if (email && password) {
-        setUser({
-          name: "Moujib",
-          role: "user",
-          email,
-        });
-
-        setIsLoggedIn(true);
+const login = async (email, password) => {
+try {
+const response = await getLogin(email, password);
+console.log(response.token)
+      if (response.status === 200) {
+               localStorage.setItem('token', response.token);
+              const res = await getUser();
+               setUser(res.data);
+                setIsLoggedIn(true);
+                seterrors({});
 
         return { success: true };
-      }
-
-      return { success: false };
-    } finally {
-      setLoading(false);
-    }
-  };
+            }
+              } catch (error) {
+        if (error.response?.status === 422) {
+              seterrors(error.response.data.errors);
+            }
+            setIsLoggedIn(false);
+                return { success: false };
+}
+};
 
   // LOGOUT
   const logout = () => {
