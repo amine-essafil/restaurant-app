@@ -8,13 +8,36 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const [user, setUser] = useState(null);
 
-  const login = () => {
-    setUser({ name: "Moujib", role: "user" });
-    setIsLoggedIn(true);
+  const [loading, setLoading] = useState(false);
+
+  // LOGIN
+  const login = async (email, password) => {
+    setLoading(true);
+    try {
+
+      // fake auth simulation
+      if (email && password) {
+        setUser({
+          name: "Moujib",
+          role: "user",
+          email,
+        });
+
+        setIsLoggedIn(true);
+
+        return { success: true };
+      }
+
+      return { success: false };
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // LOGOUT
   const logout = () => {
     setUser(null);
     setIsLoggedIn(false);
@@ -23,6 +46,7 @@ export const AuthProvider = ({ children }) => {
   const value = {
     isLoggedIn,
     user,
+    loading,
     login,
     logout,
   };

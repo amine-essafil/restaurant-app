@@ -1,82 +1,148 @@
-/* ===== CONTAINER ===== */
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - var(--navbar-height));
-  background-color: #f5f5f5;
+  background-color: var(--primary-light);
   padding: 2rem 1rem;
 }
 
-/* ===== FORM BOX ===== */
 .login-form {
   background: white;
   padding: 2rem;
   border-radius: 12px;
+  box-shadow: var(--shadow);
   width: 100%;
   max-width: 400px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
 }
 
-/* TITLE */
 .login-form h2 {
   text-align: center;
   margin-bottom: 1.5rem;
+  color: var(--primary-dark);
   font-size: 1.8rem;
+  font-weight: 600;
 }
 
-/* ===== INPUTS ===== */
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
+  color: var(--primary-dark);
+  font-weight: 500;
 }
 
 .form-group input {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
+  padding: 0.875rem;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
 }
 
-/* ===== BUTTON ===== */
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary-orange);
+  box-shadow: 0 0 0 3px rgba(236, 122, 35, 0.1);
+}
+
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-container input {
+  padding-right: 3rem; /* Make room for the toggle button */
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-dark);
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.password-toggle-btn:hover {
+  opacity: 1;
+}
+
+.eye-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
 .login-btn {
   width: 100%;
-  padding: 0.75rem;
-  background: #EC7A23;
+  padding: 0.875rem;
+  background-color: var(--primary-orange);
   color: white;
   border: none;
   border-radius: 8px;
-  margin-top: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
 }
 
-.login-btn:hover {
-  opacity: 0.9;
-}
-
-/* ===== GOOGLE BUTTON ===== */
-#google {
-  background: white;
-  color: black;
-  border: 1px solid black;
+#google{
+  background-color: #ffffff;
   margin-top: 0.5rem;
+  color: black;
+  border: 1px solid #000000;
+}
+.login-btn:hover {
+  background-color: #d66a1f;
+  transform: translateY(-1px);
 }
 
-/* ===== SIGNUP LINK ===== */
 .signup-link {
   text-align: center;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
+  color: var(--primary-dark);
+  font-size: 0.9rem;
 }
 
 .signup-link a {
-  color: #EC7A23;
+  color: var(--primary-orange);
   text-decoration: none;
+  font-weight: 500;
+}
+
+.error-text{
+  color: red;
+  font-style: italic;
 }
 
 .signup-link a:hover {
   text-decoration: underline;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 1rem;
+  }
+
+  .login-form {
+    padding: 1.5rem;
+  }
+
+  .login-form h2 {
+    font-size: 1.5rem;
+  }
 }
