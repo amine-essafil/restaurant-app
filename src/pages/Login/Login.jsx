@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import "./Login.css";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -13,13 +14,13 @@ const LoginPage = () => {
   };
 
   return (
-    <div >
-      <div>
+    <div className="login-container">
+      <div className="login-form">
         <h2>Login</h2>
 
         <form onSubmit={handleSubmit}>
           {/* EMAIL */}
-          <div>
+          <div className="form-group">
             <label>Email</label>
             <input
               type="email"
@@ -30,7 +31,7 @@ const LoginPage = () => {
           </div>
 
           {/* PASSWORD */}
-          <div>
+          <div className="form-group">
             <label>Password</label>
             <input
               type="password"
@@ -41,7 +42,7 @@ const LoginPage = () => {
           </div>
 
           {/* LOGIN BUTTON */}
-          <button type="submit" >
+          <button type="submit" className="login-btn">
             Login
           </button>
         </form>
@@ -50,12 +51,16 @@ const LoginPage = () => {
         <button
           type="button"
           id="google"
+          className="login-btn"
+          onClick={() =>
+            (window.location.href = "http://localhost:80/auth/google")
+          }
         >
           Connect with Google
         </button>
 
         {/* SIGNUP LINK */}
-        <p  >
+        <p className="signup-link">
           Don't have an account? <Link to="/signup">Sign Up</Link>
         </p>
       </div>
