@@ -1,57 +1,54 @@
-// This is the "brain" for your shopping cart.
-// It will provide the cart data and functions to all components.
+import { createContext, useContext, useState } from 'react';
 
-import React, { createContext, useContext, useState } from 'react';
-
-// 1. Create the context
 const CartContext = createContext();
 
-export const useCart = () => {
-  return useContext(CartContext);
-};
+export const useCart = () => useContext(CartContext);
 
-// 3. Create the Provider component that will "wrap" your app
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
-  
-  // Function to add an item to the cart
-  const addToCart = (itemToAdd) => {
-  setCartItems((prevItems) => {
-    // Chercher si le plat existe déjà
-    const existingItem = prevItems.find(
-      (item) => item.plat_id === itemToAdd.id
-    );
 
-    if (existingItem) {
-      // S'il existe, on augmente la quantité
-      return prevItems.map((item) =>
-        item.plat_id === itemToAdd.id
-          ? { ...item, quantite: item.quantite + 1 }
-          : item
-      );
-    } else {
-      // Sinon, on l'ajoute au panier
-      return [
-        ...prevItems,
-        {
-          plat_id: itemToAdd.id, // ID du plat
-          quantite: 1, // quantité
-          plat: itemToAdd, // toutes les infos du plat
-        },
-      ];
-    }
-  });
-};
-
-// Calculate the total number of items in the cart
-  const cartCount = cartItems.reduce((total, item) => total + item.quantite, 0);
-
-
-  // The "value" is what all child components will have access to
-  const value = {
-    cartCount,
-    addToCart,
+  const addToCart = (meal) => {
+    setCartItems((prevItems) => {
+      const existingItem = prevItems.find((item) => item.id === meal.id);
+      
+      if (existingItem) {
+        // Item already in cart - increment quantity
+        return prevItems.map((item) =>
+          item.id === meal.id
+            ? { ...item, quantity: (item.quantity || 1) + 1 }
+            : item
+        );
+      } else {
+        // New item - add with quantity 1
+        return [...prevItems, { ...meal, quantity: 1 }];
+      }
+    });
   };
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  const removeFromCart = (mealId) => {
+    setCartItems((prevItems) =>
+      prevItems.filter((item) => item.id !== mealId)
+    );
+  };
+
+  const updateQuantity = (mealId, quantity) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === mealId ? { ...item, quantity } : item
+      )
+    );
+  };
+
+  const value = {
+    cartItems,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+  };
+
+  return (
+    <CartContext.Provider value={value}>
+      {children}
+    </CartContext.Provider>
+  );
 };
