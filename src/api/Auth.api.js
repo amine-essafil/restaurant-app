@@ -13,6 +13,14 @@ export const getUser = () =>
   client.get("/api/user");
 
 
-// --- User ---
+// --- Register---
 export const getRegister = (data) =>
   client.post("/api/register", data);
+
+// --- Logout ---
+export const getLogout = () => 
+      client.post('/api/logout');
+
+
+
+

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { getLogin, getRegister } from "../api/Auth.api";
+import { getLogin, getLogout, getRegister } from "../api/Auth.api";
 
 const AuthContext = createContext();
 
@@ -50,7 +50,7 @@ const register = async (name, email, password, password_confirmation) => {
         );
       localStorage.setItem('token', response.data.token);
       const res = await getUser();
-          setuser(res.data);
+          setUser(res.data);
               setIsLoggedIn(true);
 
         return { success: true };
@@ -64,11 +64,18 @@ const register = async (name, email, password, password_confirmation) => {
               }
               };
 
-  // LOGOUT
-  const logout = () => {
-    setUser(null);
-    setIsLoggedIn(false);
-  };
+
+// ----------LOGOUT---------------
+const logout = async()=>{
+    try {
+      const resp= await getLogout();
+            localStorage.removeItem('token')
+            setIsLoggedIn(false);
+           } catch(error){
+            console.error("Logout failed:", error);
+              }
+          }  
+
 
   const value = {
     isLoggedIn,
