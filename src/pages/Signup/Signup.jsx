@@ -9,7 +9,7 @@ const SignupPage = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 const[passwordConfirmation,setpasswordConfirmation]=useState('');
- const { register,user } = useAuth();
+ const { register,user,errors } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,6 +23,7 @@ const[passwordConfirmation,setpasswordConfirmation]=useState('');
 
   const handleSignup = async(e) => {
     e.preventDefault();
+    // Call the signup function from AuthContext
   const result =  await register(username, email, password,passwordConfirmation);
   console.log(result);
    if (result?.success) {
@@ -45,7 +46,9 @@ const[passwordConfirmation,setpasswordConfirmation]=useState('');
               onChange={(e) => setUsername(e.target.value)}
               required
             />
-      
+            {errors.name && (
+   <p className="error-text">{errors.name[0]}</p>
+)}
           </div>
           <div className="form-group">
             <label htmlFor="email">Email</label>
@@ -56,7 +59,9 @@ const[passwordConfirmation,setpasswordConfirmation]=useState('');
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-       
+                     {errors.email && (
+  <p className="error-text">{errors.email[0]}</p>
+)}
           </div>
           <div className="form-group">
             <label htmlFor="password">Password</label>
@@ -68,7 +73,9 @@ const[passwordConfirmation,setpasswordConfirmation]=useState('');
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-    
+         {errors.password && (
+   <p className="error-text">{errors.password[0]}</p>
+)}
               <button
                 type="button"
                 className="password-toggle-btn"

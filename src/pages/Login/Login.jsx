@@ -44,7 +44,9 @@ const handleLogin = async (e) => {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-       
+          {errors.email && (
+  <p className="error-text">{errors.email[0]}</p>
+)}
           </div>
           <div className="form-group">
             <label htmlFor="password">Password</label>
