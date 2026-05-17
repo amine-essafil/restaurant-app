@@ -11,3 +11,8 @@ export const getLogin = (email, password) =>
 // --- User ---
 export const getUser = () =>
   client.get("/api/user");
+
+
+// --- User ---
+export const getRegister = (data) =>
+  client.post("/api/register", data);

@@ -1,79 +1,79 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState ,useEffect} from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import "./Signup.css";
 
 const SignupPage = () => {
-  // FORM STATES
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-
   const [password, setPassword] = useState("");
-
-  const [passwordConfirmation, setPasswordConfirmation] =
-    useState("");
-
-  // PASSWORD TOGGLE STATE
   const [showPassword, setShowPassword] = useState(false);
+const[passwordConfirmation,setpasswordConfirmation]=useState('');
+ const { register,user } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSignup = (e) => {
+  useEffect(() => {
+    console.log(user)
+    if (user) {
+       navigate('/')
+    }
+  }, [user]);
+
+ 
+
+  const handleSignup = async(e) => {
     e.preventDefault();
+  const result =  await register(username, email, password,passwordConfirmation);
+  console.log(result);
+   if (result?.success) {
+  navigate("/"); // PAS /login
+}
 
-    console.log({
-      username,
-      email,
-      password,
-      passwordConfirmation,
-    });
   };
 
   return (
     <div className="signup-container">
       <div className="signup-form">
         <h2>Create Account</h2>
-
         <form onSubmit={handleSignup}>
-          {/* USERNAME */}
           <div className="form-group">
-            <label>Username</label>
-
+            <label htmlFor="username">Username</label>
             <input
               type="text"
+              id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
             />
+      
           </div>
-
-          {/* EMAIL */}
           <div className="form-group">
-            <label>Email</label>
-
+            <label htmlFor="email">Email</label>
             <input
               type="email"
+              id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
+       
           </div>
-
-          {/* PASSWORD */}
           <div className="form-group">
-            <label>Password</label>
-
+            <label htmlFor="password">Password</label>
             <div className="password-input-container">
               <input
                 type={showPassword ? "text" : "password"}
+                id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-
+    
               <button
                 type="button"
                 className="password-toggle-btn"
-                onClick={() =>
-                  setShowPassword(!showPassword)
-                }
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
                   <svg
@@ -102,7 +102,6 @@ const SignupPage = () => {
                       strokeWidth={2}
                       d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                     />
-
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -114,27 +113,21 @@ const SignupPage = () => {
               </button>
             </div>
           </div>
-
-          {/* CONFIRM PASSWORD */}
           <div className="form-group">
-            <label>Confirm Password</label>
-
+            <label htmlFor="password">Password</label>
             <div className="password-input-container">
               <input
                 type={showPassword ? "text" : "password"}
+                id="password"
                 value={passwordConfirmation}
-                onChange={(e) =>
-                  setPasswordConfirmation(e.target.value)
-                }
+                onChange={(e) => setpasswordConfirmation(e.target.value)}
                 required
               />
-
               <button
                 type="button"
                 className="password-toggle-btn"
-                onClick={() =>
-                  setShowPassword(!showPassword)
-                }
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
                   <svg
@@ -163,7 +156,6 @@ const SignupPage = () => {
                       strokeWidth={2}
                       d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                     />
-
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -175,17 +167,12 @@ const SignupPage = () => {
               </button>
             </div>
           </div>
-
-          {/* SUBMIT BUTTON */}
           <button type="submit" className="signup-btn">
             Create Account
           </button>
         </form>
-
-        {/* LOGIN LINK */}
         <p className="login-link">
-          Already have an account ?{" "}
-          <Link to="/login">Login</Link>
+          Already have an account? <Link to="/login">Login</Link>
         </p>
       </div>
     </div>

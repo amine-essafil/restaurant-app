@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { getLogin } from "../api/Auth.api";
+import { getLogin, getRegister } from "../api/Auth.api";
 
 const AuthContext = createContext();
 
@@ -11,6 +11,7 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [user, setUser] = useState(null);
+  const [errors,seterrors] = useState({});
 
   const [loading, setLoading] = useState(false);
 
@@ -37,6 +38,32 @@ console.log(response.token)
 }
 };
 
+// ----------SIGNUP---------------
+const register = async (name, email, password, password_confirmation) => {
+  try {
+   seterrors({});
+      const response = await getRegister(
+      {      name,
+            email,
+            password,
+            password_confirmation}
+        );
+      localStorage.setItem('token', response.data.token);
+      const res = await getUser();
+          setuser(res.data);
+              setIsLoggedIn(true);
+
+        return { success: true };
+
+          } catch (error) {
+              if (error.response?.status === 422) {
+          seterrors(error.response.data.errors);
+              }
+        setIsLoggedIn(false);
+            return { success: false };
+              }
+              };
+
   // LOGOUT
   const logout = () => {
     setUser(null);
@@ -49,6 +76,8 @@ console.log(response.token)
     loading,
     login,
     logout,
+    register,
+    errors
   };
 
   return (
