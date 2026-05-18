@@ -93,6 +93,11 @@ const ProfileMain = () => {
             onClick={() => navigate("/profile/account")}
             role="button"
             tabIndex={0}
+            onKeyPress={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                navigate("/profile/account");
+              }
+            }}
           > 
             <div className="card-content">
 
@@ -122,6 +127,11 @@ const ProfileMain = () => {
             onClick={() => navigate("/profile/orders")}
             role="button"
             tabIndex={0}
+            onKeyPress={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                navigate("/profile/orders");
+              }
+            }}
             >       
            <div className="card-content">
 
