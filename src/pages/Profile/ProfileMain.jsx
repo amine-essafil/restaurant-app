@@ -156,12 +156,22 @@ const ProfileMain = () => {
 
        {/* Logout Hub Section */}
       
-        <button
-          className="logout-hub-btn"
-          onClick={handleLogout}
-        >
-          Logout
+      <div className="logout-hub-section">
+        <button className="logout-hub-btn" onClick={handleLogout}>
+          <div className="logout-hub-icon">
+            <LogoutIcon />
+          </div>
+
+          <div className="logout-hub-content">
+            <h3 className="logout-hub-title">Sign Out</h3>
+            <p className="logout-hub-subtitle">
+              Logout from your account
+            </p>
+          </div>
+
+          <div className="logout-hub-arrow">→</div>
         </button>
+      </div>
         </div>  
       </div>
     </div>
