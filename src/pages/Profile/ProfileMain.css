@@ -78,3 +78,15 @@
 .card-description {
   color: #718096;
 }
+
+.logout-hub-btn {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 12px;
+  background: #ff6b35;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+}
