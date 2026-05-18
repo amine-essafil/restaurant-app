@@ -16,6 +16,34 @@ const OrdersIcon = () => (
   </svg>
 );
 
+const ArrowIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <polyline points="9 18 15 12 9 6" />
+  </svg>
+); 
+
+const LogoutIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+    <polyline points="16 17 21 12 16 7" />
+    <line x1="21" y1="12" x2="9" y2="12" />
+  </svg>
+);
+
 
 const AccountIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -55,9 +83,17 @@ const ProfileMain = () => {
                   </span>
                 </nav>
           </div>
+        
+        {/* Main Navigation Cards */}
 
           <div className="profile-cards">
-          <div className="profile-card">
+           {/* Account Card */}
+          <div
+            className="profile-card"
+            onClick={() => navigate("/profile/account")}
+            role="button"
+            tabIndex={0}
+          > 
             <div className="card-content">
 
               <div className="card-icon">
@@ -73,11 +109,21 @@ const ProfileMain = () => {
                   Manage your personal information
                 </p>
               </div>
-
+              <div className="card-arrow">
+                  <ArrowIcon />
+              </div>
             </div>
           </div>
-        <div className="profile-card">
-        <div className="card-content">
+                 
+           {/* Orders Card */}
+
+          <div
+            className="profile-card"
+            onClick={() => navigate("/profile/orders")}
+            role="button"
+            tabIndex={0}
+            >       
+           <div className="card-content">
 
           <div className="card-icon">
             <OrdersIcon />
@@ -92,9 +138,14 @@ const ProfileMain = () => {
               View your order history
             </p>
           </div>
-
+          <div className="card-arrow">
+                <ArrowIcon />
+           </div>
         </div>
-      </div>
+    </div>
+
+       {/* Logout Hub Section */}
+      
         <button
           className="logout-hub-btn"
           onClick={handleLogout}
