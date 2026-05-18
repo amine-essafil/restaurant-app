@@ -3,6 +3,13 @@ import "./ProfileMain.css";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
+// Icons
+const AccountIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+  </svg>
+);
+
 const OrdersIcon = () => (
   <svg
     width="24"
@@ -13,6 +20,8 @@ const OrdersIcon = () => (
     strokeWidth="2"
   >
     <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+    <line x1="12" y1="22.08" x2="12" y2="12" />
   </svg>
 );
 
@@ -27,7 +36,7 @@ const ArrowIcon = () => (
   >
     <polyline points="9 18 15 12 9 6" />
   </svg>
-); 
+);
 
 const LogoutIcon = () => (
   <svg
@@ -44,50 +53,38 @@ const LogoutIcon = () => (
   </svg>
 );
 
-
-const AccountIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-  </svg>
-);
-
 const ProfileMain = () => {
-    const { user,logout } = useAuth();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
-    const handleLogout = () => {
-          logout();
-          navigate("/");
-        };
+  // Handle logout
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
- const getInitial = () => {
+  // Get first letter of username for avatar
+  const getInitial = () => {
     return user?.name ? user.name.charAt(0).toUpperCase() : "U";
   };
 
   return (
     <div className="profile-main">
       <div className="profile-main-container">
-                {/* Profile Header */}
-          <div className="profile-header">
-                <div className="profile-avatar">
-                  {getInitial()}
-                </div>
+        {/* Profile Header */}
+        <div className="profile-header">
+          <div className="profile-avatar">{getInitial()}</div>
+          <h2 className="profile-username">{user?.name || "User"}</h2>
+          <nav className="profile-breadcrumb">
+            <span className="breadcrumb-current">Profile</span>
+          </nav>
+        </div>
 
-                <h2 className="profile-username">
-                  {user?.name || "User"}
-                </h2>
-
-                <nav className="profile-breadcrumb">
-                  <span className="breadcrumb-current">
-                    Profile
-                  </span>
-                </nav>
-          </div>
         
-        {/* Main Navigation Cards */}
 
-          <div className="profile-cards">
-           {/* Account Card */}
+        {/* Main Navigation Cards */}
+        <div className="profile-cards">
+          {/* Account Card */}
           <div
             className="profile-card"
             onClick={() => navigate("/profile/account")}
@@ -98,30 +95,24 @@ const ProfileMain = () => {
                 navigate("/profile/account");
               }
             }}
-          > 
+          >
             <div className="card-content">
-
               <div className="card-icon">
                 <AccountIcon />
               </div>
-
               <div className="card-info">
-                <h3 className="card-title">
-                  Account
-                </h3>
-
+                <h3 className="card-title">Account</h3>
                 <p className="card-description">
                   Manage your personal information
                 </p>
               </div>
               <div className="card-arrow">
-                  <ArrowIcon />
+                <ArrowIcon />
               </div>
             </div>
           </div>
-                 
-           {/* Orders Card */}
 
+          {/* Orders Card */}
           <div
             className="profile-card"
             onClick={() => navigate("/profile/orders")}
@@ -132,47 +123,35 @@ const ProfileMain = () => {
                 navigate("/profile/orders");
               }
             }}
-            >       
-           <div className="card-content">
-
-          <div className="card-icon">
-            <OrdersIcon />
-          </div>
-
-          <div className="card-info">
-            <h3 className="card-title">
-              Orders
-            </h3>
-
-            <p className="card-description">
-              View your order history
-            </p>
-          </div>
-          <div className="card-arrow">
+          >
+            <div className="card-content">
+              <div className="card-icon">
+                <OrdersIcon />
+              </div>
+              <div className="card-info">
+                <h3 className="card-title">Orders</h3>
+                <p className="card-description">View your order history</p>
+              </div>
+              <div className="card-arrow">
                 <ArrowIcon />
-           </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Logout Hub Section */}
+        <div className="logout-hub-section">
+          <button className="logout-hub-btn" onClick={handleLogout}>
+            <div className="logout-hub-icon">
+              <LogoutIcon />
+            </div>
+            <div className="logout-hub-content">
+              <h3 className="logout-hub-title">Sign Out</h3>
+              <p className="logout-hub-subtitle">Logout from your account</p>
+            </div>
+            <div className="logout-hub-arrow">→</div>
+          </button>
         </div>
-    </div>
-
-       {/* Logout Hub Section */}
-      
-      <div className="logout-hub-section">
-        <button className="logout-hub-btn" onClick={handleLogout}>
-          <div className="logout-hub-icon">
-            <LogoutIcon />
-          </div>
-
-          <div className="logout-hub-content">
-            <h3 className="logout-hub-title">Sign Out</h3>
-            <p className="logout-hub-subtitle">
-              Logout from your account
-            </p>
-          </div>
-
-          <div className="logout-hub-arrow">→</div>
-        </button>
-      </div>
-        </div>  
+        </div>
       </div>
     </div>
   );
