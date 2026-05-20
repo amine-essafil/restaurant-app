@@ -7,6 +7,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import SignupPage from "../pages/Signup/Signup";
 import LoginSuccess from "../pages/LoginSuccess/LoginSuccess";
 import ProfileMain from "../pages/Profile/ProfileMain";
+import AccountPage from "../pages/Profile/AccountPage";
 
 const AppRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const AppRoutes = () => {
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/login-success" element={<LoginSuccess />} />
       <Route path="/profile" element={<ProfileMain />} />
+      <Route path="/profile/account" element={<AccountPage />} />
 
     </Routes>
   );
