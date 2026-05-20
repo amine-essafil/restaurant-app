@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AccountPage.css";
 import { useAuth } from "../../context/AuthContext";
@@ -40,6 +40,38 @@ const AccountPage = () => {
         email: user?.email || "",
         phone: user?.phone || "",
         });
+
+        const [editMode, setEditMode] = useState({
+        name: false,
+        email: false,
+        phone: false,
+        });
+
+        const handleEdit = (field) => {
+        setEditMode((prev) => ({
+            ...prev,
+            [field]: true,
+        }));
+        };
+
+        const handleCancel = (field) => {
+        setFormData((prev) => ({
+            ...prev,
+            [field]: user?.[field] || "",
+        }));
+
+        setEditMode((prev) => ({
+            ...prev,
+            [field]: false,
+        }));
+        };
+
+        const handleInputChange = (field, value) => {
+        setFormData((prev) => ({
+            ...prev,
+            [field]: value,
+        }));
+        };
   return (
     <div className="account-page">
       <div className="account-container">
