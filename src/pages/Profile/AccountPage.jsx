@@ -114,47 +114,178 @@ const AccountPage = () => {
 
       </div>
       <div className="account-cards">
+        {/* ================= NAME ================= */}
+        <div className="account-card">
+        <div className="card-header">
+            <h3 className="card-title">Name</h3>
 
-  {/* Name */}
-  <div className="account-card">
-    <div className="card-header">
-      <h3 className="card-title">Name</h3>
-    </div>
+            {!editMode.name && (
+            <button
+                className="edit-button"
+                onClick={() => handleEdit("name")}
+            >
+                <EditIcon />
+                <span>Change</span>
+            </button>
+            )}
+        </div>
 
-    <div className="card-value">
-      Not set
-    </div>
-  </div>
+        {editMode.name ? (
+            <div className="edit-form">
+            <input
+                type="text"
+                value={formData.name}
+                onChange={(e) =>
+                handleInputChange("name", e.target.value)
+                }
+                className="edit-input"
+                placeholder="Enter username"
+            />
 
-  {/* Email */}
-  <div className="account-card">
-    <div className="card-header">
-      <h3 className="card-title">Email</h3>
-    </div>
+            {error.name && (
+                <p className="error-text">
+                {error.name[0]}
+                </p>
+            )}
 
-    <div className="card-value">
-      Not set
-    </div>
-  </div>
+            <div className="edit-actions">
+                <button
+                className="cancel-button"
+                onClick={() => handleCancel("name")}
+                >
+                Cancel
+                </button>
 
-  {/* Password */}
-  <div className="account-card">
-    <div className="card-header">
-      <h3 className="card-title">Password</h3>
-    </div>
+                <button
+                className="save-button"
+                onClick={() => handleSave("name")}
+                >
+                Save
+                </button>
+            </div>
+            </div>
+        ) : (
+            <div className="card-value">
+            {formData.name || "Not set"}
+            </div>
+        )}
+        </div>
 
-    <div className="card-value">
-      ••••••••••
-    </div>
-  </div>
+        {/* ================= EMAIL ================= */}
+        <div className="account-card">
+        <div className="card-header">
+            <h3 className="card-title">Email</h3>
 
-  {/* Phone */}
-  <div className="account-card">
-    <div className="card-header">
-      <h3 className="card-title">
-        Phone Number
-      </h3>
-    </div>
+            {!editMode.email && (
+            <button
+                className="edit-button"
+                onClick={() => handleEdit("email")}
+            >
+                <EditIcon />
+                <span>Change</span>
+            </button>
+            )}
+        </div>
+
+        {editMode.email ? (
+            <div className="edit-form">
+            <input
+                type="email"
+                value={formData.email}
+                onChange={(e) =>
+                handleInputChange("email", e.target.value)
+                }
+                className="edit-input"
+                placeholder="Enter email address"
+            />
+
+            {error.email && (
+                <p className="error-text">
+                {error.email[0]}
+                </p>
+            )}
+
+            <div className="edit-actions">
+                <button
+                className="cancel-button"
+                onClick={() => handleCancel("email")}
+                >
+                Cancel
+                </button>
+
+                <button
+                className="save-button"
+                onClick={() => handleSave("email")}
+                >
+                Save
+                </button>
+            </div>
+            </div>
+        ) : (
+            <div className="card-value">
+            {formData.email || "Not set"}
+            </div>
+        )}
+        </div>
+
+        {/* ================= PHONE ================= */}
+        <div className="account-card">
+        <div className="card-header">
+            <h3 className="card-title">Phone Number</h3>
+
+            {!editMode.phone && (
+            <button
+                className="edit-button add-button"
+                onClick={() => handleEdit("phone")}
+            >
+                <EditIcon />
+                <span>
+                {formData.phone ? "Change" : "Add"}
+                </span>
+            </button>
+            )}
+        </div>
+
+        {editMode.phone ? (
+            <div className="edit-form">
+            <input
+                type="tel"
+                value={formData.phone}
+                onChange={(e) =>
+                handleInputChange("phone", e.target.value)
+                }
+                className="edit-input"
+                placeholder="Enter phone number"
+            />
+
+            {error.phone && (
+                <p className="error-text">
+                {error.phone[0]}
+                </p>
+            )}
+
+            <div className="edit-actions">
+                <button
+                className="cancel-button"
+                onClick={() => handleCancel("phone")}
+                >
+                Cancel
+                </button>
+
+                <button
+                className="save-button"
+                onClick={() => handleSave("phone")}
+                >
+                Save
+                </button>
+            </div>
+            </div>
+        ) : (
+            <div className="card-value">
+            {formData.phone || "Not added yet"}
+            </div>
+        )}
+        </div>
 
     <div className="card-value">
       Not added yet
@@ -162,7 +293,6 @@ const AccountPage = () => {
   </div>
 
 </div>
-    </div>
   );
 };
 
