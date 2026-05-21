@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AccountPage.css";
 import { useAuth } from "../../context/AuthContext";
+import { updateEmail, updatePassword, updateUsername } from "../../api/User.api";
 
 //ICONS
 const EditIcon = () => (
@@ -72,6 +73,47 @@ const AccountPage = () => {
             [field]: value,
         }));
         };
+
+  
+    const handleSave = async (field) => {
+      try {
+
+        if (field === "name") {
+          await updateUsername({
+            id: user.id,
+            name: formData.name,
+          });
+        }
+
+        else if (field === "email") {
+          await updateEmail({
+            id: user.id,
+            email: formData.email,
+          });
+        }
+
+        else if (field === "phone") {
+          await updatePassword(
+            formData.phone
+          );
+        }
+
+        setuser((prevUser) => ({
+          ...prevUser,
+          [field]: formData[field],
+        }));
+
+        setEditMode((prev) => ({
+          ...prev,
+          [field]: false,
+        }));
+
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    
   return (
     <div className="account-page">
       <div className="account-container">
