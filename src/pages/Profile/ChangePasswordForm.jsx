@@ -99,37 +99,37 @@ const ChangePasswordForm = () => {
       <div className="change-password-container">
 
        <nav className="password-breadcrumb">
-  <button
-    className="breadcrumb-back"
-    onClick={() => navigate("/profile/account")}
-  >
-    <ChevronLeftIcon />
-  </button>
+        <button
+          className="breadcrumb-back"
+          onClick={() => navigate("/profile/account")}
+        >
+          <ChevronLeftIcon />
+        </button>
 
-  <div className="breadcrumb-path">
-    <button
-      className="breadcrumb-link"
-      onClick={() => navigate("/profile")}
-    >
-      Profile
-    </button>
+        <div className="breadcrumb-path">
+          <button
+            className="breadcrumb-link"
+            onClick={() => navigate("/profile")}
+          >
+            Profile
+          </button>
 
-    <span className="breadcrumb-separator">›</span>
+          <span className="breadcrumb-separator">›</span>
 
-    <button
-      className="breadcrumb-link"
-      onClick={() => navigate("/profile/account")}
-    >
-      Account
-    </button>
+          <button
+            className="breadcrumb-link"
+            onClick={() => navigate("/profile/account")}
+          >
+            Account
+          </button>
 
-    <span className="breadcrumb-separator">›</span>
+          <span className="breadcrumb-separator">›</span>
 
-    <span className="breadcrumb-current">
-      Change Password
-    </span>
-  </div>
-</nav>
+          <span className="breadcrumb-current">
+            Change Password
+          </span>
+        </div>
+      </nav>
 
         <div className="form-header">
           <h1>Change Password</h1>
@@ -137,26 +137,109 @@ const ChangePasswordForm = () => {
         </div>
 
         <form className="password-form">
+<div className="password-input-wrapper">
+  <input
+    type={
+      showPasswords.currentPassword
+        ? "text"
+        : "password"
+    }
+    placeholder="Current password"
+    value={formData.currentPassword}
+    onChange={(e) =>
+      handleInputChange(
+        "currentPassword",
+        e.target.value
+      )
+    }
+    className="form-input"
+  />
+
+  <button
+    type="button"
+    className="password-toggle"
+    onClick={() =>
+      togglePasswordVisibility(
+        "currentPassword"
+      )
+    }
+  >
+    {showPasswords.currentPassword ? (
+      <EyeOffIcon />
+    ) : (
+      <EyeIcon />
+    )}
+  </button>
+</div>
+
+    <div className="password-input-wrapper">
         <input
-            type="password"
+          type={
+            showPasswords.currentPassword
+              ? "text"
+              : "password"
+          }
+          placeholder="Current password"
+          value={formData.currentPassword}
+          onChange={(e) =>
+            handleInputChange(
+              "currentPassword",
+              e.target.value
+            )
+          }
+          className="form-input"
+        />
+
+          <button
+            type="button"
+            className="password-toggle"
+            onClick={() =>
+              togglePasswordVisibility(
+                "currentPassword"
+              )
+            }
+          >
+            {showPasswords.currentPassword ? (
+              <EyeOffIcon />
+            ) : (
+              <EyeIcon />
+            )}
+          </button>
+        </div>
+        <div className="password-input-wrapper">
+          <input
+            type={
+              showPasswords.currentPassword
+                ? "text"
+                : "password"
+            }
             placeholder="Current password"
             value={formData.currentPassword}
-            onChange={(e) => handleInputChange("currentPassword", e.target.value)}
-            />
+            onChange={(e) =>
+              handleInputChange(
+                "currentPassword",
+                e.target.value
+              )
+            }
+            className="form-input"
+          />
 
-        <input
-            type="password"
-            placeholder="New password"
-            value={formData.newPassword}
-            onChange={(e) => handleInputChange("newPassword", e.target.value)}
-            />
-
-        <input
-            type="password"
-            placeholder="Confirm password"
-            value={formData.confirmPassword}
-            onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
-        />
+          <button
+            type="button"
+            className="password-toggle"
+            onClick={() =>
+              togglePasswordVisibility(
+                "currentPassword"
+              )
+            }
+          >
+            {showPasswords.currentPassword ? (
+              <EyeOffIcon />
+            ) : (
+              <EyeIcon />
+            )}
+          </button>
+        </div>
         </form>
 
       </div>
