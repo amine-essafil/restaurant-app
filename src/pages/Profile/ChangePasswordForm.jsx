@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-  
 // Icons
 const ChevronLeftIcon = () => (
   <svg
@@ -78,17 +77,59 @@ const ChangePasswordForm = () => {
     confirmPassword: "",
     });
 
-    const handleInputChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+     const handleInputChange = (field, value) => {
+        setFormData((prev) => ({ ...prev, [field]: value }));
+        };
+
+        const [showPasswords, setShowPasswords] = useState({
+      currentPassword: false,
+      newPassword: false,
+      confirmPassword: false,
+    });
+
+    const togglePasswordVisibility = (field) => {
+      setShowPasswords((prev) => ({
+        ...prev,
+        [field]: !prev[field],
+      }));
     };
+
   return (
     <div className="change-password-page">
       <div className="change-password-container">
 
-        <nav className="password-breadcrumb">
-          <button onClick={() => navigate("/profile/account")}>Back</button>
-          <span>Profile › Account › Change Password</span>
-        </nav>
+       <nav className="password-breadcrumb">
+  <button
+    className="breadcrumb-back"
+    onClick={() => navigate("/profile/account")}
+  >
+    <ChevronLeftIcon />
+  </button>
+
+  <div className="breadcrumb-path">
+    <button
+      className="breadcrumb-link"
+      onClick={() => navigate("/profile")}
+    >
+      Profile
+    </button>
+
+    <span className="breadcrumb-separator">›</span>
+
+    <button
+      className="breadcrumb-link"
+      onClick={() => navigate("/profile/account")}
+    >
+      Account
+    </button>
+
+    <span className="breadcrumb-separator">›</span>
+
+    <span className="breadcrumb-current">
+      Change Password
+    </span>
+  </div>
+</nav>
 
         <div className="form-header">
           <h1>Change Password</h1>
