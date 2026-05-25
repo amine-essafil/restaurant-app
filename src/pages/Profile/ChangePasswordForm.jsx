@@ -302,8 +302,78 @@ const ChangePasswordForm = () => {
             {errors.newPassword}
           </span>
         )}
-      </div>
+     {formData.newPassword && (
+      <div className="password-requirements">
 
+        <div
+          className={`requirement ${
+            passwordValidations.minLength
+              ? "valid"
+              : "invalid"
+          }`}
+        >
+          {passwordValidations.minLength
+            ? "✓"
+            : "✗"}{" "}
+          At least 8 characters
+        </div>
+
+        <div
+          className={`requirement ${
+            passwordValidations.hasUppercase
+              ? "valid"
+              : "invalid"
+          }`}
+        >
+          {passwordValidations.hasUppercase
+            ? "✓"
+            : "✗"}{" "}
+          One uppercase letter
+        </div>
+
+        <div
+          className={`requirement ${
+            passwordValidations.hasLowercase
+              ? "valid"
+              : "invalid"
+          }`}
+        >
+          {passwordValidations.hasLowercase
+            ? "✓"
+            : "✗"}{" "}
+          One lowercase letter
+        </div>
+
+        <div
+          className={`requirement ${
+            passwordValidations.hasNumber
+              ? "valid"
+              : "invalid"
+          }`}
+        >
+          {passwordValidations.hasNumber
+            ? "✓"
+            : "✗"}{" "}
+          One number
+        </div>
+
+        <div
+          className={`requirement ${
+            passwordValidations.hasSpecial
+              ? "valid"
+              : "invalid"
+          }`}
+        >
+          {passwordValidations.hasSpecial
+            ? "✓"
+            : "✗"}{" "}
+          One special character
+        </div>
+
+      </div>
+    )}
+      </div>
+     
       {/* Confirm Password */}
       <div className="form-group">
         <label className="form-label">
