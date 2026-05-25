@@ -158,6 +158,9 @@ const ChangePasswordForm = () => {
 
       return Object.keys(newErrors).length === 0;
     };
+    const handleCancel = () => {
+  navigate("/profile/account");
+};
   return (
     <div className="change-password-page">
       <div className="change-password-container">
@@ -425,6 +428,24 @@ const ChangePasswordForm = () => {
           </span>
         )}
       </div>
+      <div className="form-actions">
+
+      <button
+        type="button"
+        className="cancel-button"
+        onClick={handleCancel}
+      >
+        Cancel
+      </button>
+
+      <button
+        type="submit"
+        className="save-button"
+      >
+        Save Changes
+      </button>
+
+    </div>
       </div>
     </div>);
 };
