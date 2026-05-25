@@ -71,29 +71,71 @@ const XIcon = () => (
 
 const ChangePasswordForm = () => {
     const navigate = useNavigate();
+    const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
     });
-
-     const handleInputChange = (field, value) => {
-        setFormData((prev) => ({ ...prev, [field]: value }));
-        };
-
-        const [showPasswords, setShowPasswords] = useState({
+     const [showPasswords, setShowPasswords] = useState({
       currentPassword: false,
       newPassword: false,
       confirmPassword: false,
     });
+     const handleInputChange = (field, value) => {
+        setFormData((prev) => ({ ...prev, [field]: value }));
+        if (errors[field]) {
+          setErrors((prev) => ({
+            ...prev,
+            [field]: "",
+          }));
+        }
+        };
 
+    const validatePassword = (password) => {
+      return {
+        minLength: password.length >= 8,
+        hasUppercase: /[A-Z]/.test(password),
+        hasLowercase: /[a-z]/.test(password),
+        hasNumber: /\d/.test(password),
+        hasSpecial: /[!@#$%^&*]/.test(password),
+      };
+    };
+
+    const passwordValidations =
+      validatePassword(formData.newPassword); 
+      
     const togglePasswordVisibility = (field) => {
       setShowPasswords((prev) => ({
         ...prev,
         [field]: !prev[field],
       }));
     };
+    const validateForm = () => {
+      const newErrors = {};
 
+      if (!formData.currentPassword) {
+        newErrors.currentPassword =
+          "Current password is required";
+      }
+
+      if (!formData.newPassword) {
+        newErrors.newPassword =
+          "New password is required";
+      }
+
+      if (
+        formData.newPassword !==
+        formData.confirmPassword
+      ) {
+        newErrors.confirmPassword =
+          "Passwords do not match";
+      }
+
+      setErrors(newErrors);
+
+      return Object.keys(newErrors).length === 0;
+    };
   return (
     <div className="change-password-page">
       <div className="change-password-container">
