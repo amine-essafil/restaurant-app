@@ -91,20 +91,19 @@ const ChangePasswordForm = () => {
           }));
         }
         };
+        const validatePassword = (password) => {
+          return {
+            minLength: password.length >= 8,
+            hasUppercase: /[A-Z]/.test(password),
+            hasLowercase: /[a-z]/.test(password),
+            hasNumber: /\d/.test(password),
+            hasSpecial: /[!@#$%^&*]/.test(password),
+          };
+        };
 
-    const validatePassword = (password) => {
-      return {
-        minLength: password.length >= 8,
-        hasUppercase: /[A-Z]/.test(password),
-        hasLowercase: /[a-z]/.test(password),
-        hasNumber: /\d/.test(password),
-        hasSpecial: /[!@#$%^&*]/.test(password),
-      };
-    };
-
-    const passwordValidations =
-      validatePassword(formData.newPassword); 
-      
+     const passwordValidations =
+              validatePassword(formData.newPassword); 
+              
     const togglePasswordVisibility = (field) => {
       setShowPasswords((prev) => ({
         ...prev,
@@ -122,14 +121,37 @@ const ChangePasswordForm = () => {
       if (!formData.newPassword) {
         newErrors.newPassword =
           "New password is required";
+      } else {
+        const validations =
+          validatePassword(formData.newPassword);
+
+        if (
+          !Object.values(validations).every(Boolean)
+        ) {
+          newErrors.newPassword =
+            "Password does not meet requirements";
+        }
       }
 
-      if (
+      if (!formData.confirmPassword) {
+        newErrors.confirmPassword =
+          "Please confirm your new password";
+      } else if (
         formData.newPassword !==
         formData.confirmPassword
       ) {
         newErrors.confirmPassword =
           "Passwords do not match";
+      }
+
+      if (
+        formData.currentPassword &&
+        formData.newPassword &&
+        formData.currentPassword ===
+          formData.newPassword
+      ) {
+        newErrors.newPassword =
+          "New password must be different from current password";
       }
 
       setErrors(newErrors);
@@ -178,76 +200,12 @@ const ChangePasswordForm = () => {
           <p>Update your account password</p>
         </div>
 
-        <form className="password-form">
-<div className="password-input-wrapper">
-  <input
-    type={
-      showPasswords.currentPassword
-        ? "text"
-        : "password"
-    }
-    placeholder="Current password"
-    value={formData.currentPassword}
-    onChange={(e) =>
-      handleInputChange(
-        "currentPassword",
-        e.target.value
-      )
-    }
-    className="form-input"
-  />
+            {/* Current Password */}
+      <div className="form-group">
+        <label className="form-label">
+          Current Password
+        </label>
 
-  <button
-    type="button"
-    className="password-toggle"
-    onClick={() =>
-      togglePasswordVisibility(
-        "currentPassword"
-      )
-    }
-  >
-    {showPasswords.currentPassword ? (
-      <EyeOffIcon />
-    ) : (
-      <EyeIcon />
-    )}
-  </button>
-</div>
-
-    <div className="password-input-wrapper">
-        <input
-          type={
-            showPasswords.currentPassword
-              ? "text"
-              : "password"
-          }
-          placeholder="Current password"
-          value={formData.currentPassword}
-          onChange={(e) =>
-            handleInputChange(
-              "currentPassword",
-              e.target.value
-            )
-          }
-          className="form-input"
-        />
-
-          <button
-            type="button"
-            className="password-toggle"
-            onClick={() =>
-              togglePasswordVisibility(
-                "currentPassword"
-              )
-            }
-          >
-            {showPasswords.currentPassword ? (
-              <EyeOffIcon />
-            ) : (
-              <EyeIcon />
-            )}
-          </button>
-        </div>
         <div className="password-input-wrapper">
           <input
             type={
@@ -263,7 +221,11 @@ const ChangePasswordForm = () => {
                 e.target.value
               )
             }
-            className="form-input"
+            className={`form-input ${
+              errors.currentPassword
+                ? "input-error"
+                : ""
+            }`}
           />
 
           <button
@@ -282,11 +244,119 @@ const ChangePasswordForm = () => {
             )}
           </button>
         </div>
-        </form>
 
+        {errors.currentPassword && (
+          <span className="form-error">
+            {errors.currentPassword}
+          </span>
+        )}
       </div>
-    </div>
-  );
+
+      {/* New Password */}
+      <div className="form-group">
+        <label className="form-label">
+          New Password
+        </label>
+
+        <div className="password-input-wrapper">
+          <input
+            type={
+              showPasswords.newPassword
+                ? "text"
+                : "password"
+            }
+            placeholder="New password"
+            value={formData.newPassword}
+            onChange={(e) =>
+              handleInputChange(
+                "newPassword",
+                e.target.value
+              )
+            }
+            className={`form-input ${
+              errors.newPassword
+                ? "input-error"
+                : ""
+            }`}
+          />
+
+          <button
+            type="button"
+            className="password-toggle"
+            onClick={() =>
+              togglePasswordVisibility(
+                "newPassword"
+              )
+            }
+          >
+            {showPasswords.newPassword ? (
+              <EyeOffIcon />
+            ) : (
+              <EyeIcon />
+            )}
+          </button>
+        </div>
+
+        {errors.newPassword && (
+          <span className="form-error">
+            {errors.newPassword}
+          </span>
+        )}
+      </div>
+
+      {/* Confirm Password */}
+      <div className="form-group">
+        <label className="form-label">
+          Confirm Password
+        </label>
+
+        <div className="password-input-wrapper">
+          <input
+            type={
+              showPasswords.confirmPassword
+                ? "text"
+                : "password"
+            }
+            placeholder="Confirm password"
+            value={formData.confirmPassword}
+            onChange={(e) =>
+              handleInputChange(
+                "confirmPassword",
+                e.target.value
+              )
+            }
+            className={`form-input ${
+              errors.confirmPassword
+                ? "input-error"
+                : ""
+            }`}
+          />
+
+          <button
+            type="button"
+            className="password-toggle"
+            onClick={() =>
+              togglePasswordVisibility(
+                "confirmPassword"
+              )
+            }
+          >
+            {showPasswords.confirmPassword ? (
+              <EyeOffIcon />
+            ) : (
+              <EyeIcon />
+            )}
+          </button>
+        </div>
+
+        {errors.confirmPassword && (
+          <span className="form-error">
+            {errors.confirmPassword}
+          </span>
+        )}
+      </div>
+      </div>
+    </div>);
 };
 
 export default ChangePasswordForm;
