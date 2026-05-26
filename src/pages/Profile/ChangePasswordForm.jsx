@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-
+import { updatePassword } from "../../api/User.api";
+import "./ChangePasswordForm.css";
 // Icons
 const ChevronLeftIcon = () => (
   <svg

@@ -8,6 +8,7 @@ import SignupPage from "../pages/Signup/Signup";
 import LoginSuccess from "../pages/LoginSuccess/LoginSuccess";
 import ProfileMain from "../pages/Profile/ProfileMain";
 import AccountPage from "../pages/Profile/AccountPage";
+import ChangePasswordForm from "../pages/Profile/ChangePasswordForm";
 
 const AppRoutes = () => {
   return (
@@ -19,6 +20,7 @@ const AppRoutes = () => {
       <Route path="/login-success" element={<LoginSuccess />} />
       <Route path="/profile" element={<ProfileMain />} />
       <Route path="/profile/account" element={<AccountPage />} />
+      <Route path="/profile/change-password" element={<ChangePasswordForm />} />
 
     </Routes>
   );
