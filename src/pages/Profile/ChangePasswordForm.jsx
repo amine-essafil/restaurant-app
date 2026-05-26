@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+
 // Icons
 const ChevronLeftIcon = () => (
   <svg
@@ -37,7 +39,7 @@ const EyeOffIcon = () => (
     stroke="currentColor"
     strokeWidth="2"
   >
-    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
     <line x1="1" y1="1" x2="23" y2="23" />
   </svg>
 );
@@ -70,160 +72,177 @@ const XIcon = () => (
 );
 
 const ChangePasswordForm = () => {
-    const navigate = useNavigate();
-    const [errors, setErrors] = useState({});
-    const [isSubmitting, setIsSubmitting] =useState(false);
-    const [formData, setFormData] = useState({
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
-    });
-     const [showPasswords, setShowPasswords] = useState({
-      currentPassword: false,
-      newPassword: false,
-      confirmPassword: false,
-    });
-     const handleInputChange = (field, value) => {
-        setFormData((prev) => ({ ...prev, [field]: value }));
-        if (errors[field]) {
-          setErrors((prev) => ({
-            ...prev,
-            [field]: "",
-          }));
-        }
-        };
+  });
+  const [showPasswords, setShowPasswords] = useState({
+    currentPassword: false,
+    newPassword: false,
+    confirmPassword: false,
+  });
 
-        const handleSubmit = async (e) => {
-          e.preventDefault();
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
-          if (!validateForm()) return;
-
-          setIsSubmitting(true);
-
-          try {
-            console.log("Password updated");
-
-          } catch (error) {
-            setErrors({
-              general:
-                "Failed to change password",
-            });
-          } finally {
-            setIsSubmitting(false);
-          }
-        };
-        const validatePassword = (password) => {
-          return {
-            minLength: password.length >= 8,
-            hasUppercase: /[A-Z]/.test(password),
-            hasLowercase: /[a-z]/.test(password),
-            hasNumber: /\d/.test(password),
-            hasSpecial: /[!@#$%^&*]/.test(password),
-          };
-        };
-
-     const passwordValidations =
-              validatePassword(formData.newPassword); 
-              
-    const togglePasswordVisibility = (field) => {
-      setShowPasswords((prev) => ({
-        ...prev,
-        [field]: !prev[field],
-      }));
+  // Password validation rules
+  const validatePassword = (password) => {
+    const validations = {
+      minLength: password.length >= 8,
+      hasUppercase: /[A-Z]/.test(password),
+      hasLowercase: /[a-z]/.test(password),
+      hasNumber: /\d/.test(password),
+      hasSpecial: /[!@#$%^&*]/.test(password),
     };
-    const validateForm = () => {
-      const newErrors = {};
 
-      if (!formData.currentPassword) {
-        newErrors.currentPassword =
-          "Current password is required";
+    return validations;
+  };
+
+  const handleInputChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+
+    // Clear errors when user starts typing
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: "" }));
+    }
+  };
+
+  const togglePasswordVisibility = (field) => {
+    setShowPasswords((prev) => ({ ...prev, [field]: !prev[field] }));
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Current password validation
+    if (!formData.currentPassword) {
+      newErrors.currentPassword = "Current password is required";
+    }
+
+    // New password validation
+    if (!formData.newPassword) {
+      newErrors.newPassword = "New password is required";
+    } else {
+      const validations = validatePassword(formData.newPassword);
+      if (!Object.values(validations).every(Boolean)) {
+        newErrors.newPassword = "Password does not meet requirements";
       }
+    }
 
-      if (!formData.newPassword) {
-        newErrors.newPassword =
-          "New password is required";
-      } else {
-        const validations =
-          validatePassword(formData.newPassword);
+    // Confirm password validation
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = "Please confirm your new password";
+    } else if (formData.newPassword !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
 
-        if (
-          !Object.values(validations).every(Boolean)
-        ) {
-          newErrors.newPassword =
-            "Password does not meet requirements";
-        }
-      }
+    // Check if new password is same as current
+    if (
+      formData.currentPassword &&
+      formData.newPassword &&
+      formData.currentPassword === formData.newPassword
+    ) {
+      newErrors.newPassword =
+        "New password must be different from current password";
+    }
 
-      if (!formData.confirmPassword) {
-        newErrors.confirmPassword =
-          "Please confirm your new password";
-      } else if (
-        formData.newPassword !==
-        formData.confirmPassword
-      ) {
-        newErrors.confirmPassword =
-          "Passwords do not match";
-      }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-      if (
-        formData.currentPassword &&
-        formData.newPassword &&
-        formData.currentPassword ===
-          formData.newPassword
-      ) {
-        newErrors.newPassword =
-          "New password must be different from current password";
-      }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-      setErrors(newErrors);
+    if (!validateForm()) return;
 
-      return Object.keys(newErrors).length === 0;
-    };
-    const handleCancel = () => {
-  navigate("/profile/account");
-};
+    setIsSubmitting(true);
+
+    try {
+      // Simulate API call
+      const response = await updatePassword({password : formData.newPassword,password_confirmation:formData.confirmPassword});
+      console.log(response.data);
+      // Show success state
+      setShowSuccess(true);
+      // Auto redirect after 3 seconds
+      setTimeout(() => {
+        navigate("/profile/account");
+      }, 3000);
+    } catch (error) {
+      console.error("Password change failed:", error);
+      setErrors({ general: "Failed to change password. Please try again." });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCancel = () => {
+    navigate("/profile/account");
+  };
+
+  // Get password validation status for new password
+  const passwordValidations = validatePassword(formData.newPassword);
+
+  if (showSuccess) {
+    return (
+      <div className="change-password-page">
+        <div className="change-password-container">
+          <div className="success-state">
+            <div className="success-icon">
+              <CheckIcon />
+            </div>
+            <h2 className="success-title">Password Changed!</h2>
+            <p className="success-message">
+              Your password has been updated successfully. You will be
+              redirected to your account page.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="change-password-page">
       <div className="change-password-container">
-
-       <nav className="password-breadcrumb">
-        <button
-          className="breadcrumb-back"
-          onClick={() => navigate("/profile/account")}
-        >
-          <ChevronLeftIcon />
-        </button>
-
-        <div className="breadcrumb-path">
+        {/* Breadcrumb Navigation */}
+        <nav className="password-breadcrumb">
           <button
-            className="breadcrumb-link"
-            onClick={() => navigate("/profile")}
-          >
-            Profile
-          </button>
-
-          <span className="breadcrumb-separator">›</span>
-
-          <button
-            className="breadcrumb-link"
+            className="breadcrumb-back"
             onClick={() => navigate("/profile/account")}
+            aria-label="Back to Account"
           >
-            Account
+            <ChevronLeftIcon />
           </button>
+          <div className="breadcrumb-path">
+            <button
+              className="breadcrumb-link"
+              onClick={() => navigate("/profile")}
+            >
+              Profile
+            </button>
+            <span className="breadcrumb-separator">›</span>
+            <button
+              className="breadcrumb-link"
+              onClick={() => navigate("/profile/account")}
+            >
+              Account
+            </button>
+            <span className="breadcrumb-separator">›</span>
+            <span className="breadcrumb-current">Change Password</span>
+          </div>
+        </nav>
 
-          <span className="breadcrumb-separator">›</span>
-
-          <span className="breadcrumb-current">
-            Change Password
-          </span>
-        </div>
-      </nav>
-
+        {/* Form Header */}
         <div className="form-header">
-          <h1>Change Password</h1>
-          <p>Update your account password</p>
+          <h1 className="form-title">Change Password</h1>
+          <p className="form-subtitle">Update your account password</p>
         </div>
-                {/* Password Change Form */}
+
+        {/* Password Change Form */}
         <form onSubmit={handleSubmit} className="password-form">
           {/* General Error */}
           {errors.general && (
@@ -404,8 +423,9 @@ const ChangePasswordForm = () => {
             </button>
           </div>
         </form>
-        </div>
-    </div>);
+      </div>
+    </div>
+  );
 };
 
 export default ChangePasswordForm;
