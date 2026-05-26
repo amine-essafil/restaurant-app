@@ -72,6 +72,7 @@ const XIcon = () => (
 const ChangePasswordForm = () => {
     const navigate = useNavigate();
     const [errors, setErrors] = useState({});
+    const [isSubmitting, setIsSubmitting] =useState(false);
     const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -90,6 +91,26 @@ const ChangePasswordForm = () => {
             [field]: "",
           }));
         }
+        };
+
+        const handleSubmit = async (e) => {
+          e.preventDefault();
+
+          if (!validateForm()) return;
+
+          setIsSubmitting(true);
+
+          try {
+            console.log("Password updated");
+
+          } catch (error) {
+            setErrors({
+              general:
+                "Failed to change password",
+            });
+          } finally {
+            setIsSubmitting(false);
+          }
         };
         const validatePassword = (password) => {
           return {
@@ -202,251 +223,188 @@ const ChangePasswordForm = () => {
           <h1>Change Password</h1>
           <p>Update your account password</p>
         </div>
+                {/* Password Change Form */}
+        <form onSubmit={handleSubmit} className="password-form">
+          {/* General Error */}
+          {errors.general && (
+            <div className="error-alert">
+              <XIcon />
+              <span>{errors.general}</span>
+            </div>
+          )}
 
-            {/* Current Password */}
-      <div className="form-group">
-        <label className="form-label">
-          Current Password
-        </label>
-
-        <div className="password-input-wrapper">
-          <input
-            type={
-              showPasswords.currentPassword
-                ? "text"
-                : "password"
-            }
-            placeholder="Current password"
-            value={formData.currentPassword}
-            onChange={(e) =>
-              handleInputChange(
-                "currentPassword",
-                e.target.value
-              )
-            }
-            className={`form-input ${
-              errors.currentPassword
-                ? "input-error"
-                : ""
-            }`}
-          />
-
-          <button
-            type="button"
-            className="password-toggle"
-            onClick={() =>
-              togglePasswordVisibility(
-                "currentPassword"
-              )
-            }
-          >
-            {showPasswords.currentPassword ? (
-              <EyeOffIcon />
-            ) : (
-              <EyeIcon />
+          {/* Current Password */}
+          <div className="form-group">
+            <label htmlFor="currentPassword" className="form-label">
+              Current Password
+            </label>
+            <div className="password-input-wrapper">
+              <input
+                id="currentPassword"
+                type={showPasswords.currentPassword ? "text" : "password"}
+                value={formData.currentPassword}
+                onChange={(e) =>
+                  handleInputChange("currentPassword", e.target.value)
+                }
+                className={`form-input ${
+                  errors.currentPassword ? "input-error" : ""
+                }`}
+                placeholder="Enter your current password"
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => togglePasswordVisibility("currentPassword")}
+                aria-label={
+                  showPasswords.currentPassword
+                    ? "Hide password"
+                    : "Show password"
+                }
+              >
+                {showPasswords.currentPassword ? <EyeOffIcon /> : <EyeIcon />}
+              </button>
+            </div>
+            {errors.currentPassword && (
+              <span className="form-error">{errors.currentPassword}</span>
             )}
-          </button>
-        </div>
+          </div>
 
-        {errors.currentPassword && (
-          <span className="form-error">
-            {errors.currentPassword}
-          </span>
-        )}
-      </div>
+          {/* New Password */}
+          <div className="form-group">
+            <label htmlFor="newPassword" className="form-label">
+              New Password
+            </label>
+            <div className="password-input-wrapper">
+              <input
+                id="newPassword"
+                type={showPasswords.newPassword ? "text" : "password"}
+                value={formData.newPassword}
+                onChange={(e) =>
+                  handleInputChange("newPassword", e.target.value)
+                }
+                className={`form-input ${
+                  errors.newPassword ? "input-error" : ""
+                }`}
+                placeholder="Enter your new password"
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => togglePasswordVisibility("newPassword")}
+                aria-label={
+                  showPasswords.newPassword ? "Hide password" : "Show password"
+                }
+              >
+                {showPasswords.newPassword ? <EyeOffIcon /> : <EyeIcon />}
+              </button>
+            </div>
 
-      {/* New Password */}
-      <div className="form-group">
-        <label className="form-label">
-          New Password
-        </label>
-
-        <div className="password-input-wrapper">
-          <input
-            type={
-              showPasswords.newPassword
-                ? "text"
-                : "password"
-            }
-            placeholder="New password"
-            value={formData.newPassword}
-            onChange={(e) =>
-              handleInputChange(
-                "newPassword",
-                e.target.value
-              )
-            }
-            className={`form-input ${
-              errors.newPassword
-                ? "input-error"
-                : ""
-            }`}
-          />
-
-          <button
-            type="button"
-            className="password-toggle"
-            onClick={() =>
-              togglePasswordVisibility(
-                "newPassword"
-              )
-            }
-          >
-            {showPasswords.newPassword ? (
-              <EyeOffIcon />
-            ) : (
-              <EyeIcon />
+            {/* Password Requirements */}
+            {formData.newPassword && (
+              <div className="password-requirements">
+                <div
+                  className={`requirement ${
+                    passwordValidations.minLength ? "valid" : "invalid"
+                  }`}
+                >
+                  {passwordValidations.minLength ? "✓" : "✗"} At least 8
+                  characters
+                </div>
+                <div
+                  className={`requirement ${
+                    passwordValidations.hasUppercase ? "valid" : "invalid"
+                  }`}
+                >
+                  {passwordValidations.hasUppercase ? "✓" : "✗"} One uppercase
+                  letter
+                </div>
+                <div
+                  className={`requirement ${
+                    passwordValidations.hasLowercase ? "valid" : "invalid"
+                  }`}
+                >
+                  {passwordValidations.hasLowercase ? "✓" : "✗"} One lowercase
+                  letter
+                </div>
+                <div
+                  className={`requirement ${
+                    passwordValidations.hasNumber ? "valid" : "invalid"
+                  }`}
+                >
+                  {passwordValidations.hasNumber ? "✓" : "✗"} One number
+                </div>
+                <div
+                  className={`requirement ${
+                    passwordValidations.hasSpecial ? "valid" : "invalid"
+                  }`}
+                >
+                  {passwordValidations.hasSpecial ? "✓" : "✗"} One special
+                  character (!@#$%^&*)
+                </div>
+              </div>
             )}
-          </button>
-        </div>
 
-        {errors.newPassword && (
-          <span className="form-error">
-            {errors.newPassword}
-          </span>
-        )}
-     {formData.newPassword && (
-      <div className="password-requirements">
-
-        <div
-          className={`requirement ${
-            passwordValidations.minLength
-              ? "valid"
-              : "invalid"
-          }`}
-        >
-          {passwordValidations.minLength
-            ? "✓"
-            : "✗"}{" "}
-          At least 8 characters
-        </div>
-
-        <div
-          className={`requirement ${
-            passwordValidations.hasUppercase
-              ? "valid"
-              : "invalid"
-          }`}
-        >
-          {passwordValidations.hasUppercase
-            ? "✓"
-            : "✗"}{" "}
-          One uppercase letter
-        </div>
-
-        <div
-          className={`requirement ${
-            passwordValidations.hasLowercase
-              ? "valid"
-              : "invalid"
-          }`}
-        >
-          {passwordValidations.hasLowercase
-            ? "✓"
-            : "✗"}{" "}
-          One lowercase letter
-        </div>
-
-        <div
-          className={`requirement ${
-            passwordValidations.hasNumber
-              ? "valid"
-              : "invalid"
-          }`}
-        >
-          {passwordValidations.hasNumber
-            ? "✓"
-            : "✗"}{" "}
-          One number
-        </div>
-
-        <div
-          className={`requirement ${
-            passwordValidations.hasSpecial
-              ? "valid"
-              : "invalid"
-          }`}
-        >
-          {passwordValidations.hasSpecial
-            ? "✓"
-            : "✗"}{" "}
-          One special character
-        </div>
-
-      </div>
-    )}
-      </div>
-     
-      {/* Confirm Password */}
-      <div className="form-group">
-        <label className="form-label">
-          Confirm Password
-        </label>
-
-        <div className="password-input-wrapper">
-          <input
-            type={
-              showPasswords.confirmPassword
-                ? "text"
-                : "password"
-            }
-            placeholder="Confirm password"
-            value={formData.confirmPassword}
-            onChange={(e) =>
-              handleInputChange(
-                "confirmPassword",
-                e.target.value
-              )
-            }
-            className={`form-input ${
-              errors.confirmPassword
-                ? "input-error"
-                : ""
-            }`}
-          />
-
-          <button
-            type="button"
-            className="password-toggle"
-            onClick={() =>
-              togglePasswordVisibility(
-                "confirmPassword"
-              )
-            }
-          >
-            {showPasswords.confirmPassword ? (
-              <EyeOffIcon />
-            ) : (
-              <EyeIcon />
+            {errors.newPassword && (
+              <span className="form-error">{errors.newPassword}</span>
             )}
-          </button>
+          </div>
+
+          {/* Confirm Password */}
+          <div className="form-group">
+            <label htmlFor="confirmPassword" className="form-label">
+              Confirm New Password
+            </label>
+            <div className="password-input-wrapper">
+              <input
+                id="confirmPassword"
+                type={showPasswords.confirmPassword ? "text" : "password"}
+                value={formData.confirmPassword}
+                onChange={(e) =>
+                  handleInputChange("confirmPassword", e.target.value)
+                }
+                className={`form-input ${
+                  errors.confirmPassword ? "input-error" : ""
+                }`}
+                placeholder="Confirm your new password"
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => togglePasswordVisibility("confirmPassword")}
+                aria-label={
+                  showPasswords.confirmPassword
+                    ? "Hide password"
+                    : "Show password"
+                }
+              >
+                {showPasswords.confirmPassword ? <EyeOffIcon /> : <EyeIcon />}
+              </button>
+            </div>
+            {errors.confirmPassword && (
+              <span className="form-error">{errors.confirmPassword}</span>
+            )}
+          </div>
+
+          {/* Form Actions */}
+          <div className="form-actions">
+            <button
+              type="button"
+              className="cancel-button"
+              onClick={handleCancel}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="save-button"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Changing Password..." : "Save Changes"}
+            </button>
+          </div>
+        </form>
         </div>
-
-        {errors.confirmPassword && (
-          <span className="form-error">
-            {errors.confirmPassword}
-          </span>
-        )}
-      </div>
-      <div className="form-actions">
-
-      <button
-        type="button"
-        className="cancel-button"
-        onClick={handleCancel}
-      >
-        Cancel
-      </button>
-
-      <button
-        type="submit"
-        className="save-button"
-      >
-        Save Changes
-      </button>
-
-    </div>
-      </div>
     </div>);
 };
 
