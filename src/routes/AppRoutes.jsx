@@ -9,6 +9,7 @@ import LoginSuccess from "../pages/LoginSuccess/LoginSuccess";
 import ProfileMain from "../pages/Profile/ProfileMain";
 import AccountPage from "../pages/Profile/AccountPage";
 import ChangePasswordForm from "../pages/Profile/ChangePasswordForm";
+import OrdersPage from "../pages/Profile/OrdersPage";
 
 const AppRoutes = () => {
   return (
@@ -21,6 +22,7 @@ const AppRoutes = () => {
       <Route path="/profile" element={<ProfileMain />} />
       <Route path="/profile/account" element={<AccountPage />} />
       <Route path="/profile/change-password" element={<ChangePasswordForm />} />
+      <Route path="/profile/orders" element={<OrdersPage />} />
 
     </Routes>
   );
