@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useOrder } from "../../context/OrderContext";
 import emptyOrdersImage from "../../assets/images/empty-orders.svg";
 import { getClientOrders } from "../../api/Meals.api";
+import "./OrdersPage.css";
 
 // Icons
 const ChevronLeftIcon = () => (
@@ -82,7 +83,7 @@ const OrdersPage = () => {
     }
     return "/src/assets/food/burgers/burger1.webp";
   };
-  
+
   // Format order items for display
   const getOrderSummary = (order) => {
     if (!order.plats || order.plats.length === 0) return "No items";
