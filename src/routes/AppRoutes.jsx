@@ -12,6 +12,11 @@ import ChangePasswordForm from "../pages/Profile/ChangePasswordForm";
 import OrdersPage from "../pages/Profile/OrdersPage";
 
 const AppRoutes = () => {
+  const protectedElement = (Component) => (
+      <ProtectedRoute>
+        <Component />
+      </ProtectedRoute>
+    );
   return (
     <Routes>  
       <Route  path="/"   element={<LandingPage />}/>
@@ -19,10 +24,28 @@ const AppRoutes = () => {
       <Route path="/menu" element={<Home />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/login-success" element={<LoginSuccess />} />
-      <Route path="/profile" element={<ProfileMain />} />
-      <Route path="/profile/account" element={<AccountPage />} />
-      <Route path="/profile/change-password" element={<ChangePasswordForm />} />
-      <Route path="/profile/orders" element={<OrdersPage />} />
+      
+       {/* Profile Routes */}
+      <Route
+        path="/profile"
+        element={protectedElement(ProfileMain)}
+      />
+
+      <Route
+        path="/profile/account"
+        element={protectedElement(AccountPage)}
+      />
+
+      <Route
+        path="/profile/orders"
+        element={protectedElement(OrdersPage)}
+      />
+
+      <Route
+        path="/profile/change-password"
+        element={protectedElement(ChangePasswordForm)}
+      />
+
 
     </Routes>
   );
