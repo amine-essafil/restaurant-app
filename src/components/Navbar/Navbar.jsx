@@ -90,18 +90,18 @@ const Navbar = () => {
             
         </ul>
 
-        <div className="navbar-actions">
-
+      <div className="navbar-actions">
           {isLoggedIn ? (
-            <span className="navbar-profile-btn">
-              {user?.name || "User"}
-            </span>
+            <Link to="/profile" className="navbar-profile-btn">
+              <FaUserCircle />
+              <span>{user?.name || "User"}</span>
+            </Link>
           ) : (
             <Link to="/login" className="navbar-signin-btn">
-              Sign In
+              <FaUserCircle />
+              <span>Sign In</span>
             </Link>
           )}
-
         </div>
 
       </div>
