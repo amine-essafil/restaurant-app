@@ -3,6 +3,61 @@ import { useNavigate } from "react-router-dom";
 import { sendReport } from "../../api/Report.api";
 
 //ICONS
+const PhoneIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+  </svg>
+);
+
+const EmailIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+    <polyline points="22,6 12,13 2,6" />
+  </svg>
+);
+
+const ClockIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </svg>
+);
+
+const LocationIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+    <circle cx="12" cy="10" r="3" />
+  </svg>
+);
+
 const SearchIcon = () => (
   <svg
     width="20"
@@ -200,7 +255,7 @@ const Contact = () => {
             </div>
           </div>
         </section>
-        
+
        {/* Main Contact Section */}
         <section className="main-contact-section">
           <div className="contact-grid">
@@ -298,6 +353,90 @@ const Contact = () => {
                 </button>
               </form>
             </div>
+
+             {/* Contact Info & Map */}
+            <div className="contact-info-section">
+              <h2 className="info-title">Find Us</h2>
+
+              <div className="contact-details">
+                <div className="contact-item">
+                  <div className="contact-item-icon">
+                    <PhoneIcon />
+                  </div>
+                  <div className="contact-item-content">
+                    <h4 className="contact-item-title">Call Us</h4>
+                    <a href="tel:+1234567890" className="contact-link">
+                      +123 456 7890
+                    </a>
+                    <p className="contact-item-desc">
+                      Available during business hours
+                    </p>
+                  </div>
+                </div>
+
+                <div className="contact-item">
+                  <div className="contact-item-icon">
+                    <EmailIcon />
+                  </div>
+                  <div className="contact-item-content">
+                    <h4 className="contact-item-title">Email Us</h4>
+                    <a
+                      href="mailto:support@foodexpress.com"
+                      className="contact-link"
+                    >
+                      support@foodexpress.com
+                    </a>
+                    <p className="contact-item-desc">
+                      We respond within 24 hours
+                    </p>
+                  </div>
+                </div>
+
+                <div className="contact-item">
+                  <div className="contact-item-icon">
+                    <ClockIcon />
+                  </div>
+                  <div className="contact-item-content">
+                    <h4 className="contact-item-title">Opening Hours</h4>
+                    <p className="contact-text">Mon-Sun: 10am - 11pm</p>
+                    <p className="contact-item-desc">
+                      Open every day of the week
+                    </p>
+                  </div>
+                </div>
+
+                <div className="contact-item">
+                  <div className="contact-item-icon">
+                    <LocationIcon />
+                  </div>
+                  <div className="contact-item-content">
+                    <h4 className="contact-item-title">Visit Our Restaurant</h4>
+                    <p className="contact-text">
+                      123 Food Street
+                      <br />
+                      Delicious City, DC 12345
+                    </p>
+                    <p className="contact-item-desc">Dine-in also available</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Map Section */}
+              <div className="map-section">
+                <h3 className="map-title">Our Location</h3>
+                <div className="map-container">
+                  <img
+                    src="https://images.unsplash.com/photo-1577415124269-fc1140a69e91?w=400&h=300&fit=crop&crop=center"
+                    alt="FoodExpress Restaurant Location"
+                    className="map-placeholder"
+                  />
+                  <div className="map-overlay">
+                    <div className="map-pin">📍</div>
+                    <p className="map-text">FoodExpress Restaurant</p>
+                  </div>
+                </div>
+              </div>
+            </div>           
            </div>
         </section>
      </div>
