@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { sendReport } from "../../api/Report.api";
-
+import "./Contact.css";
 //ICONS
 const PhoneIcon = () => (
   <svg

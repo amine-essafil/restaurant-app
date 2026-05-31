@@ -3,9 +3,9 @@ import { Routes, Route } from "react-router-dom";
 import Home from "../pages/Home/Home";
 import LandingPage from "../pages/LandingPage/LandingPage";
 import LoginPage from "../pages/Login/Login";
-import ProtectedRoute from "../components/ProtectedRoute";
 import SignupPage from "../pages/Signup/Signup";
 import LoginSuccess from "../pages/LoginSuccess/LoginSuccess";
+import Contact from "../pages/Contact/Contact";
 
 const AppRoutes = () => {
   return (
@@ -15,6 +15,7 @@ const AppRoutes = () => {
       <Route path="/menu" element={<Home />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/login-success" element={<LoginSuccess />} />
+      <Route path="/contact" element={<Contact />} />
 
     </Routes>
   );
