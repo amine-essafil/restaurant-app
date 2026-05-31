@@ -37,6 +37,48 @@ const CheckoutPage = () => {
     }
   }, [cartItems, navigate]);
 
+    
+  // Location feature state
+  const [locationNotification, setLocationNotification] = useState(null);
+
+  // Handle location button click
+  const handleGetLocation = () => {
+    setLocationNotification({ type: 'loading', message: '📍 Getting your location...' });
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          // Simulate reverse geocoding with a mock address
+          setTimeout(() => {
+            const mockAddress = '123 Main Street, Agadir';
+            setAddress(mockAddress);
+            setLocationNotification({ 
+              type: 'success', 
+              message: '✓ Location found! Address filled automatically.' 
+            });
+            
+            // Clear notification after 3 seconds
+            setTimeout(() => setLocationNotification(null), 3000);
+          }, 1000);
+        },
+        (error) => {
+          setLocationNotification({ 
+            type: 'error', 
+            message: '✗ Could not get location. Please enter manually.' 
+          });
+          setTimeout(() => setLocationNotification(null), 4000);
+        }
+      );
+    } else {
+      setLocationNotification({ 
+        type: 'error', 
+        message: '✗ Geolocation is not supported by your browser.' 
+      });
+      setTimeout(() => setLocationNotification(null), 4000);
+    }
+  };
+    const {infosItems,errors} = useOrder();
+
   const subtotal = cartItems.reduce(
   (sum, item) => sum + item.plat.prix * item.quantite,
   0
