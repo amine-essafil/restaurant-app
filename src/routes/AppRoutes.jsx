@@ -1,15 +1,15 @@
 import { Routes, Route } from "react-router-dom";
-
 import Home from "../pages/Home/Home";
 import LandingPage from "../pages/LandingPage/LandingPage";
 import LoginPage from "../pages/Login/Login";
-import ProtectedRoute from "../components/ProtectedRoute";
 import SignupPage from "../pages/Signup/Signup";
 import LoginSuccess from "../pages/LoginSuccess/LoginSuccess";
 import ProfileMain from "../pages/Profile/ProfileMain";
 import AccountPage from "../pages/Profile/AccountPage";
 import ChangePasswordForm from "../pages/Profile/ChangePasswordForm";
 import OrdersPage from "../pages/Profile/OrdersPage";
+import Contact from "../pages/Contact/Contact";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 const AppRoutes = () => {
   const protectedElement = (Component) => (
@@ -46,6 +46,7 @@ const AppRoutes = () => {
         element={protectedElement(ChangePasswordForm)}
       />
 
+      <Route path="/contact" element={<Contact />} />
 
     </Routes>
   );
