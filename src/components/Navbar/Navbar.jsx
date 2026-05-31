@@ -1,7 +1,8 @@
 import "./Navbar.css";
 import { useAuth } from "../../context/AuthContext";
-import {  Link } from "react-router-dom";
+import {  Link, Navigate, useNavigate } from "react-router-dom";
 import Logo from "../../assets/images/logo.png";
+import { useState } from "react";
  
 const FaUserCircle = () => (
   <svg
@@ -59,7 +60,31 @@ const FiX = () => (
 
 const Navbar = () => {
   const { isLoggedIn, user } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
+  const handleScroll = (e, sectionId) => {
+    e.preventDefault();
+    setMenuOpen(false);
+
+    const doScroll = () => {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        const yOffset = -80;
+        const y =
+          section.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
+    };
+
+    // For offers and contact, navigate to menu page then scroll
+    if (window.location.pathname !== "/menu") {
+      navigate("/menu");
+      setTimeout(doScroll, 100);
+    } else {
+      doScroll();
+    }
+  };
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -80,7 +105,7 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
-            <a >Offers</a>
+            <a onClick={(e) => handleScroll(e, "offers")}>Offers</a>
           </li>
           <li>
             <Link to="/contact" >
