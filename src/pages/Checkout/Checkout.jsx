@@ -7,6 +7,12 @@ const CheckoutPage = () => {
   const { cartItems } = useCart();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      navigate("/cart");
+    }
+  }, [cartItems, navigate]);
+
   return (
     <div className="checkout-page-container">
       <h1>Checkout</h1>
