@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { sendReport } from "../../api/Report.api";
 
 //ICONS
 const SearchIcon = () => (
@@ -47,7 +48,21 @@ const MenuIcon = () => (
 );
 const Contact = () => {
     const navigate = useNavigate();
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+    });
 
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+        }));
+    };
 
     const handleQuickHelpClick = (type) => {
     switch (type) {
@@ -66,6 +81,36 @@ const Contact = () => {
         break;
     }
   };
+    
+    const handleSubmit = async(e) => {
+        e.preventDefault();
+
+        // Simulate form submission
+        console.log("Form submitted:", formData);
+
+        // Clear form
+        setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+        });
+
+    try {
+        const res = await sendReport(formData);
+    } catch (error) {
+        console.log(error);
+    }
+        
+        // Show success message
+        setShowSuccess(true);
+    
+        // Hide success message after 5 seconds
+        setTimeout(() => {
+        setShowSuccess(false);
+        }, 5000);
+    };
+
   return (
  <div className="contact-page">
       {/* Hero Section */}
@@ -85,6 +130,7 @@ const Contact = () => {
           </p>
         </div>
       </section>
+      
     <div className="contact-container">
         {/* Quick Help Cards */}
         <section className="quick-help-section">
@@ -153,6 +199,106 @@ const Contact = () => {
               <div className="card-arrow">→</div>
             </div>
           </div>
+        </section>
+        
+       {/* Main Contact Section */}
+        <section className="main-contact-section">
+          <div className="contact-grid">
+            {/* Contact Form */}
+            <div className="contact-form-section">
+              <h2 className="form-title">Send us a Message</h2>
+              <p className="form-subtitle">
+                We'll get back to you as soon as possible
+              </p>
+
+              {showSuccess && (
+                <div className="success-message">
+                  <div className="success-icon">✓</div>
+                  <div className="success-text">
+                    <strong>Thank you!</strong> Our support team will call you
+                    within 15 minutes.
+                  </div>
+                </div>
+              )}
+
+              <form
+                id="contact-form"
+                className="contact-form"
+                onSubmit={handleSubmit}
+              >
+                <div className="form-group">
+                  <label htmlFor="name" className="form-label">
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    className="form-input"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="Your full name"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="email" className="form-label">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    className="form-input"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="your.email@example.com"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="subject" className="form-label">
+                    Subject
+                  </label>
+                  <select
+                    id="subject"
+                    name="subject"
+                    className="form-select"
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="">Select a topic</option>
+                    <option value="Order Issue">Order Issue</option>
+                    <option value="General Question">General Question</option>
+                    <option value="Feedback">Feedback</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="message" className="form-label">
+                    Message
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    className="form-textarea"
+                    rows="5"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="Please describe your question or issue in detail..."
+                  ></textarea>
+                </div>
+
+                <button type="submit" className="submit-button">
+                  Send Message
+                </button>
+              </form>
+            </div>
+           </div>
         </section>
      </div>
 </div>
