@@ -79,6 +79,35 @@ const CheckoutPage = () => {
   };
     const {infosItems,errors} = useOrder();
 
+    // Handle form submission
+  const handleSubmit =async (e) => {
+    e.preventDefault();
+    
+    // Validation
+    if (!fullName || !phone || !address) {
+      alert('Please fill in all required fields');
+      return;
+    }
+     const data = {
+        full_name: fullName,
+        phone: phone,
+        street_address: address,
+        delivery_instructions: instructions || '', 
+    };
+ 
+        const response =await infosItems(data); //infosItems est une fonction alors il ppeut retourner
+     if (response?.status === 201) {
+    console.log('✅ Adresse créée, on peut naviguer');
+    navigate('/payment'); 
+  } else {
+    console.log('❌ Validation échouée, rester sur la page');
+  }
+         
+   
+
+  };
+
+
   const subtotal = cartItems.reduce(
   (sum, item) => sum + item.plat.prix * item.quantite,
   0
