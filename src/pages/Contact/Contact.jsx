@@ -1,9 +1,73 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
+//ICONS
+const SearchIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <circle cx="11" cy="11" r="8" />
+    <path d="M21 21l-4.35-4.35" />
+  </svg>
+);
+const HeartIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+  </svg>
+);
 
+const MenuIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <line x1="8" y1="6" x2="21" y2="6" />
+    <line x1="8" y1="12" x2="21" y2="12" />
+    <line x1="8" y1="18" x2="21" y2="18" />
+    <line x1="3" y1="6" x2="3.01" y2="6" />
+    <line x1="3" y1="12" x2="3.01" y2="12" />
+    <line x1="3" y1="18" x2="3.01" y2="18" />
+  </svg>
+);
 const Contact = () => {
+    const navigate = useNavigate();
+
+
+    const handleQuickHelpClick = (type) => {
+    switch (type) {
+      case "order":
+        navigate("/profile");
+        break;
+      case "menu":
+        navigate("/menu");
+        break;
+      case "refunds":
+        document
+          .getElementById("contact-form")
+          .scrollIntoView({ behavior: "smooth" });
+        break;
+      default:
+        break;
+    }
+  };
   return (
-    <div className="contact-page">
+ <div className="contact-page">
       {/* Hero Section */}
       <section className="contact-hero">
         <div className="hero-background">
@@ -21,8 +85,77 @@ const Contact = () => {
           </p>
         </div>
       </section>
+    <div className="contact-container">
+        {/* Quick Help Cards */}
+        <section className="quick-help-section">
+          <h2 className="section-title">Quick Help</h2>
+          <div className="quick-help-cards">
+            <div
+              className="help-card"
+              onClick={() => handleQuickHelpClick("order")}
+              role="button"
+              tabIndex={0}
+              onKeyPress={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  handleQuickHelpClick("order");
+                }
+              }}
+            >
+              <div className="card-icon order-icon">
+                <SearchIcon />
+              </div>
+              <h3 className="card-title">Where is my order?</h3>
+              <p className="card-description">
+                Track your order status and delivery progress
+              </p>
+              <div className="card-arrow">→</div>
+            </div>
 
-    </div>
+            <div
+              className="help-card"
+              onClick={() => handleQuickHelpClick("menu")}
+              role="button"
+              tabIndex={0}
+              onKeyPress={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  handleQuickHelpClick("menu");
+                }
+              }}
+            >
+              <div className="card-icon menu-icon">
+                <MenuIcon />
+              </div>
+              <h3 className="card-title">Menu & Allergens</h3>
+              <p className="card-description">
+                Browse our menu and view allergen information
+              </p>
+              <div className="card-arrow">→</div>
+            </div>
+
+            <div
+              className="help-card"
+              onClick={() => handleQuickHelpClick("refunds")}
+              role="button"
+              tabIndex={0}
+              onKeyPress={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  handleQuickHelpClick("refunds");
+                }
+              }}
+            >
+              <div className="card-icon refund-icon">
+                <HeartIcon />
+              </div>
+              <h3 className="card-title">Refunds & Issues</h3>
+              <p className="card-description">
+                Get help with order issues and refund requests
+              </p>
+              <div className="card-arrow">→</div>
+            </div>
+          </div>
+        </section>
+     </div>
+</div>
   );
 };
 
