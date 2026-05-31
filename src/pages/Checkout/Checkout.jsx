@@ -7,6 +7,11 @@ const CheckoutPage = () => {
   const { cartItems } = useCart();
   const navigate = useNavigate();
 
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [instructions, setInstructions] = useState("");
+  
   useEffect(() => {
     if (cartItems.length === 0) {
       navigate("/cart");
