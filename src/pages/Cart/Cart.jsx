@@ -7,7 +7,44 @@ import { useNavigate, Link } from "react-router-dom";
 // Import icons for the cart
 import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 
+const CartPage = () => {
+  const { cartItems, addToCart, removeFromCart, cartCount } = useCart();
+  const { isLoggedIn } = useAuth();
+  const navigate = useNavigate();
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  // Calculate totals
+  const subtotal = cartItems.reduce(
+    (acc, item) => acc + item.plat.prix * item.quantite,
+    0
+  );
+  const deliveryFee = subtotal > 0 ? 5.0 : 0; // $5 fee if there's an item
+  const total = subtotal + deliveryFee;
+
+  // This is the "Guest Check" logic we planned
+  const handleCheckout = () => {
+    if (isLoggedIn) {
+      navigate("/checkout"); // Go to checkout page (we'll build this next)
+    } else {
+      // If not logged in, redirect to login page
+      // We also pass the "intended" destination
+      //sert a sauvgarder la derniere page 
+      navigate("/login", { state: { from: "/checkout" } });
+    }
+  };
+
+  // Function to remove an item completely
+  const handleRemoveItem = (item) => {
+    // This removes all quantities of an item
+    let currentquantite = item.quantite;
+    for (let i = 0; i < currentquantite; i++) {
+      removeFromCart(item.plat.id);
+    }
+  };
 
   const foodImgUrl = "https://i.imgur.com/kxFqO8G.png";
 
@@ -39,7 +76,7 @@ import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
                 <div className="cart-item-actions">
                   <button
                     className="cart-action-btn"
-                   onClick={() => remove}
+                   onClick={() => removeFromCart(item.plat_id)}
 
                   >
                     <FaMinus />
@@ -47,13 +84,13 @@ import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
                   <span className="cart-item-quantity">{item.quantite}</span>
                   <button
                     className="cart-action-btn"
-                    onClick={() => add}
+                    onClick={() => addToCart(item.plat)}
                   >
                     <FaPlus />
                   </button>
                   <button
                     className="cart-remove-btn"
-                    onClick={() => handle remove}
+                    onClick={() => handleRemoveItem(item)}
                   >
                     <FaTrash />
                   </button>
