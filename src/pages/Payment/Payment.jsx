@@ -108,6 +108,62 @@ const CheckoutProgressBar = ({ currentStep }) => {
   );
 
   
+  // ============================================
+  // ORDER SUMMARY COMPONENT (Reused)
+  // ============================================
+  
+  const OrderSummaryBox = () => {
+    const { cartItems } = useCart();
+  
+    const subtotal = cartItems.reduce(
+      (sum, item) => sum + item.plat.prix * item.quantite,
+      0
+    );
+    const deliveryFee = 5.0;
+    const total = subtotal + deliveryFee;
+  
+    return (
+      <div className="order-summary-box">
+        <h2 className="summary-title">Order Summary</h2>
+  
+        <div className="summary-items">
+          {cartItems.map((item) => (
+            <div key={item.plat_id} className="summary-item">
+              <img
+                src={item.plat.image}
+                alt={item.plat.nom}
+                className="summary-item-image"
+              />
+              <div className="summary-item-details">
+                <div className="summary-item-name">{item.plat.nom}</div>
+                <div className="summary-item-qunatity">Qty: {item.quantite}</div>
+              </div>
+              <div className="summary-item-price">
+                ${(item.plat.prix * item.quantite).toFixed(2)}
+              </div>
+            </div>
+          ))}
+        </div>
+  
+        <div className="summary-line subtotal">
+          <span>Subtotal</span>
+          <span>${subtotal.toFixed(2)}</span>
+        </div>
+  
+        <div className="summary-line">
+          <span>Delivery Fee</span>
+          <span>${deliveryFee.toFixed(2)}</span>
+        </div>
+  
+        <div className="summary-total">
+          <span>Total</span>
+          <span className="summary-total-amount">${total.toFixed(2)}</span>
+        </div>
+      </div>
+    );
+  };
+  
+
 return (
     <div className="payment-page-container">
       <h1 className="payment-title">Payment Method</h1>
