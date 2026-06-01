@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import "./Navbar.css";
+import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
-import {  Link, Navigate, useNavigate } from "react-router-dom";
+import { useOrder } from "../../context/OrderContext"; // ✅ NEW IMPORT
+import { useNavigate, Link } from "react-router-dom";
 import Logo from "../../assets/images/logo.png";
-//ICONS
+import { Button, HStack } from "@chakra-ui/react"
+import { Flex, Spacer } from "@chakra-ui/react"
+// --- SVGs for Navbar Icons ---
 const FaUserCircle = () => (
   <svg
     stroke="currentColor"
@@ -58,8 +62,11 @@ const FiX = () => (
   </svg>
 );
 
+// --- Navbar Component ---
 const Navbar = () => {
+  const { cartCount } = useCart();
   const { isLoggedIn, user } = useAuth();
+  const { hasNewOrderNotification } = useOrder(); 
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -85,13 +92,16 @@ const Navbar = () => {
       doScroll();
     }
   };
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">
           <img src={Logo} alt="FoodExpress Logo" />
         </Link>
-      <div
+ 
+
+<div
           className="navbar-mobile-icon"
           onClick={() => setMenuOpen(!menuOpen)}
         >
@@ -116,12 +126,30 @@ const Navbar = () => {
               Contact
             </Link>
           </li>
+              {isLoggedIn && user.role=='admin' && (
+            <li>
+              <Link to="/admin/dashboard" onClick={() => setMenuOpen(false)}>
+                Admin
+              </Link>
+            </li>
+          )}
         </ul>
         <div className="navbar-actions">
+          <Link to="/cart" className="navbar-cart">
+            <img
+              src="/src/assets/icons/cart.svg"
+              alt="Shopping Cart"
+              className="cart-icon"
+            />
+            {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
+          </Link>
           {isLoggedIn ? (
             <Link to="/profile" className="navbar-profile-btn">
               <FaUserCircle />
               <span>{user?.name || "User"}</span>
+              {hasNewOrderNotification && (
+                <span className="profile-notification-dot"></span>
+              )}
             </Link>
           ) : (
             <Link to="/login" className="navbar-signin-btn">

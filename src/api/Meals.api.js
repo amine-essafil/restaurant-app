@@ -3,11 +3,11 @@ import client from "./Client.api";
 
 // --- Meals ---
 export const getMeals = () =>
-  client.get("/api/plats");
+  client.get("/api/v1/products");
 
 // --- Categories ---
 export const getCategories = () =>
-  client.get("/api/categories");
+  client.get("/api/v1/categories");
 
 // --- Reviews ---
 export const incrementReview = (mealId) =>

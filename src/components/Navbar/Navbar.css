@@ -1,5 +1,7 @@
+/* --- Global Variables --- */
 :root {
-  --primary-orange: #EC7A23;
+  /* Using the orange from your logo and cart */
+  --primary-orange: #EC7A23; 
   --text-dark: #333;
   --text-light: #ffffff;
   --bg-light: #ffffff;
@@ -8,7 +10,7 @@
   --navbar-height: 70px;
 }
 
-/* --- NAVBAR --- */
+/* --- Main Navbar Container --- */
 .navbar {
   height: var(--navbar-height);
   width: 100%;
@@ -25,7 +27,6 @@
   box-sizing: border-box;
 }
 
-/* --- CONTAINER --- */
 .navbar-container {
   width: 100%;
   max-width: 1200px;
@@ -34,7 +35,7 @@
   align-items: center;
 }
 
-/* --- LOGO --- */
+/* --- Logo --- */
 .navbar-logo {
   display: flex;
   align-items: center;
@@ -42,12 +43,12 @@
 }
 
 .navbar-logo img {
-  height: 65px;
+  height: 65px; /* Adjust height as needed */
   width: auto;
   object-fit: contain;
 }
 
-/* --- LINKS --- */
+/* --- Navigation Links --- */
 .navbar-links {
   list-style: none;
   display: flex;
@@ -55,6 +56,10 @@
   margin: 0;
   padding: 0;
   font-weight: 500;
+}
+
+.navbar-links li {
+  padding: 0;
 }
 
 .navbar-links a {
@@ -68,30 +73,58 @@
   color: var(--primary-orange);
 }
 
-/* Active mobile menu */
-.navbar-links.active {
-  display: flex;
-}
-
-/* --- ACTIONS --- */
+/* --- Actions (Cart & Auth) --- */
 .navbar-actions {
   display: flex;
   align-items: center;
   gap: 1.5rem;
 }
 
-/* SIGN IN BUTTON */
-.navbar-signin-btn {
+/* Cart */
+.navbar-cart {
+  position: relative;
+  cursor: pointer;
+}
+
+.cart-icon {
+  height: 35px;
+  width: 32px;
+  object-fit: contain; /* Added for placeholder */
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border: 2px solid var(--bg-light);
+}
+
+/* Auth Buttons */
+.navbar-signin-btn,
+.navbar-profile-btn {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.6rem 1rem;
-  border-radius: 50px;
+  border-radius: 50px; /* Fully rounded */
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 600;
   transition: all 0.3s ease;
   border: none;
+}
+
+.navbar-signin-btn {
   background-color: var(--primary-orange);
   color: var(--text-light);
   text-decoration: none;
@@ -101,21 +134,10 @@
   opacity: 0.9;
 }
 
-/* PROFILE BUTTON */
 .navbar-profile-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1rem;
-  border-radius: 50px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
   background-color: #f0f0f0;
   color: var(--text-dark);
   border: 1px solid var(--border-color);
-  text-decoration: none;
 }
 
 .navbar-profile-btn:hover {
@@ -126,19 +148,19 @@
   font-size: 1.2rem;
 }
 
-/* --- MOBILE MENU --- */
+/* --- Mobile Menu --- */
 .navbar-mobile-icon {
   display: none;
   font-size: 1.8rem;
   cursor: pointer;
 }
 
-/* RESPONSIVE */
+/* Responsive (Mobile View) */
 @media (max-width: 768px) {
   .navbar {
     padding: 0 1rem;
   }
-
+  
   .navbar-links {
     display: none;
     position: absolute;
@@ -164,12 +186,55 @@
   .navbar-links a {
     display: block;
     padding: 1rem;
+    width: 100%;
   }
 
+  .navbar-links a:hover {
+    background-color: #f9f9f9;
+  }
+  
   .navbar-mobile-icon {
     display: block;
-    position: absolute;
+  }
+
+  /* To make sure logo is left, actions are right, and icon is center-ish */
+  .navbar-container {
+    justify-content: space-between;
+  }
+  .navbar-logo {
+    flex: 1; /* Pushes icon to the right */
+  }
+  .navbar-actions {
+    flex: 1;
+    justify-content: flex-end; /* Pushes actions to the right */
+  }
+  .navbar-mobile-icon {
+    position: absolute; /* Center the icon */
     left: 50%;
     transform: translateX(-50%);
+  }
+}
+
+/* Second breakpoint for very small phones where actions might collide */
+@media (max-width: 400px) {
+  .navbar-logo img {
+    height: 30px;
+  }
+  .navbar-signin-btn,
+  .navbar-profile-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+  .cart-icon {
+    height: 24px;
+    width: 24px;
+  }
+  .cart-count {
+    width: 18px;
+    height: 18px;
+    font-size: 0.7rem;
+  }
+  .navbar-actions {
+    gap: 0.75rem;
   }
 }

@@ -10,6 +10,9 @@ import ChangePasswordForm from "../pages/Profile/ChangePasswordForm";
 import OrdersPage from "../pages/Profile/OrdersPage";
 import Contact from "../pages/Contact/Contact";
 import ProtectedRoute from "../components/ProtectedRoute";
+import CartPage from "../pages/Cart/Cart";
+import CheckoutPage from "../pages/Checkout/Checkout";
+import PaymentPage from "../pages/Payment/Payment";
 
 const AppRoutes = () => {
   const protectedElement = (Component) => (
@@ -24,7 +27,8 @@ const AppRoutes = () => {
       <Route path="/menu" element={<Home />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/login-success" element={<LoginSuccess />} />
-      
+      <Route path="/cart" element={<CartPage />} />
+
        {/* Profile Routes */}
       <Route
         path="/profile"
@@ -45,7 +49,14 @@ const AppRoutes = () => {
         path="/profile/change-password"
         element={protectedElement(ChangePasswordForm)}
       />
-
+      <Route
+        path="/checkout"
+        element={protectedElement(CheckoutPage)}
+       />
+       <Route
+         path="/payment"
+         element={protectedElement(PaymentPage)}
+        />
       <Route path="/contact" element={<Contact />} />
 
     </Routes>
