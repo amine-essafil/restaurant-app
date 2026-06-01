@@ -1,9 +1,9 @@
+import React, { useState } from "react";
 import "./Navbar.css";
 import { useAuth } from "../../context/AuthContext";
 import {  Link, Navigate, useNavigate } from "react-router-dom";
 import Logo from "../../assets/images/logo.png";
-import { useState } from "react";
- 
+//ICONS
 const FaUserCircle = () => (
   <svg
     stroke="currentColor"
@@ -88,19 +88,23 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-
         <Link to="/" className="navbar-logo">
           <img src={Logo} alt="FoodExpress Logo" />
         </Link>
-
-         <ul >
+      <div
+          className="navbar-mobile-icon"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          {menuOpen ? <FiX /> : <FiMenu />}
+        </div>
+        <ul className={menuOpen ? "navbar-links active" : "navbar-links"}>
           <li>
-            <Link to="/" >
+            <Link to="/" onClick={() => setMenuOpen(false)}>
               Home
             </Link>
           </li>
           <li>
-            <Link to="/menu" >
+            <Link to="/menu" onClick={() => setMenuOpen(false)}>
               Menu
             </Link>
           </li>
@@ -108,14 +112,12 @@ const Navbar = () => {
             <a onClick={(e) => handleScroll(e, "offers")}>Offers</a>
           </li>
           <li>
-            <Link to="/contact" >
+            <Link to="/contact" onClick={() => setMenuOpen(false)}>
               Contact
             </Link>
           </li>
-            
         </ul>
-
-      <div className="navbar-actions">
+        <div className="navbar-actions">
           {isLoggedIn ? (
             <Link to="/profile" className="navbar-profile-btn">
               <FaUserCircle />
@@ -128,7 +130,6 @@ const Navbar = () => {
             </Link>
           )}
         </div>
-
       </div>
     </nav>
   );
