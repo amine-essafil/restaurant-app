@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
+import {useOrder} from "../../context/OrderContext"
+import { ClientApi } from "../../ClientApi/ClientApi";
 import "./Checkout.css";
 
 // ============================================
@@ -108,8 +111,9 @@ const OrderSummaryBox = () => {
 const CheckoutPage = () => {
   const { cartItems } = useCart();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const [fullName, setFullName] = useState("");
+  const [fullName, setFullName] = useState(user?.name || '');
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [instructions, setInstructions] = useState("");
@@ -190,14 +194,6 @@ const CheckoutPage = () => {
 
   };
 
-
-  const subtotal = cartItems.reduce(
-  (sum, item) => sum + item.plat.prix * item.quantite,
-  0
-);
-
-const deliveryFee = 5;
-const total = subtotal + deliveryFee;
 
   return (
   <div className="checkout-page-container">
