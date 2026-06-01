@@ -235,6 +235,27 @@ const PaymentPage = () => {
     setIsProcessing(false);
   };
 
+
+  // -------------------------------------------------------------
+  // SUCCESS PAYPAL
+  // -------------------------------------------------------------
+  const handlePaypalSuccess = async (order) => {
+    console.log("PayPal success:", order);
+
+    // Vérifier la transaction PayPal côté backend
+    const respons = await axios.post(
+      "http://localhost:8000/api/paypal/verify",
+      {
+        orderID: order.id,
+        amount: order.purchase_units[0].amount.value,
+      }
+    );
+    console.log(respons.data);
+    // FINALISER COMMANDE (status = preparing, NOT card)
+    await completeOrder("preparing");
+  };
+
+
 return (
     <div className="payment-page-container">
       <h1 className="payment-title">Payment Method</h1>
