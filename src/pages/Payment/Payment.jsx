@@ -164,6 +164,77 @@ const CheckoutProgressBar = ({ currentStep }) => {
   };
   
 
+// ============================================
+// PAYMENT PAGE COMPONENT
+// ============================================
+
+const PaymentPage = () => {
+  const [clientSecret, setClientSecret] = useState("");
+  const navigate = useNavigate();
+  const { cartItems, clearCart } = useCart();
+  const { placeOrder, IdLivraison, Idcommande } = useOrder();
+  // Payment method state
+  const [paymentMethod, setPaymentMethod] = useState("cash"); // 'cash' or 'card'
+  useEffect(() => {
+    // le panier doit exister
+    if (cartItems.length === 0) {
+      navigate("/cart");
+      return;
+    }
+
+    // l'adresse de livraison doit être sélectionnée
+    if (!IdLivraison) {
+      navigate("/checkout");
+      return;
+    }
+  }, []);
+
+  const [paymentdata, setpaymentdata] = useState();
+  // Loading state
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Calculate totals
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + item.plat.prix * item.quantite,
+    0
+  );
+  const deliveryFee = 5.0;
+  const total = subtotal + deliveryFee;
+
+  const completeOrder = async (status) => {
+    setIsProcessing(true);
+
+    const orderData = {
+      adresse_livraison_id: IdLivraison,
+      plats: cartItems.map((item) => ({
+        plat_id: item.plat_id,
+        quantite: item.quantite,
+      })),
+      paymentMethod: paymentMethod === "cash" ? "cash" : "credit",
+    };
+
+    // 1. CREATE ORDER IN DB
+    const IDcmd = await placeOrder(orderData);
+
+    console.log("commande id ::" + IDcmd);
+
+    // 2. UPDATE STATUS
+    try {
+      const response = await ClientApi.PatchStatus({
+        id: IDcmd,
+        statut: status,
+      });
+      console.log("la commande change!" + response.data);
+    } catch (err) {
+      console.log("Erreur update status :", err);
+    }
+
+    // 3. CLEAR CART + REDIRECT
+    clearCart();
+    navigate("/");
+    setIsProcessing(false);
+  };
+
 return (
     <div className="payment-page-container">
       <h1 className="payment-title">Payment Method</h1>
