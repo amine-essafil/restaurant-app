@@ -71,7 +71,43 @@ const LoadingSpinner = () => (
   </svg>
 );
 
+// ============================================
+// PROGRESS BAR COMPONENT (Reused)
+// ============================================
 
+const CheckoutProgressBar = ({ currentStep }) => {
+  const steps = [
+    { number: 1, label: "Cart", status: "completed" },
+    { number: 2, label: "Delivery", status: "completed" },
+    {
+      number: 3,
+      label: "Payment",
+      status: currentStep === 3 ? "active" : "pending",
+    },
+  ];
+
+  const progressPercentage = ((currentStep - 1) / (steps.length - 1)) * 100;
+
+  return (
+    <div className="progress-bar">
+      <div className="progress-line">
+        <div
+          className="progress-line-fill"
+          style={{ width: `${progressPercentage}%` }}
+        ></div>
+      </div>
+      {steps.map((step, index) => (
+        <div key={index} className={`progress-step ${step.status}`}>
+          <div className="progress-step-circle">
+            {step.status !== "completed" && step.number}
+          </div>
+          <div className="progress-step-label">{step.label}</div>
+        </div>
+      ))}
+    </div>
+  );
+
+  
 return (
     <div className="payment-page-container">
       <h1 className="payment-title">Payment Method</h1>
