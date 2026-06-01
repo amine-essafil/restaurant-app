@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState } from "react";
-import { getLogin, getLogout, getRegister } from "../api/Auth.api";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { getLogin, getLogout, getRegister, getUser } from "../api/Auth.api";
 
 const AuthContext = createContext();
 
@@ -15,15 +15,37 @@ export const AuthProvider = ({ children }) => {
 
   const [loading, setLoading] = useState(false);
 
+useEffect(() => {
+  const checkUser = async () => {
+    try {
+      const res = await getUser();
+      console.log(res)
+      if(res.data) {
+        console.log(res.data)
+        setUser(res.data);
+        setIsLoggedIn(true);
+      } else {
+        setUser(null);
+        setIsLoggedIn(false);
+      }
+    } catch(err) {
+      setUser(null);
+      setIsLoggedIn(false);
+    }finally {
+        setLoading(false);
+      }
+  };
+  checkUser();
+}, []);
+
   // LOGIN
 const login = async (email, password) => {
 try {
 const response = await getLogin(email, password);
-console.log(response.token)
       if (response.status === 200) {
-               localStorage.setItem('token', response.token);
-              const res = await getUser();
-               setUser(res.data);
+               localStorage.setItem('token', response.data.access_token);
+               setUser(response.data.user);
+               console.log(user)
                 setIsLoggedIn(true);
                 seterrors({});
 

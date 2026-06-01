@@ -1,6 +1,7 @@
 /* --- Global Variables --- */
 :root {
-  --primary-orange: #EC7A23;
+  /* Using the orange from your logo and cart */
+  --primary-orange: #EC7A23; 
   --text-dark: #333;
   --text-light: #ffffff;
   --bg-light: #ffffff;
@@ -9,24 +10,23 @@
   --navbar-height: 70px;
 }
 
-/* --- Navbar --- */
+/* --- Main Navbar Container --- */
 .navbar {
   height: var(--navbar-height);
   width: 100%;
   background-color: var(--bg-light);
   box-shadow: var(--shadow);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   padding: 0 2rem;
   box-sizing: border-box;
 }
 
-/* --- Container --- */
 .navbar-container {
   width: 100%;
   max-width: 1200px;
@@ -39,116 +39,202 @@
 .navbar-logo {
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 
 .navbar-logo img {
-  height: 65px;
+  height: 65px; /* Adjust height as needed */
+  width: auto;
   object-fit: contain;
 }
 
-/* --- NAV LINKS (IMPORTANT FIX) --- */
-.navbar ul {
+/* --- Navigation Links --- */
+.navbar-links {
   list-style: none;
   display: flex;
   gap: 2.5rem;
   margin: 0;
   padding: 0;
+  font-weight: 500;
 }
 
-.navbar ul li a,
-.navbar ul li a:visited {
+.navbar-links li {
+  padding: 0;
+}
+
+.navbar-links a {
   text-decoration: none;
   color: var(--text-dark);
-  font-weight: 500;
   font-size: 1rem;
   transition: color 0.3s ease;
 }
 
-.navbar ul li a:hover {
+.navbar-links a:hover {
   color: var(--primary-orange);
 }
 
-/* --- Actions --- */
+/* --- Actions (Cart & Auth) --- */
 .navbar-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
-/* Sign In button */
+/* Cart */
+.navbar-cart {
+  position: relative;
+  cursor: pointer;
+}
+
+.cart-icon {
+  height: 35px;
+  width: 32px;
+  object-fit: contain; /* Added for placeholder */
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border: 2px solid var(--bg-light);
+}
+
+/* Auth Buttons */
+.navbar-signin-btn,
+.navbar-profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  border-radius: 50px; /* Fully rounded */
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+}
+
 .navbar-signin-btn {
   background-color: var(--primary-orange);
   color: var(--text-light);
-  padding: 0.6rem 1rem;
-  border-radius: 50px;
   text-decoration: none;
-  font-weight: 600;
-  transition: 0.3s ease;
 }
 
 .navbar-signin-btn:hover {
   opacity: 0.9;
 }
 
-/* Profile */
 .navbar-profile-btn {
   background-color: #f0f0f0;
   color: var(--text-dark);
-  padding: 0.6rem 1rem;
-  border-radius: 50px;
   border: 1px solid var(--border-color);
-  font-weight: 600;
-  cursor: pointer;
 }
 
-/* --- MOBILE MENU ICON (si tu l’utilises plus tard) --- */
+.navbar-profile-btn:hover {
+  background-color: #e6e6e6;
+}
+
+.profile-icon {
+  font-size: 1.2rem;
+}
+
+/* --- Mobile Menu --- */
 .navbar-mobile-icon {
   display: none;
   font-size: 1.8rem;
   cursor: pointer;
 }
 
-/* --- RESPONSIVE --- */
+/* Responsive (Mobile View) */
 @media (max-width: 768px) {
   .navbar {
     padding: 0 1rem;
   }
-
-  /* menu vertical */
-  .navbar ul {
+  
+  .navbar-links {
+    display: none;
     position: absolute;
     top: var(--navbar-height);
     left: 0;
     width: 100%;
     flex-direction: column;
-    background: var(--bg-light);
+    background-color: var(--bg-light);
     box-shadow: var(--shadow);
-    display: none;
-  }
-
-  .navbar ul.active {
-    display: flex;
-  }
-
-  .navbar ul li {
-    text-align: center;
+    gap: 0;
     padding: 1rem 0;
   }
 
+  .navbar-links.active {
+    display: flex;
+  }
+
+  .navbar-links li {
+    width: 100%;
+    text-align: center;
+  }
+
+  .navbar-links a {
+    display: block;
+    padding: 1rem;
+    width: 100%;
+  }
+
+  .navbar-links a:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .navbar-mobile-icon {
+    display: block;
+  }
+
+  /* To make sure logo is left, actions are right, and icon is center-ish */
+  .navbar-container {
+    justify-content: space-between;
+  }
+  .navbar-logo {
+    flex: 1; /* Pushes icon to the right */
+  }
   .navbar-actions {
-    gap: 0.75rem;
+    flex: 1;
+    justify-content: flex-end; /* Pushes actions to the right */
+  }
+  .navbar-mobile-icon {
+    position: absolute; /* Center the icon */
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 
-/* Small phones */
+/* Second breakpoint for very small phones where actions might collide */
 @media (max-width: 400px) {
   .navbar-logo img {
-    height: 40px;
+    height: 30px;
   }
-
   .navbar-signin-btn,
   .navbar-profile-btn {
     padding: 0.5rem 0.75rem;
     font-size: 0.8rem;
+  }
+  .cart-icon {
+    height: 24px;
+    width: 24px;
+  }
+  .cart-count {
+    width: 18px;
+    height: 18px;
+    font-size: 0.7rem;
+  }
+  .navbar-actions {
+    gap: 0.75rem;
   }
 }

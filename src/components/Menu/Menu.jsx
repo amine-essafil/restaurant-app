@@ -21,7 +21,7 @@ const Menu = () => {
         setCategories(cats);
 
         const platsRes = await getMeals();
-        setPlats(platsRes.data || []);
+        setPlats(platsRes.data.data || []);
       } catch (err) {
         console.error("Erreur API:", err);
       } finally {

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import {useOrder} from "../../context/OrderContext"
-import { ClientApi } from "../../ClientApi/ClientApi";
 import "./Checkout.css";
 
 // ============================================
@@ -182,7 +181,7 @@ const CheckoutPage = () => {
         delivery_instructions: instructions || '', 
     };
  
-        const response =await infosItems(data); //infosItems est une fonction alors il ppeut retourner
+        const response =await infosItems(data); 
      if (response?.status === 201) {
     console.log('✅ Adresse créée, on peut naviguer');
     navigate('/payment'); 

@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { useOrder } from "../../context/OrderContext";
 import "./Payment.css";
-import { ClientApi } from "../../ClientApi/ClientApi";
 import PayPalButton from "./PaypalButton";
 import axios from "axios";
+import { updateOrderStatus } from "../../api/Order.api";
 
 
 // ============================================
@@ -222,11 +222,11 @@ const PaymentPage = () => {
 
     // 2. UPDATE STATUS
     try {
-      const response = await ClientApi.PatchStatus({
+      const response = await updateOrderStatus({
         id: IDcmd,
         statut: status,
       });
-      console.log("la commande change!" + response.data);
+      console.log("la commande change!" + response);
     } catch (err) {
       console.log("Erreur update status :", err);
     }
@@ -245,7 +245,7 @@ const PaymentPage = () => {
 
     // Vérifier la transaction PayPal côté backend
     const respons = await axios.post(
-      "http://localhost:8000/api/paypal/verify",
+      "http://localhost:8000/api/v1/paypal/verify",
       {
         orderID: order.id,
         amount: order.purchase_units[0].amount.value,
@@ -253,7 +253,7 @@ const PaymentPage = () => {
     );
     console.log(respons.data);
     // FINALISER COMMANDE (status = preparing, NOT card)
-    await completeOrder("preparing");
+    await completeOrder("Preparing");
   };
 
   // -------------------------------------------------------------
@@ -263,7 +263,7 @@ const PaymentPage = () => {
     if (paymentMethod !== "cash") return; // IMPORTANT
 
     // FINALISER COMMANDE (status = preparing)
-    await completeOrder("preparing");
+    await completeOrder("Preparing");
   };
 
   // Format card number with spaces

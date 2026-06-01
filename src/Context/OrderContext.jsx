@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
-import { ClientApi } from "../ClientApi/ClientApi";
+import { deliveryAddress } from "../api/DeliveryAddress";
+import { createOrder } from "../api/Order.api";
 
 // Create the context
 const OrderContext = createContext();
@@ -24,11 +25,11 @@ export const OrderProvider = ({ children }) => {
 
 const infosItems = async(data) => {
      try {    
-        const response =  await ClientApi.Postadresslivraison(data);
+        const response =  await deliveryAddress(data);
           if (response?.status === 201) {
       console.log(' Address created successfully, navigating to payment...');
-      console.log(response.data.id); 
-       setIdLivraison(response.data.id);
+      console.log(response.data.data.id); 
+       setIdLivraison(response.data.data.id);
     }
          return response;
          } catch (error) {
@@ -47,12 +48,11 @@ const infosItems = async(data) => {
    */
   const placeOrder =async (orderData) => {
        try {
-          const response = await ClientApi.PostCommande(orderData);
-          console.log(response.data);
-    setIdcommande(response.data.commande.id); 
-    
+          const response = await createOrder(orderData);
+          console.log(response.data.order.id); 
+    setIdcommande(response.data.order.id); 
     setHasNewOrderNotification(true);
-    return response.data.commande.id;
+    return response.data.order.id;
        } catch (error) {
         console.log(error);
        } };

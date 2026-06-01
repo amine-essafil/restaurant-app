@@ -1,8 +1,13 @@
+import React, { useState } from "react";
 import "./Navbar.css";
+import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
-import {  Link } from "react-router-dom";
+import { useOrder } from "../../context/OrderContext"; // ✅ NEW IMPORT
+import { useNavigate, Link } from "react-router-dom";
 import Logo from "../../assets/images/logo.png";
- 
+import { Button, HStack } from "@chakra-ui/react"
+import { Flex, Spacer } from "@chakra-ui/react"
+// --- SVGs for Navbar Icons ---
 const FaUserCircle = () => (
   <svg
     stroke="currentColor"
@@ -57,53 +62,102 @@ const FiX = () => (
   </svg>
 );
 
+// --- Navbar Component ---
 const Navbar = () => {
+  const { cartCount } = useCart();
   const { isLoggedIn, user } = useAuth();
+  const { hasNewOrderNotification } = useOrder(); 
+  const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleScroll = (e, sectionId) => {
+    e.preventDefault();
+    setMenuOpen(false);
+
+    const doScroll = () => {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        const yOffset = -80;
+        const y =
+          section.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
+    };
+
+    // For offers and contact, navigate to menu page then scroll
+    if (window.location.pathname !== "/menu") {
+      navigate("/menu");
+      setTimeout(doScroll, 100);
+    } else {
+      doScroll();
+    }
+  };
 
   return (
     <nav className="navbar">
       <div className="navbar-container">
-
         <Link to="/" className="navbar-logo">
           <img src={Logo} alt="FoodExpress Logo" />
         </Link>
+ 
 
-         <ul >
+<div
+          className="navbar-mobile-icon"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          {menuOpen ? <FiX /> : <FiMenu />}
+        </div>
+        <ul className={menuOpen ? "navbar-links active" : "navbar-links"}>
           <li>
-            <Link to="/" >
+            <Link to="/" onClick={() => setMenuOpen(false)}>
               Home
             </Link>
           </li>
           <li>
-            <Link to="/menu" >
+            <Link to="/menu" onClick={() => setMenuOpen(false)}>
               Menu
             </Link>
           </li>
           <li>
-            <a >Offers</a>
+            <a onClick={(e) => handleScroll(e, "offers")}>Offers</a>
           </li>
           <li>
-            <Link to="/contact" >
+            <Link to="/contact" onClick={() => setMenuOpen(false)}>
               Contact
             </Link>
           </li>
-            
+              {isLoggedIn && user.role=='admin' && (
+            <li>
+              <Link to="/admin/dashboard" onClick={() => setMenuOpen(false)}>
+                Admin
+              </Link>
+            </li>
+          )}
         </ul>
-
         <div className="navbar-actions">
-
+          <Link to="/cart" className="navbar-cart">
+            <img
+              src="/src/assets/icons/cart.svg"
+              alt="Shopping Cart"
+              className="cart-icon"
+            />
+            {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
+          </Link>
           {isLoggedIn ? (
-            <span className="navbar-profile-btn">
-              {user?.name || "User"}
-            </span>
+            <Link to="/profile" className="navbar-profile-btn">
+              <FaUserCircle />
+              <span>{user?.name || "User"}</span>
+              {hasNewOrderNotification && (
+                <span className="profile-notification-dot"></span>
+              )}
+            </Link>
           ) : (
             <Link to="/login" className="navbar-signin-btn">
-              Sign In
+              <FaUserCircle />
+              <span>Sign In</span>
             </Link>
           )}
-
         </div>
-
       </div>
     </nav>
   );

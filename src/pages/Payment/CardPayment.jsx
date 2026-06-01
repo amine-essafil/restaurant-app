@@ -2,8 +2,8 @@ import React from "react";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 
 const CardPayment = () => {
-  const stripe = useStripe();       // ✅ lowercase
-  const elements = useElements();   // ✅ hook
+  const stripe = useStripe();       
+  const elements = useElements();    
 
   const handleSubmit = async (e) => {
     e.preventDefault();

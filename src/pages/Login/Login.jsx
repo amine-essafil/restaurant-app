@@ -107,7 +107,7 @@ const handleLogin = async (e) => {
           </button>
         </form>
 
-          <button type="submit" id="google" onClick={()=>{window.location.href="http://localhost:80/auth/google"}} className="login-btn">
+          <button type="submit" id="google" onClick={()=>{window.location.href="http://localhost:8000/auth/google"}} className="login-btn">
         <FontAwesomeIcon icon={faGoogle} style={{color: "#ff3d3d",}} />    Connecter avec google
           </button>
         
