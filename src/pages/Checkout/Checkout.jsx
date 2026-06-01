@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import "./Checkout.css";
 
-
+// ============================================
+// ICONS (SVG Components)
+// ============================================
 const LocationIcon = () => (
   <svg 
     width="24" 
@@ -20,6 +22,35 @@ const LocationIcon = () => (
     <circle cx="12" cy="10" r="3"></circle>
   </svg>
 );
+
+// ============================================
+// PROGRESS BAR COMPONENT
+// ============================================
+const CheckoutProgressBar = ({ currentStep }) => {
+  const steps = [
+    { number: 1, label: 'Cart', status: 'completed' },
+    { number: 2, label: 'Delivery', status: currentStep === 2 ? 'active' : currentStep > 2 ? 'completed' : 'pending' },
+    { number: 3, label: 'Payment', status: currentStep === 3 ? 'active' : 'pending' }
+  ];
+
+  const progressPercentage = ((currentStep - 1) / (steps.length - 1)) * 100;
+
+  return (
+    <div className="progress-bar">
+      <div className="progress-line">
+        <div className="progress-line-fill" style={{ width: `${progressPercentage}%` }}></div>
+      </div>
+      {steps.map((step, index) => (
+        <div key={index} className={`progress-step ${step.status}`}>
+          <div className="progress-step-circle">
+            {step.status !== 'completed' && step.number}
+          </div>
+          <div className="progress-step-label">{step.label}</div>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 
 const CheckoutPage = () => {
