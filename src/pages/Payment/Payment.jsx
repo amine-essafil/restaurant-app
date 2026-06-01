@@ -256,6 +256,33 @@ const PaymentPage = () => {
   };
 
 
+  // -------------------------------------------------------------
+  // HANDLE PLACE ORDER (CASH)
+  // -------------------------------------------------------------
+  const handlePlaceOrder = async () => {
+    if (paymentMethod !== "cash") return; // IMPORTANT
+
+    // FINALISER COMMANDE (status = preparing)
+    await completeOrder("preparing");
+  };
+
+  // Format card number with spaces
+  const formatCardNumber = (value) => {
+    const cleaned = value.replace(/\s/g, "");
+    const formatted = cleaned.match(/.{1,4}/g)?.join(" ") || cleaned;
+    return formatted.substring(0, 19); // Max 16 digits + 3 spaces
+  };
+
+  // Format expiry date (MM/YY)
+  const formatExpiry = (value) => {
+    const cleaned = value.replace(/\D/g, "");
+    if (cleaned.length >= 2) {
+      return cleaned.substring(0, 2) + "/" + cleaned.substring(2, 4);
+    }
+    return cleaned;
+  };
+
+
 return (
     <div className="payment-page-container">
       <h1 className="payment-title">Payment Method</h1>
