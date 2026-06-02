@@ -24,6 +24,7 @@ const DeliveriesManagement = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const location = useLocation();
   const [error, setError] = useState(null);
+  const [priorityFilter, setPriorityFilter] = useState("All Orders");
 
     const [dashboard, setDashboard] = useState({
     pending: 0,
@@ -31,7 +32,7 @@ const DeliveriesManagement = () => {
     completed: 0,
     drivers: 0,
   });
-  
+
   // Admin pages list
   const adminPages = [
     { id: 1, name: "Dashboard", icon: <FaChartLine />, path: "/admin/dashboard" },
@@ -197,6 +198,23 @@ const DeliveriesManagement = () => {
               </div>
             </div>
           </div>
+         
+          {/* Filter Tabs */}
+          <div className="priority-filters">
+            {["All Orders", "High", "Normal"].map((filter) => (
+              <button
+                key={filter}
+                onClick={() => setPriorityFilter(filter)}
+                className={`filter-btn ${
+                  priorityFilter === filter ? "active" : ""
+                }`}
+              >
+                {filter === "High" && "🔴"}
+                {filter === "Normal" && "🟡"}
+                {filter}
+              </button>
+            ))}
+          </div> 
      </div>
      </div>
     </div>
