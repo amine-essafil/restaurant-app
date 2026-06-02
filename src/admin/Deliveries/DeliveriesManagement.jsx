@@ -18,7 +18,7 @@ import {
   FaCheck,
   FaExclamationCircle,
 } from "react-icons/fa";
-
+import "./DeliveriesManagement.css";
 const DeliveriesManagement = () => {
   const [openMenu, setOpenMenu] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -96,7 +96,23 @@ const DeliveriesManagement = () => {
             </button>
           </div>
         )}
-      </div>     
+      </div>    
+
+     {/* MAIN CONTENT */}
+     <div className="main-content"> 
+      {/* TOP HEADER */}
+        <header className="top-header">
+          <h1 className="header-title">FoodExpress</h1>
+          <div className="header-user-section">
+            <div className="header-user-info">
+              <p className="header-user-name">Admin</p>
+              <p className="header-user-role">Manager</p>
+            </div>
+            <div className="header-user-avatar">A</div>
+          </div>
+        </header>
+    
+     </div>
     </div>
   );
 };
