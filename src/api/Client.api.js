@@ -1,26 +1,15 @@
-import axios from "axios";
+import axios from 'axios';
 
-// Single axios instance — never import axios directly anywhere else
-const client = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8000",
-  withCredentials: true, // Required for Laravel Sanctum cookie-based auth
-  headers: {
-    "Accept": "application/json",
-    "Content-Type": "application/json",
-  },
+const api = axios.create({
+  baseURL: 'http://localhost:8000'
 });
 
-client.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    const status = error.response?.status;
-
-    if (status === 401) console.warn("Unauthorized — handled by AuthContext");
-    if (status === 403) console.warn("Forbidden — insufficient permissions");
-    if (status >= 500) console.error("Server error:", error.response?.data);
-
-    return Promise.reject(error);
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
-);
+  return config;
+});
 
-export default client;
+export default api;

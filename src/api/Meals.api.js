@@ -11,8 +11,8 @@ export const getCategories = () =>
 
 // --- Reviews ---
 export const incrementReview = (mealId) =>
-  client.post(`/api/plats/${mealId}/review`);
+  client.post(`/api/v1/plats/${mealId}/review`);
 
 // --- getClientOrders ---
   export const getClientOrders = () =>
-       client.get(`/api/orders/client`);
+       client.get(`/api/v1/orders/client`);
