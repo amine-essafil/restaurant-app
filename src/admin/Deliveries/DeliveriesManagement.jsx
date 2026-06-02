@@ -25,6 +25,12 @@ const DeliveriesManagement = () => {
   const location = useLocation();
   const [error, setError] = useState(null);
 
+    const [dashboard, setDashboard] = useState({
+    pending: 0,
+    on_delivery: 0,
+    completed: 0,
+    drivers: 0,
+  });
   
   // Admin pages list
   const adminPages = [
@@ -160,6 +166,37 @@ const DeliveriesManagement = () => {
             </div>
           </div>
 
+        {/* Stats Cards */}
+          <div className="stats-cards">
+            <div className="stat-card pending">
+              <div className="stat-icon">⏳</div>
+              <div className="stat-info">
+                <p className="stat-label">PENDING ORDERS</p>
+                <h3 className="stat-value">{dashboard.pending}</h3>
+              </div>
+            </div>
+            <div className="stat-card on-delivery">
+              <div className="stat-icon">🚚</div>
+              <div className="stat-info">
+                <p className="stat-label">ON DELIVERY</p>
+                <h3 className="stat-value">{dashboard.on_delivery}</h3>
+              </div>
+            </div>
+            <div className="stat-card completed">
+              <div className="stat-icon">✅</div>
+              <div className="stat-info">
+                <p className="stat-label">COMPLETED</p>
+                <h3 className="stat-value">{dashboard.completed}</h3>
+              </div>
+            </div>
+            <div className="stat-card drivers">
+              <div className="stat-icon">👥</div>
+              <div className="stat-info">
+                <p className="stat-label">ACTIVE DRIVERS</p>
+                <h3 className="stat-value">{dashboard.drivers}</h3>
+              </div>
+            </div>
+          </div>
      </div>
      </div>
     </div>
