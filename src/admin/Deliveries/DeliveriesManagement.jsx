@@ -23,6 +23,8 @@ const DeliveriesManagement = () => {
   const [openMenu, setOpenMenu] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const location = useLocation();
+  const [error, setError] = useState(null);
+
   
   // Admin pages list
   const adminPages = [
@@ -111,7 +113,54 @@ const DeliveriesManagement = () => {
             <div className="header-user-avatar">A</div>
           </div>
         </header>
-    
+     <div className="deliveries-management">
+     {/* Error Message */}
+          {error && (
+            <div style={{
+              backgroundColor: '#fee2e2',
+              border: '1px solid #fca5a5',
+              borderRadius: '8px',
+              padding: '12px 16px',
+              marginBottom: '16px',
+              color: '#991b1b',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <FaExclamationCircle />
+              <span>{error}</span>
+              <button 
+                onClick={() => setError(null)}
+                style={{
+                  marginLeft: 'auto',
+                  background: 'none',
+                  border: 'none',
+                  color: '#991b1b',
+                  cursor: 'pointer',
+                  fontSize: '18px'
+                }}
+              >
+                ×
+              </button>
+            </div>
+          )}
+
+       {/* Banner Section */}
+          <div className="deliveries-banner">
+            <div className="banner-left">
+              <div className="banner-icon">
+                <FaTruck />
+              </div>
+              <div>
+                <h2 className="banner-title">Delivery Management</h2>
+                <p className="banner-subtitle">
+                  Assign orders to drivers and track deliveries in real-time
+                </p>
+              </div>
+            </div>
+          </div>
+
+     </div>
      </div>
     </div>
   );
