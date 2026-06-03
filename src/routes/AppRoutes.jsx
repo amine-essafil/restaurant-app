@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Home from "../pages/Home/Home";
 import LandingPage from "../pages/LandingPage/LandingPage";
 import LoginPage from "../pages/Login/Login";
@@ -13,6 +13,8 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import CartPage from "../pages/Cart/Cart";
 import CheckoutPage from "../pages/Checkout/Checkout";
 import PaymentPage from "../pages/Payment/Payment";
+import DeliveriesManagement from "../admin/Deliveries/DeliveriesManagement";
+import { useAuth } from "../context/AuthContext";
 
 const AppRoutes = () => {
   const protectedElement = (Component) => (
@@ -20,6 +22,21 @@ const AppRoutes = () => {
         <Component />
       </ProtectedRoute>
     );
+    
+const AdminRoute = ({ children }) => {
+  const { isLoggedIn, user } = useAuth(); 
+  const location = useLocation();
+    if (!isLoggedIn) {
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+  if (user.role !== "admin") {
+    console.log("Access denied. Current role:", user.role);
+    return <Navigate to="/" replace />; 
+  }
+
+  return children;
+};
+
   return (
     <Routes>  
       <Route  path="/"   element={<LandingPage />}/>
@@ -58,7 +75,16 @@ const AppRoutes = () => {
          element={protectedElement(PaymentPage)}
         />
       <Route path="/contact" element={<Contact />} />
-
+      
+       {/*  Admin Deliveries Route */}
+      <Route
+             path="/admin/deliveries"
+             element={
+                      <AdminRoute>
+                        <DeliveriesManagement />
+                      </AdminRoute>
+                    }
+                  />
     </Routes>
   );
 };
