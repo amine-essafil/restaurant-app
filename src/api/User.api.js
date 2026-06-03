@@ -3,25 +3,25 @@ import client from "./Client.api";
 
 // --- updateUsername ---
 export const updateUsername = ({id,name}) =>
-  client.patch(`/api/modifier/${id}/username`, {
+  client.patch(`/api/v1/modifier/${id}/username`, {
     name
   });
 
  // --- updateEmail ---
 export const updateEmail = ({id,email}) =>
-  client.patch(`/api/modifier/${id}/email`, {
+  client.patch(`/api/v1/modifier/${id}/email`, {
     email
   });
 
  // --- updatePhone ---
 export const updatePhone = (phone) =>
-  client.patch('/api/modifier-phone', {
+  client.patch('/api/v1/modifier-phone', {
     phone
   });
 
  // --- updatePassword ---
 export const updatePassword = (data) =>
-  client.patch('/api/modifier-password', data);
+  client.patch('/api/v1/modifier-password', data);
 
  
 
