@@ -24,6 +24,47 @@ import {
 import "./DriversManagement.css";
 
 function DriversManagement() {
+  const [editingDriver, setEditingDriver] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    password:"",
+    password_confirmation:"",
+    statut: "active",
+    vehicle_type: "Motorcycle",
+    vehicle_plate: "",
+    is_available: true,
+  });    
+
+ const handleOpenModal = (driver = null) => {
+    if (driver) {
+      setEditingDriver(driver);
+      setFormData({
+        name: driver.name,
+        phone: driver.phone,
+        email: driver.email || "",
+        status: driver.status,
+        vehicle_type: driver.vehicle,
+        vehicle_plate: driver.vehicle_plate || "",
+        is_available: driver.is_available,
+      });
+    } else {
+      setEditingDriver(null);
+      setFormData({
+        name: "",
+        phone: "",
+        email: "",
+        statut: "active",
+        vehicle_type: "Motorcycle",
+        vehicle_plate: "",
+        is_available: true,
+      });
+    }
+    setShowModal(true);
+    setOpenMenu(null);
+  };
   return (
     <div className="drivers-management-container">
       {/* LEFT SIDEBAR */}

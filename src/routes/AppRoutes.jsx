@@ -15,6 +15,7 @@ import CheckoutPage from "../pages/Checkout/Checkout";
 import PaymentPage from "../pages/Payment/Payment";
 import DeliveriesManagement from "../admin/Deliveries/DeliveriesManagement";
 import { useAuth } from "../context/AuthContext";
+import DriversManagement from "../admin/Drivers/DriversManagement";
 
 const AppRoutes = () => {
   const protectedElement = (Component) => (
@@ -85,7 +86,19 @@ const AdminRoute = ({ children }) => {
                       </AdminRoute>
                     }
                   />
+
+      <Route
+             path="/admin/drivers"
+             element={
+                      <AdminRoute>
+                        <DriversManagement />
+                      </AdminRoute>
+                    }
+                  />
     </Routes>
+
+
+
   );
 };
 
