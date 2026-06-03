@@ -8,6 +8,7 @@ import Footer from "./components/Footer/Footer";
 import { OrderProvider } from "./context/OrderContext";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import Notification from "./components/notification/Notification";
 /**
  * Utility component to scroll to top on page change
  */
@@ -28,6 +29,7 @@ function App() {
         <Router>
            <div className="app-container">
           <Navbar />
+          <Notification /> 
           <ScrollToTop />
           <main>
              <AppRoutes />
