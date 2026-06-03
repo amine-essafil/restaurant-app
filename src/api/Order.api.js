@@ -7,3 +7,7 @@ export const createOrder = (data) =>
 // --- Update order status ---
 export const updateOrderStatus = ({id, statut}) =>
   client.patch(`/api/v1/orders/${id}`, { statut });
+
+// --- Dashboard Orders ---
+export const getDashboardOrders = () =>
+  client.get("/api/v1/admin/orders/dashboard");
