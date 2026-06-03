@@ -37,7 +37,14 @@ function DriversManagement() {
     vehicle_plate: "",
     is_available: true,
   });    
-
+  const [stats, setStats] = useState({
+    total_drivers: 0,
+    active: 0,
+    on_delivery: 0,
+    offline: 0,
+    avg_rating: 0,
+    total_deliveries: 0,
+  });   
  const handleOpenModal = (driver = null) => {
     if (driver) {
       setEditingDriver(driver);
@@ -94,7 +101,39 @@ function DriversManagement() {
             >
               <FaPlus /> Add Driver
             </button>
-          </div>            
+          </div>   
+          {/* Stats Cards */}
+          <div className="stats-cards">
+            <div className="stat-card total">
+              <div className="stat-icon">👥</div>
+              <div className="stat-info">
+                <p className="stat-label">TOTAL DRIVERS</p>
+                <h3 className="stat-value">{stats.total_drivers}</h3>
+              </div>
+            </div>
+            <div className="stat-card active">
+              <div className="stat-icon">🟢</div>
+              <div className="stat-info">
+                <p className="stat-label">ACTIVE/DELIVERING</p>
+                <h3 className="stat-value">{stats.active + stats.on_delivery}</h3>
+              </div>
+            </div>
+            <div className="stat-card rating">
+              <div className="stat-icon">⭐</div>
+              <div className="stat-info">
+                <p className="stat-label">AVG RATING</p>
+                <h3 className="stat-value">{stats.avg_rating}</h3>
+              </div>
+            </div>
+            <div className="stat-card deliveries">
+              <div className="stat-icon">📦</div>
+              <div className="stat-info">
+                <p className="stat-label">TOTAL DELIVERIES</p>
+                <h3 className="stat-value">{stats.total_deliveries}</h3>
+              </div>
+            </div>
+          </div>
+         
         </div>
       </div>
     </div>
