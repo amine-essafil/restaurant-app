@@ -24,8 +24,11 @@ import {
 import "./DriversManagement.css";
 
 function DriversManagement() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [drivers, setDrivers] = useState([]);
   const [editingDriver, setEditingDriver] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [statusFilter, setStatusFilter] = useState("All Drivers");
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -72,6 +75,14 @@ function DriversManagement() {
     setShowModal(true);
     setOpenMenu(null);
   };
+    const statusCounts = useMemo(() => {
+    return {
+      "All Drivers": drivers.length,
+      Active: stats.active,
+      "On Delivery": stats.on_delivery,
+      Offline: stats.offline,
+    };
+  }, [drivers, stats]);
   return (
     <div className="drivers-management-container">
       {/* LEFT SIDEBAR */}
@@ -133,8 +144,40 @@ function DriversManagement() {
               </div>
             </div>
           </div>
-         
+             {/* Status Filters */}
+        <div className="status-filters">
+            {["All Drivers", "Active", "On Delivery", "Offline"].map(
+              (status) => (
+                <button
+                  key={status}
+                  onClick={() => setStatusFilter(status)}
+                  className={`filter-btn ${
+                    statusFilter === status ? "active" : ""
+                  }`}
+                >
+                  {status === "Active" && "🟢"}
+                  {status === "On Delivery" && "🚚"}
+                  {status === "Offline" && "🔴"}
+                  {status}
+                  <span className="filter-count">{statusCounts[status]}</span>
+                </button>
+              )
+            )}
+          </div>      
         </div>
+        
+          {/* Search contact*/ }
+          <div className="search-section">
+            <div className="search-box">
+              <FaSearch className="search-icon" />
+              <input
+                type="text"
+                placeholder="Search by name, phone, or plate..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
       </div>
     </div>
   )
