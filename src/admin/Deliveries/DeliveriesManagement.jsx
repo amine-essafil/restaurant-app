@@ -21,6 +21,8 @@ import {
 import "./DeliveriesManagement.css";
 import { getDashboardOrders } from "../../api/Order.api";
 import { availableDrivers } from "../../api/Drivers.api";
+import LeftSideBar from "../AdminComponents/LeftSideBar";
+import Header from "../AdminComponents/Header";
 const DeliveriesManagement = () => {
   const [orders, setOrders] = useState([]);
   const [openMenu, setOpenMenu] = useState(null);
@@ -153,18 +155,7 @@ const fetchAvailableDrivers = async (orderId) => {
         setLoadingDrivers(false);
     }
 };
-
-  // Admin pages list
-  const adminPages = [
-    { id: 1, name: "Dashboard", icon: <FaChartLine />, path: "/admin/dashboard" },
-    { id: 2, name: "Orders", icon: <FaShoppingBag />, path: "/admin/orders" },
-    { id: 3, name: "Menu", icon: <FaUtensils />, path: "/admin/menu" },
-    { id: 4, name: "Customers", icon: <FaUsers />, path: "/admin/customers" },
-    { id: 5, name: "Deliveries", icon: <FaTruck />, path: "/admin/deliveries" },
-    { id: 6, name: "Drivers", icon: <FaMotorcycle />, path: "/admin/drivers" },
-    { id: 7, name: "Reports", icon: <FaFileAlt />, path: "/admin/reports" },
-    { id: 8, name: "Analytics", icon: <FaChartLine />, path: "/admin/analytics" },
-  ];
+ 
 
   const filteredOrders = useMemo(() => {
     let result = orders.filter(
@@ -247,77 +238,11 @@ const fetchAvailableDrivers = async (orderId) => {
   return (
     <div className="deliveries-management-container">
       {/* LEFT SIDEBAR */}
-      <div className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
-        <button
-          className="sidebar-toggle-btn"
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          title={sidebarOpen ? "Close sidebar" : "Open sidebar"}
-        >
-          {sidebarOpen ? <FaTimes /> : <FaBars />}
-        </button>
-
-        <div className="sidebar-header">
-          <div className="sidebar-header-content">
-            {sidebarOpen && (
-              <div className="logo-section">
-                <div className="logo-icon">
-                  <FaUtensils />
-                </div>
-                <div className="logo-text">
-                  <h1>FoodExpress</h1>
-                  <p>Admin Panel</p>
-                </div>
-              </div>
-            )}
-            {!sidebarOpen && (
-              <div className="logo-icon-only">
-                <FaUtensils />
-              </div>
-            )}
-          </div>
-        </div>
-
-        <nav className="sidebar-nav">
-          {adminPages.map((page) => (
-            <Link
-              key={page.id}
-              to={page.path}
-              className={`nav-item ${
-                location.pathname === page.path ? "active" : ""
-              }`}
-            >
-              <span className="nav-icon">{page.icon}</span>
-              {sidebarOpen && (
-                <div className="nav-text">
-                  <p>{page.name}</p>
-                </div>
-              )}
-            </Link>
-          ))}
-        </nav>
-
-        {sidebarOpen && (
-          <div className="sidebar-footer">
-            <button className="logout-btn">
-              <span>🚪</span> Logout
-            </button>
-          </div>
-        )}
-      </div>    
-
+       <LeftSideBar/>
      {/* MAIN CONTENT */}
      <div className="main-content"> 
       {/* TOP HEADER */}
-        <header className="top-header">
-          <h1 className="header-title">FoodExpress</h1>
-          <div className="header-user-section">
-            <div className="header-user-info">
-              <p className="header-user-name">Admin</p>
-              <p className="header-user-role">Manager</p>
-            </div>
-            <div className="header-user-avatar">A</div>
-          </div>
-        </header>
+     <Header/>
      <div className="deliveries-management">
      {/* Error Message */}
           {error && (
