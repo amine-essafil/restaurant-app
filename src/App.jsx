@@ -9,6 +9,7 @@ import { OrderProvider } from "./context/OrderContext";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Notification from "./components/notification/Notification";
+import ConditionalFooter from "./components/ConditionalFooter";
 /**
  * Utility component to scroll to top on page change
  */
@@ -34,7 +35,7 @@ function App() {
           <main>
              <AppRoutes />
           </main>
-          <Footer/>
+            <ConditionalFooter />
           </div>
         </Router>
          </OrderProvider>  
