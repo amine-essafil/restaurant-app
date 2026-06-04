@@ -22,7 +22,7 @@ import {
   FaEdit,
 } from "react-icons/fa";
 import "./DriversManagement.css";
-import { DriverDashboard, getDrivers } from "../../api/Drivers.api";
+import { CreateDriver, DriverDashboard, DriverDelete, DriverUpdate, DriverUpdateStatus, getDrivers } from "../../api/Drivers.api";
 
 const statusStyles = {
   active: {
@@ -46,7 +46,6 @@ const statusStyles = {
 };
 
 function DriversManagement() {
-
   const [openMenu, setOpenMenu] = useState(null);
   const [loading, setLoading] = useState(true);
   const [expandedRow, setExpandedRow] = useState(null);
@@ -180,7 +179,90 @@ useEffect(() => {
     );
   }
 
-  
+   const handleSaveDriver = async () => {
+    // Validation
+    if (!formData.name || !formData.phone) {
+      alert("Le nom et le téléphone sont obligatoires");
+      return;
+    }
+
+    try {
+      if (editingDriver) {
+        // Mise à jour
+        const response = await DriverUpdate(
+          editingDriver.id,
+          formData
+        );
+        
+        if (response.data.success) {
+          alert("Livreur mis à jour avec succès");
+          fetchDriversData();
+        }
+      } else {
+        // Création
+        const response = await CreateDriver(formData);
+        
+        if (response.data.success) {
+          alert("Livreur créé avec succès");
+          fetchDriversData();
+        }
+      }
+      setShowModal(false);
+    } catch (error) {
+      console.error("Erreur:", error);
+      if (error.response?.data?.errors) {
+        const errors = error.response.data.errors;
+        const errorMessages = Object.values(errors).flat().join("\n");
+        alert(`Erreurs de validation:\n${errorMessages}`);
+      } else {
+        alert("Erreur lors de l'enregistrement du livreur");
+      }
+    }
+  };
+
+   const handleChangeStatus = async (driverId, newStatus) => {
+    try {
+      const statusMap = {
+        "Active": "active",
+        "On Delivery": "on_delivery",
+        "Offline": "offline",
+      };
+      
+      const response = await DriverUpdateStatus(
+        driverId,
+       {statut :  statusMap[newStatus]}
+      );
+      
+      if (response.data.success) {
+        fetchDriversData();
+      }
+    } catch (error) {
+      console.error("Erreur:", error);
+      alert("Erreur lors du changement de statut");
+    }
+    setOpenMenu(null);
+  };
+
+
+  const handleDeleteDriver = async (driverId) => {
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce livreur ?")) {
+      return;
+    }
+
+    try {
+      const response = await DriverDelete(driverId);
+      
+      if (response.data.success) {
+        alert("Livreur supprimé avec succès");
+        fetchDriversData();
+      }
+    } catch (error) {
+      console.error("Erreur:", error);
+      alert("Erreur lors de la suppression du livreur");
+    }
+    setOpenMenu(null);
+  };
+
   return (
     <div className="drivers-management-container">
       {/* LEFT SIDEBAR */}
@@ -469,7 +551,154 @@ useEffect(() => {
             </table>
           </div>
       </div>
+      {/* Add/Edit Driver Modal */}
+      {showModal && (
+        <div className="modal-overlay" onClick={() => setShowModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>{editingDriver ? "Edit Driver" : "Add New Driver"}</h2>
+              <button
+                className="modal-close"
+                onClick={() => setShowModal(false)}
+              >
+                <FaTimes />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <div className="form-group">
+                <label>Driver Name </label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                  placeholder="e.g., Ahmed El Amrani"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Phone *</label>
+                <input
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
+                  placeholder="+212 6 12 34 56 78"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Email</label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  placeholder="driver@example.com"
+                />
+              </div>
+
+     <div className="form-group">
+                <label>Password</label>
+                <input
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                  placeholder="driver@example.com"
+                />
+              </div>
+
+     <div className="form-group">
+                <label>Password Confirmation</label>
+                <input
+                  type="password"
+                  value={formData.password_confirmation}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password_confirmation: e.target.value })
+                  }
+                  placeholder="driver@example.com"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Status</label>
+                <select
+                  value={formData.status}
+                  onChange={(e) =>
+                    setFormData({ ...formData, status: e.target.value })
+                  }
+                >
+                  <option value="active">Active</option>
+                  <option value="on_delivery">On Delivery</option>
+                  <option value="offline">Offline</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Vehicle Type</label>
+                <select
+                  value={formData.vehicle_type}
+                  onChange={(e) =>
+                    setFormData({ ...formData, vehicle_type: e.target.value })
+                  }
+                >
+                  <option value="Motorcycle">Motorcycle</option>
+                  <option value="Scooter">Scooter</option>
+                  <option value="Car">Car</option>
+                  <option value="Bike">Bike</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>License Plate</label>
+                <input
+                  type="text"
+                  value={formData.vehicle_plate}
+                  onChange={(e) =>
+                    setFormData({ ...formData, vehicle_plate: e.target.value })
+                  }
+                  placeholder="e.g., ABC-1234"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={formData.is_available}
+                    onChange={(e) =>
+                      setFormData({ ...formData, is_available: e.target.checked })
+                    }
+                  />
+                  Available for deliveries
+                </label>
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button
+                onClick={() => setShowModal(false)}
+                className="modal-btn cancel"
+              >
+                Cancel
+              </button>
+              <button onClick={handleSaveDriver} className="modal-btn save">
+                {editingDriver ? "Update Driver" : "Add Driver"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+
+    
+  
   )
 }
 
