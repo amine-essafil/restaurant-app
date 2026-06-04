@@ -56,6 +56,68 @@ const CustomersManagement = () => {
     { id: 7, name: "Reports", icon: <FaFileAlt />, path: "/admin/reports" },
   ];
 
+  const navigate = useNavigate();
+  const [customers, setcustomers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const customersPerPage = 999999;
+  const [form, setform] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    adress: "",
+    role: "",
+    password: "",
+    password_confirmation: "",
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await ClientApi.GetAllUsers();
+        console.log(response.data);
+        setcustomers(response.data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const filteredCustomers = useMemo(() => {
+    return customers.filter((customer) => {
+      const matchesSearch =
+        customer.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (customer.phone && customer.phone.includes(searchTerm));
+      const matchesStatus =
+        statusFilter === "all" || customer.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [customers, searchTerm, statusFilter]);
+
+  const statusCounts = {
+    all: customers.length,
+    active: customers.filter((c) => c.status === "active").length,
+    inactive: customers.filter((c) => c.status === "inactive").length,
+    blocked: customers.filter((c) => c.status === "blocked").length,
+  };
+
+  const indexOfLastCustomer = currentPage * customersPerPage;
+  const indexOfFirstCustomer = indexOfLastCustomer - customersPerPage;
+  const currentCustomers = filteredCustomers.slice(indexOfFirstCustomer, indexOfLastCustomer);
+  const totalPages = Math.ceil(filteredCustomers.length / customersPerPage);
+
+  { loading && <p>Loading chart...</p>; }
+
   return (
     <div className="customers-management-container">
         <div className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
