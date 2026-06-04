@@ -29,3 +29,10 @@ export const DriverDelete = (driverId) =>
 // --- Driver Update Status ---
 export const DriverUpdateStatus = (driverId, statut) =>
   client.patch(`/api/v1/drivers/${driverId}/status`, statut);
+
+// --- Assign Driver To Order  ---
+export const assignToOrder = ({driver_id,commande_id}) =>
+  client.post(`/api/v1/drivers/assign`, { driver_id, commande_id });
+
+
+

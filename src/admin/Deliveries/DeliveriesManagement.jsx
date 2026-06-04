@@ -19,11 +19,13 @@ import {
   FaExclamationCircle,
 } from "react-icons/fa";
 import "./DeliveriesManagement.css";
-import { getDashboardOrders } from "../../api/Order.api";
-import { availableDrivers } from "../../api/Drivers.api";
+import { getDashboardOrders, updateOrderStatus } from "../../api/Order.api";
+import { assignToOrder, availableDrivers } from "../../api/Drivers.api";
 import LeftSideBar from "../AdminComponents/LeftSideBar";
 import Header from "../AdminComponents/Header";
 const DeliveriesManagement = () => {
+  const [drivers, setDrivers] = useState([]);
+  const [assignModal, setAssignModal] = useState(null);
   const [orders, setOrders] = useState([]);
   const [openMenu, setOpenMenu] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -34,7 +36,7 @@ const DeliveriesManagement = () => {
   const [loadingDrivers, setLoadingDrivers] = useState(false);
   const [loading, setLoading] = useState(true);
   const [expandedOrder, setExpandedOrder] = useState(null);
-
+  const [assigningDriver, setAssigningDriver] = useState(false);
     const [dashboard, setDashboard] = useState({
     pending: 0,
     on_delivery: 0,
@@ -127,9 +129,9 @@ const fetchAvailableDrivers = async (orderId) => {
         const response = await availableDrivers({ commande_id: orderId });
         console.log("Available drivers (response):", response);
         const driversData = response?.data; // Déclare la variable pour plus de clarté
-
-        if (driversData?.drivers?.length > 0) {
-            const formattedDrivers = driversData.drivers.map(driver => ({ 
+  console.log(driversData?.length)
+        if (driversData?.length > 0) {
+            const formattedDrivers = driversData.map(driver => ({ 
                 id: driver.id,
                 name: driver.user.name || '',
                 initials: driver.user.name.charAt(0) || '',
@@ -141,7 +143,7 @@ const fetchAvailableDrivers = async (orderId) => {
                 vehiclePlate: driver.vehicle_plate || '',
                 currentLocation: driver.current_location || ''
             }));
-
+ console.log("Formatted drivers:", formattedDrivers);
             setDrivers(formattedDrivers);
         } else {
             setDrivers([]);
@@ -233,6 +235,61 @@ const fetchAvailableDrivers = async (orderId) => {
       console.error("Error unassigning driver:", error);
       setError("Failed to unassign driver. Please try again.");
     }
+  };
+
+ const openAssignModal = (orderId) => {
+    setAssignModal(orderId);
+    fetchAvailableDrivers(orderId);
+  };
+
+  const handleAssignDriver = async (orderId, driverId) => {
+   setAssigningDriver(true);
+   setError(null);
+    try {
+    const response = await assignToOrder({ driver_id: driverId,commande_id: orderId  });
+    const respone = await updateOrderStatus({ id: orderId, statut: 'Assigned' });
+    console.log("Assign response:", response);
+        console.log("comande status response:", respone);
+
+
+    // Vérifie que la réponse contient bien data
+    const resData = response?.data;
+    if (!resData) {
+      throw new Error("Invalid response from server");
+    }
+
+    if (resData) {
+      const assignedDriver = drivers.find((d) => d.id === driverId);
+      console.log("Assigned driver details:", assignedDriver);
+      const updatedOrders = orders.map((o) =>
+        o.id === orderId
+          ? {
+              ...o,
+              assignedDriver: driverId,
+              assignedDriverName: assignedDriver?.name,
+              status: "On Delivery",
+            }
+          : o
+      );
+
+      setOrders(updatedOrders);
+      setAssignModal(null);
+      setOpenMenu(null);
+
+      alert(`Driver ${assignedDriver?.name} assigned successfully!`);
+      fetchData();
+    } else {
+      setError(resData.message || "Failed to assign driver");
+    }
+  } catch (error) {
+    console.error("Error assigning driver:", error);
+    setError(error.message || "Failed to assign driver. Please try again.");
+  } finally {
+    setAssigningDriver(false);
+  }
+};
+  const handleCall = (phone) => {
+    window.location.href = `tel:${phone}`;
   };
 
   return (
@@ -549,6 +606,84 @@ const fetchAvailableDrivers = async (orderId) => {
           </div>
      </div>
      </div>
+       {/* Assign Driver Modal */}
+      {assignModal && (
+        <div className="modal-overlay" onClick={() => setAssignModal(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Assign Driver to Order #{assignModal}</h2>
+              <button
+                className="modal-close"
+                onClick={() => setAssignModal(null)}
+              >
+                <FaTimes />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              {loadingDrivers ? (
+                <div style={{ textAlign: 'center', padding: '40px' }}>
+                  <p>Loading available drivers...</p>
+                </div>
+              ) : (
+                <div className="drivers-list">
+                  {drivers.length > 0 ? (
+                    drivers.map((driver) => (
+                      <button
+                        key={driver.id}
+                        onClick={() => handleAssignDriver(assignModal, driver.id)}
+                        className="driver-item"
+                        disabled={assigningDriver}
+                        style={{
+                          opacity: assigningDriver ? 0.6 : 1,
+                          cursor: assigningDriver ? 'not-allowed' : 'pointer'
+                        }}
+                      >
+                        <div className="driver-item-left">
+                          <div className="driver-item-avatar">
+                            {driver.initials}
+                          </div>
+                          <div className="driver-item-info">
+                            <p className="driver-item-name">{driver.name}</p>
+                            <p className="driver-item-details">
+                              <FaTruck /> {driver.vehicle} • ⭐ {driver.rating}
+                            </p>
+                            {driver.vehiclePlate && (
+                              <p style={{ fontSize: '12px', color: '#666' }}>
+                                {driver.vehiclePlate}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="driver-item-right">
+                          <p className="driver-item-label">Deliveries</p>
+                          <p className="driver-item-count">
+                            {driver.currentDeliveries}
+                          </p>
+                        </div>
+                      </button>
+                    ))
+                  ) : (
+                    <div className="no-drivers">
+                      No available drivers at the moment
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="modal-footer">
+              <button
+                onClick={() => setAssignModal(null)}
+                className="modal-btn cancel"
+                disabled={assigningDriver}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
