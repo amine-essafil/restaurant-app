@@ -19,6 +19,31 @@ const statusMeta = {
 };
 
 const OrderStatusChart = () => {
+  const [period, setPeriod] = useState("7days");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [data, setdata] = useState(null);
+
+  useEffect(() => {
+    const fetchRevenue = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await ClientApi.getOrderDistribution(period);
+        const data = response.data;
+        console.log(data);
+        setdata(data);
+      } catch (err) {
+        console.error("Erreur API Revenue:", err);
+        setError("Impossible de récupérer les données.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRevenue();
+  }, [period]);
+  if (loading) return <p>Loading...</p>;    
   return <div className="order-status-card"></div>;
 };
 
