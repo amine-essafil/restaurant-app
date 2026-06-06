@@ -60,6 +60,7 @@ const CustomersManagement = () => {
   const [customers, setcustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [error, setError] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [showViewModal, setShowViewModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -224,7 +225,9 @@ const CustomersManagement = () => {
 
   return (
     <div className="customers-management-container">
+        {/* LEFT SIDEBAR */}
         <div className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
+          {/* Toggle Button Inside Sidebar */}
         <button
           className="sidebar-toggle-btn"
           onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -233,6 +236,7 @@ const CustomersManagement = () => {
           {sidebarOpen ? <FaTimes /> : <FaBars />}
         </button>
 
+        {/* Sidebar Header */}
         <div className="sidebar-header">
           <div className="sidebar-header-content">
             {sidebarOpen && (
@@ -249,7 +253,7 @@ const CustomersManagement = () => {
             )}
           </div>
         </div>
-
+        {/* Navigation Items */}
         <nav className="sidebar-nav">
           {adminPages.map((page) => (
             <Link
@@ -264,7 +268,7 @@ const CustomersManagement = () => {
             </Link>
           ))}
         </nav>
-
+        {/* Sidebar Footer */}
         {sidebarOpen && (
           <div className="sidebar-footer">
             <button className="logout-btn">
