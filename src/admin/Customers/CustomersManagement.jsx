@@ -45,7 +45,7 @@ const CustomersManagement = () => {
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const location = useLocation();
-
+  // Admin pages list
   const adminPages = [
     { id: 1, name: "Dashboard", icon: <FaChartLine />, path: "/admin/dashboard" },
     { id: 2, name: "Orders", icon: <FaShoppingBag />, path: "/admin/orders" },
@@ -107,7 +107,7 @@ const CustomersManagement = () => {
     }
   };
   
-  
+// Filter customers  
   const filteredCustomers = useMemo(() => {
     return customers.filter((customer) => {
       const matchesSearch =
@@ -120,6 +120,7 @@ const CustomersManagement = () => {
     });
   }, [customers, searchTerm, statusFilter]);
 
+  // Status counts  
   const statusCounts = {
     all: customers.length,
     active: customers.filter((c) => c.status === "active").length,
@@ -127,6 +128,7 @@ const CustomersManagement = () => {
     blocked: customers.filter((c) => c.status === "blocked").length,
   };
 
+  // Pagination
   const indexOfLastCustomer = currentPage * customersPerPage;
   const indexOfFirstCustomer = indexOfLastCustomer - customersPerPage;
   const currentCustomers = filteredCustomers.slice(indexOfFirstCustomer, indexOfLastCustomer);
@@ -135,6 +137,50 @@ const CustomersManagement = () => {
   const handleViewCustomer = (customer) => {
     setSelectedCustomer(customer);
     setShowViewModal(true);
+  };
+
+  const handleEditCustomer = (customer) => {
+    setSelectedCustomer(customer);
+    // In production, open edit modal
+    console.log("Edit customer:", customer);
+  };
+
+  const handleDeleteCustomer = (customerId) => {
+    if (window.confirm("Are you sure you want to delete this customer?")) {
+      console.log("Delete customer:", customerId);
+      // In production, delete via API
+    }
+  };
+
+  const handleBlockCustomer = (customerId) => {
+    console.log("Block/Unblock customer:", customerId);
+    // In production, update via API
+  };
+
+  const getTierIcon = (tier) => {
+    switch (tier) {
+      case "platinum":
+        return <FaCrown style={{ color: "#E5E4E2" }} />;
+      case "gold":
+        return <FaCrown style={{ color: "#FFD700" }} />;
+      case "silver":
+        return <FaStar style={{ color: "#C0C0C0" }} />;
+      default:
+        return <FaUserCircle style={{ color: "#CD7F32" }} />;
+    }
+  };
+
+  const getTierColor = (tier) => {
+    switch (tier) {
+      case "platinum":
+        return "#E5E4E2";
+      case "gold":
+        return "#FFD700";
+      case "silver":
+        return "#C0C0C0";
+      default:
+        return "#CD7F32";
+    }
   };
 
     // Helper function to get initials from name
