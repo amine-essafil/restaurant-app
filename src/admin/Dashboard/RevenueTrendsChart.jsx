@@ -93,6 +93,73 @@ const RevenueTrendsChart = () => {
     fetchRevenue();
   }, [period]);
 
+    // Chart configuration
+  const data = {
+    labels: chartData.labels,
+    datasets: [
+      {
+        label: "Revenue ($)",
+        data: chartData.data,
+        borderColor: "#FF7A00",
+        backgroundColor: (context) => {
+          const ctx = context.chart.ctx;
+          const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+          gradient.addColorStop(0, "rgba(255, 122, 0, 0.3)");
+          gradient.addColorStop(1, "rgba(255, 122, 0, 0.0)");
+          return gradient;
+        },
+        tension: 0.4,
+        fill: true,
+        pointBackgroundColor: "#FF7A00",
+        pointBorderColor: "#fff",
+        pointBorderWidth: 2,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        pointHoverBackgroundColor: "#FF7A00",
+        pointHoverBorderColor: "#fff",
+        pointHoverBorderWidth: 3,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: "rgba(0, 0, 0, 0.8)",
+        padding: 12,
+        cornerRadius: 8,
+        titleFont: { size: 14, weight: "bold" },
+        bodyFont: { size: 13 },
+        callbacks: {
+          label: (context) => `Revenue: ${formatRevenue(context.parsed.y)} $`,
+          afterLabel: (context) => {
+            const avgOrderValue = context.parsed.y / 125;
+            return `Avg Order: ${formatRevenue(avgOrderValue)} $`;
+          },
+        },
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: { color: "rgba(0, 0, 0, 0.05)", drawBorder: false },
+        ticks: {
+          color: "#6b7280",
+          font: { size: 12 },
+          callback: (value) => formatRevenue(value) + " $",
+        },
+      },
+      x: {
+        grid: { display: false },
+        ticks: { color: "#6b7280", font: { size: 12 } },
+      },
+    },
+    interaction: { intersect: false, mode: "index" },
+  };
+ 
   return <div className="revenue-trends-card"></div>;
 };
 
