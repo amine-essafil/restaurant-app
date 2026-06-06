@@ -227,6 +227,71 @@ const CustomersManagement = () => {
               </div>
             </div>
           </div>
+
+          {/* Status Tabs */}
+          <div className="status-tabs">
+            <button
+              className={`status-tab ${statusFilter === "all" ? "active" : ""}`}
+              onClick={() => setStatusFilter("all")}
+            >
+              All Customers
+              <span className="tab-count">{statusCounts.all}</span>
+            </button>
+            <button
+              className={`status-tab ${
+                statusFilter === "active" ? "active" : ""
+              }`}
+              onClick={() => setStatusFilter("active")}
+            >
+              <FaCheckCircle />
+              Active
+              <span className="tab-count">{statusCounts.active}</span>
+            </button>
+            <button
+              className={`status-tab ${
+                statusFilter === "inactive" ? "active" : ""
+              }`}
+              onClick={() => setStatusFilter("inactive")}
+            >
+              <FaClock />
+              Inactive
+              <span className="tab-count">{statusCounts.inactive}</span>
+            </button>
+            <button
+              className={`status-tab ${
+                statusFilter === "blocked" ? "active" : ""
+              }`}
+              onClick={() => setStatusFilter("blocked")}
+            >
+              <FaBan />
+              Blocked
+              <span className="tab-count">{statusCounts.blocked}</span>
+            </button>
+          </div>
+
+          {/* Toolbar */}
+          <div className="customers-toolbar">
+            <div className="modern-search-container">
+              <div className="modern-search-box">
+                <FaSearch className="search-icon" />
+                <input
+                  type="text"
+                  placeholder="🔍 Search by name, email, or phone..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="modern-search-input"
+                />
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm("")}
+                    className="clear-search-btn"
+                  >
+                    <FaTimes />
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
       </div>
     </div>
   </div>
