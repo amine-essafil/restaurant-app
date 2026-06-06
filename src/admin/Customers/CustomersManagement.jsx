@@ -116,6 +116,11 @@ const CustomersManagement = () => {
   const currentCustomers = filteredCustomers.slice(indexOfFirstCustomer, indexOfLastCustomer);
   const totalPages = Math.ceil(filteredCustomers.length / customersPerPage);
 
+  const handleViewCustomer = (customer) => {
+    setSelectedCustomer(customer);
+    setShowViewModal(true);
+  };
+
     // Helper function to get initials from name
   const getInitials = (name) => {
     if (!name) return "?";
@@ -446,6 +451,97 @@ const CustomersManagement = () => {
               Next
             </button>
           </div>
+          {/* View Customer Modal */}
+          {showViewModal && selectedCustomer && (
+            <div
+              className="modal-overlay"
+              onClick={() => setShowViewModal(false)}
+            >
+              <div
+                className="modal-content large-modal"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="modal-header">
+                  <h2>Customer Details</h2>
+                  <button
+                    className="modal-close"
+                    onClick={() => setShowViewModal(false)}
+                  >
+                    <FaTimes />
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <div className="customer-profile">
+                    <div className="profile-header">
+                      <div className="customer-avatar">
+                        {selectedCustomer.name.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="profile-info">
+                        <h3>{selectedCustomer.name}</h3>
+                        <span
+                          className={`status-badge ${selectedCustomer.status}`}
+                        >
+                          {selectedCustomer.status?.charAt(0).toUpperCase() +
+                            selectedCustomer.status?.slice(1)}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="profile-details">
+                      <div className="detail-section">
+                        <h4>Contact Information</h4>
+                        <div className="detail-grid">
+                          <div className="detail-item">
+                            <FaEnvelope />
+                            <div>
+                              <span className="detail-label">Email</span>
+                              <span className="detail-value">
+                                {selectedCustomer.email}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="detail-item">
+                            <FaPhone />
+                            <div>
+                              <span className="detail-label">Phone</span>
+                              <span className="detail-value">
+                                {selectedCustomer.phone}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="detail-section">
+                        <h4>Order Statistics</h4>
+                        <div className="stats-grid">
+                          <div className="stat-box">
+                            <FaShoppingBag />
+                            <div>
+                              <span className="stat-number">
+                                {selectedCustomer.totalOrders}
+                              </span>
+                              <span className="stat-text">Total Orders</span>
+                            </div>
+                          </div>
+                          <div className="stat-box">
+                            <FaDollarSign />
+                            <div>
+                              <span className="stat-number">
+                                {selectedCustomer.totalSpent?.toLocaleString()}{" "}
+                                $
+                              </span>
+                              <span className="stat-text">Total Spent</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
       </div>
     </div>
   </div>
