@@ -172,9 +172,64 @@ const CustomersManagement = () => {
 
       <div className="main-content">
         <div className="customers-management">
-        </div>
+        {/* Header */}
+          <div className="customers-header">
+            <div className="header-content">
+              <div className="header-left">
+                <div className="header-icon"><FaUserCircle /></div>
+                <div>
+                  <h1 className="page-title">Customer Management</h1>
+                  <p className="page-subtitle">Manage customer accounts and information</p>
+                </div>
+              </div>
+              <div className="header-actions">
+                <button
+                  className="header-btn add-btn"
+                  onClick={() => setShowAddModal(true)}
+                >
+                  <FaPlus />
+                  Add Customer
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="customers-stats">
+            <div className="stat-card total">
+              <div className="stat-icon"><FaUserCircle /></div>
+              <div className="stat-info">
+                <span className="stat-label">Total Customers</span>
+                <span className="stat-value">{customers.length}</span>
+                <span className="stat-change positive">
+                  <FaChartLine /> +12% this month
+                </span>
+              </div>
+            </div>
+            <div className="stat-card active">
+              <div className="stat-icon"><FaCheckCircle /></div>
+              <div className="stat-info">
+                <span className="stat-label">Active</span>
+                <span className="stat-value">{statusCounts.active}</span>
+                <span className="stat-change positive">
+                  <FaChartLine /> 87.5% activity rate
+                </span>
+              </div>
+            </div>
+            <div className="stat-card revenue">
+              <div className="stat-icon"><FaDollarSign /></div>
+              <div className="stat-info">
+                <span className="stat-label">Total Revenue</span>
+                <span className="stat-value">20.8K $</span>
+                <span className="stat-change positive">
+                  <FaChartLine /> +8.2% growth
+                </span>
+              </div>
+            </div>
+          </div>
       </div>
     </div>
+  </div>
   );
 };
 
