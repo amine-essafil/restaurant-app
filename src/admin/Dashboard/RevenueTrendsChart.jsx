@@ -160,7 +160,73 @@ const RevenueTrendsChart = () => {
     interaction: { intersect: false, mode: "index" },
   };
  
-  return <div className="revenue-trends-card"></div>;
+  return ( 
+  <div className="revenue-trends-card">
+      {/* Header */}
+      <div className="chart-header">
+        <div className="header-left">
+          <h3 className="chart-title">📈 Revenue Trends</h3>
+          <p className="chart-subtitle">Track your revenue performance</p>
+        </div>
+
+        {/* Period Selector */}
+        <div className="period-selector">
+          <FaCalendarAlt className="calendar-icon" />
+          <select
+            value={period}
+            onChange={(e) => setPeriod(e.target.value)}
+            className="period-select"
+          >
+            <option value="1day">Today</option>
+            <option value="7days">Last 7 Days</option>
+            <option value="30days">Last 30 Days</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Loading / Error Handling */}
+      {loading && <p>Loading chart...</p>}
+      {error && <p className="error">{error}</p>}
+
+      {/* Chart */}
+      {!loading && !error && (
+        <>
+          <div className="chart-container">
+            <Line data={data} options={options} />
+          </div>
+
+          {/* Stats Below Chart */}
+          <div className="chart-stats">
+            <div className="stat-item">
+              <p className="stat-label">Total Revenue</p>
+              <p className="stat-value total">
+                {formatRevenue(chartData.total)} $
+              </p>
+            </div>
+
+            <div className="stat-divider"></div>
+
+            <div className="stat-item">
+              <p className="stat-label">Average Daily</p>
+              <p className="stat-value average">
+                {formatRevenue(chartData.average)} $
+              </p>
+            </div>
+
+            <div className="stat-divider"></div>
+
+            <div className="stat-item">
+              <p className="stat-label">Trend</p>
+              <p className="stat-value trend">
+                <FaArrowUp className="trend-icon" />
+                {chartData.trend}
+              </p>
+            </div>
+          </div>
+        </>
+      )}
+  </div>
+  );
 };
 
 export default RevenueTrendsChart;
