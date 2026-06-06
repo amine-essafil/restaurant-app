@@ -92,6 +92,22 @@ const CustomersManagement = () => {
     fetchData();
   }, []);
 
+  const handleAddCustomer = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await ClientApi.AddCustomer(form);
+      const data = response.data;
+      console.log(data);
+      if (response.status === 201) {
+        navigate(-1);
+      }
+    } catch (err) {
+      console.error("Erreur API Revenue:", err);
+      setError("Impossible de récupérer les données.");
+    }
+  };
+  
+  
   const filteredCustomers = useMemo(() => {
     return customers.filter((customer) => {
       const matchesSearch =
@@ -542,6 +558,147 @@ const CustomersManagement = () => {
               </div>
             </div>
           )}
+          {/* Add Customer Modal */}
+          {showAddModal && (
+            <div
+              className="modal-overlay"
+              onClick={() => setShowAddModal(false)}
+            >
+              <div
+                className="modal-content"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="modal-header">
+                  <h2>Add New Customer</h2>
+                  <button
+                    className="modal-close"
+                    onClick={() => setShowAddModal(false)}
+                  >
+                    <FaTimes />
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <div className="modal-body">
+                    <form
+                      className="customer-form"
+                      onSubmit={handleAddCustomer}
+                    >
+                      {/* NAME */}
+                      <div className="form-group">
+                        <label>Full Name</label>
+                        <input
+                          type="text"
+                          value={form.name}
+                          onChange={(e) =>
+                            setform({ ...form, name: e.target.value })
+                          }
+                          placeholder="Enter customer name"
+                        />
+                      </div>
+
+                      {/* EMAIL */}
+                      <div className="form-group">
+                        <label>Email</label>
+                        <input
+                          type="email"
+                          value={form.email}
+                          onChange={(e) =>
+                            setform({ ...form, email: e.target.value })
+                          }
+                          placeholder="customer@email.com"
+                        />
+                      </div>
+                      {/* PASSWORD */}
+                      <div className="form-group">
+                        <label>Password</label>
+                        <input
+                          type="password"
+                          value={form.password}
+                          onChange={(e) =>
+                            setform({ ...form, password: e.target.value })
+                          }
+                          placeholder="Enter password"
+                        />
+                      </div>
+
+                      {/* PASSWORD CONFIRMATION */}
+                      <div className="form-group">
+                        <label>Confirm Password</label>
+                        <input
+                          type="password"
+                          value={form.password_confirmation}
+                          onChange={(e) =>
+                            setform({
+                              ...form,
+                              password_confirmation: e.target.value,
+                            })
+                          }
+                          placeholder="Confirm password"
+                        />
+                      </div>
+
+                      {/* PHONE */}
+                      <div className="form-group">
+                        <label>Phone</label>
+                        <input
+                          type="tel"
+                          value={form.phone}
+                          onChange={(e) =>
+                            setform({ ...form, phone: e.target.value })
+                          }
+                          placeholder="+212 XXX-XXX-XXX"
+                        />
+                      </div>
+
+                      {/* ADDRESS */}
+                      <div className="form-group">
+                        <label>Address</label>
+                        <textarea
+                          rows="3"
+                          value={form.adress}
+                          onChange={(e) =>
+                            setform({ ...form, adress: e.target.value })
+                          }
+                          placeholder="Enter full address"
+                        ></textarea>
+                      </div>
+
+                      {/* ROLE */}
+                      <div className="form-group">
+                        <label>Role</label>
+                        <select
+                          value={form.role}
+                          onChange={(e) =>
+                            setform({ ...form, role: e.target.value })
+                          }
+                        >
+                          <option value="">Select role</option>
+                          <option value="admin">admin</option>
+                          <option value="client">client</option>
+                          <option value="driver">driver</option>
+                        </select>
+                      </div>
+
+                      {/* ACTIONS */}
+                      <div className="form-actions">
+                        <button
+                          type="button"
+                          className="btn-secondary"
+                          onClick={() => setShowAddModal(false)}
+                        >
+                          Cancel
+                        </button>
+
+                        <button type="submit" className="btn-primary">
+                          Add Customer
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}          
       </div>
     </div>
   </div>
