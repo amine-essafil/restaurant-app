@@ -116,6 +116,43 @@ const CustomersManagement = () => {
   const currentCustomers = filteredCustomers.slice(indexOfFirstCustomer, indexOfLastCustomer);
   const totalPages = Math.ceil(filteredCustomers.length / customersPerPage);
 
+    // Helper function to get initials from name
+  const getInitials = (name) => {
+    if (!name) return "?";
+    const parts = name.trim().split(" ");
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return parts[0][0].toUpperCase();
+  };
+
+  // Helper function to format amount without commas and proper decimals
+  const formatAmount = (amount) => {
+    if (!amount && amount !== 0) return "0";
+    const num = parseFloat(amount);
+    if (isNaN(num)) return "0";
+
+    // If integer, return without decimals
+    if (Number.isInteger(num)) {
+      return num.toString();
+    }
+
+    // Convert to string and remove trailing zeros
+    const str = num.toFixed(2);
+    const parts = str.split(".");
+
+    // Remove trailing zeros after decimal point
+    if (parts[1]) {
+      parts[1] = parts[1].replace(/0+$/, "");
+      if (parts[1] === "") {
+        return parts[0];
+      }
+      return parts.join(".");
+    }
+
+    return parts[0];
+  };
+
   { loading && <p>Loading chart...</p>; }
 
   return (
@@ -291,6 +328,101 @@ const CustomersManagement = () => {
                 )}
               </div>
             </div>
+          </div>
+          {/* Customers Table */}
+
+          <div className="customers-table-container">
+            <table className="customers-table">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Contact</th>
+                  <th>Join Date</th>
+                  <th>Orders</th>
+                  <th>Total Spent</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentCustomers.map((customer) => (
+                  <tr key={customer.id}>
+                    <td>
+                      <div className="customer-info">
+                        <div className="customer-avatar">
+                          {getInitials(customer.name)}
+                        </div>
+                        <div className="customer-details">
+                          <span className="customer-name">{customer.name}</span>
+                          <span className="customer-id">
+                            ID: #{customer.id}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="contact-info">
+                        <span className="contact-item">
+                          <FaEnvelope />
+                          {customer?.email}
+                        </span>
+                        <span className="contact-item">
+                          <FaPhone />
+                          {customer?.phone}
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="date-info">
+                        <FaCalendar />
+                        {customer?.joinDate
+                          ? new Date(customer.joinDate).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              }
+                            )
+                          : "—"}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="orders-info">
+                        <FaShoppingBag />
+                        <span className="orders-count">
+                          {customer?.totalOrders}
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <span className="amount">
+                        {formatAmount(customer?.totalSpent)} $
+                      </span>
+                    </td>
+                    <td>
+                      <span className={`status-badge ${customer.status}`}>
+                        {customer?.status === "active" && <FaCheckCircle />}
+                        {customer?.status === "inactive" && <FaClock />}
+                        {customer?.status === "blocked" && <FaBan />}
+                        {customer?.status.charAt(0).toUpperCase() +
+                          customer?.status.slice(1)}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="table-actions">
+                        <SquarePen
+                          size={20}
+                          className="w-5 h-5 text-gray-600 hover:text-blue-500 cursor-pointer transition-colors"
+                          onClick={() => handleViewCustomer(customer)}
+                          title="View Details"
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
       </div>
     </div>
