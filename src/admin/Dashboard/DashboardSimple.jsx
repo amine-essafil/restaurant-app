@@ -235,6 +235,11 @@ const location = useLocation();
             </div>
           </div>
 
+          {/* Revenue Trends Chart */}
+          <RevenueTrendsChart />
+
+          {/* Order Status Chart */}
+          <OrderStatusChart />
          </main>
         </div> 
      </div>
