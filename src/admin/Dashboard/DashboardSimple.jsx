@@ -25,7 +25,27 @@ import { ClientApi } from "../../ClientApi/ClientApi";
 
 const DashboardSimple = () => {
 const [sidebarOpen, setSidebarOpen] = useState(true);
-  const location = useLocation();
+const [currentTime, setCurrentTime] = useState(new Date());
+const [stats, setstats] = useState({});
+const location = useLocation();
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+  //API STATS
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await ClientApi.getStats();
+        console.log(response.data);
+        setstats(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const adminPages = [
     { id: 1, name: "Dashboard", icon: <FaChartLine />, path: "/admin/dashboard" },
