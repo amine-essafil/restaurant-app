@@ -134,7 +134,29 @@ const location = useLocation();
             </button>
           </div>
         )}
-        </div>  
+        </div> 
+
+      {/* MAIN CONTENT */}
+      <div className="main-content">
+        {/* TOP HEADER - NEW DESIGN */}
+        <header className="top-header">
+          {/* Left Side - Brand Name */}
+          <h1 className="header-title">FoodExpress</h1>
+
+          {/* Right Side - User Section */}
+          <div className="header-user-section">
+            {/* User Info */}
+            <div className="header-user-info">
+              <p className="header-user-name">Admin</p>
+              <p className="header-user-role">Manager</p>
+            </div>
+
+            {/* Avatar Circle */}
+            <div className="header-user-avatar">A</div>
+          </div>
+        </header>
+
+
      </div>
   );
 };
