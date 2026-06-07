@@ -22,8 +22,49 @@ import "./DeliveriesManagement.css";
 import { ClientApi } from "../../ClientApi/ClientApi";
 
 const DeliveriesManagement = () => {
-      const [sidebarOpen, setSidebarOpen] = useState(true);
-  const location = useLocation();
+    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const location = useLocation();
+    const [orders, setOrders] = useState([]);
+    const [drivers, setDrivers] = useState([]);
+    const [expandedOrder, setExpandedOrder] = useState(null);
+    const [openMenu, setOpenMenu] = useState(null);
+    const [assignModal, setAssignModal] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [priorityFilter, setPriorityFilter] = useState("All Orders"); 
+
+  const [dashboard, setDashboard] = useState({
+    pending: 0,
+    on_delivery: 0,
+    completed: 0,
+    drivers: 0,
+  });
+
+  const [loading, setLoading] = useState(true);
+  const [loadingDrivers, setLoadingDrivers] = useState(false);
+  const [assigningDriver, setAssigningDriver] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Mapping des statuts backend vers frontend
+  const statusMap = {
+    pending: "Pending",
+    "en cours": "Preparing",
+    preparing: "Preparing",
+    "en livraison": "On Delivery",
+    on_delivery: "On Delivery",
+    livré: "Completed",
+    completed: "Completed",
+    delivered: "Completed",
+    annulé: "Cancelled",
+    cancelled: "Cancelled",
+  };
+
+  // Mapping des véhicules backend vers frontend
+  const vehicleMap = {
+    motorcycle: "Motorcycle",
+    scooter: "Scooter",
+    car: "Car",
+    bicycle: "Bicycle",
+  };
 
   const adminPages = [
     { id: 1, name: "Dashboard", icon: <FaChartLine />, path: "/admin/dashboard" },
