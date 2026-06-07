@@ -134,7 +134,7 @@ const location = useLocation();
             </button>
           </div>
         )}
-        </div> 
+        </div>
 
       {/* MAIN CONTENT */}
       <div className="main-content">
@@ -156,7 +156,87 @@ const location = useLocation();
           </div>
         </header>
 
+        {/* PAGE CONTENT */}
+        <main className="page-content">
+          {/* Welcome Section */}
+          <div className="welcome-section">
+            <h1>Welcome back, Admin! 👋</h1>
+            <p>
+              {currentTime.toLocaleDateString("en-US", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+          </div>
 
+          {/* Metric Cards */}
+          <div className="metrics-grid">
+            <div className="metric-card blue">
+              <div className="metric-header">
+                <div className="metric-info">
+                  <p className="metric-title">Total Orders</p>
+                  <p className="metric-value">
+                    {stats?.total_Commandes?.value ?? ""}
+                  </p>
+                </div>
+                <span className="metric-icon">📊</span>
+              </div>
+              <p className="metric-trend positive">
+                <FaArrowUp /> {stats?.total_Commandes?.trend ?? ""}
+              </p>
+            </div>
+
+            <div className="metric-card green">
+              <div className="metric-header">
+                <div className="metric-info">
+                  <p className="metric-title">Revenue Today</p>
+                  <p className="metric-value">
+                    {stats?.revenue_today?.value ?? ""}
+                  </p>
+                </div>
+                <span className="metric-icon">💰</span>
+              </div>
+              <p className="metric-trend positive">
+                <FaArrowUp />
+                {stats?.revenue_today?.trend ?? ""}
+              </p>
+            </div>
+
+            <div className="metric-card orange">
+              <div className="metric-header">
+                <div className="metric-info">
+                  <p className="metric-title">Active Orders</p>
+                  <p className="metric-value">
+                    {stats?.active_Commandes?.value ?? ""}
+                  </p>
+                </div>
+                <span className="metric-icon">🚀</span>
+              </div>
+              <p className="metric-trend negative">
+                <FaArrowDown /> -3.2%
+              </p>
+            </div>
+
+            <div className="metric-card purple">
+              <div className="metric-header">
+                <div className="metric-info">
+                  <p className="metric-title">New Customers</p>
+                  <p className="metric-value">
+                    {stats?.new_customers?.value ?? ""}
+                  </p>
+                </div>
+                <span className="metric-icon">👥</span>
+              </div>
+              <p className="metric-trend positive">
+                <FaArrowUp /> +15.8%
+              </p>
+            </div>
+          </div>
+
+         </main>
+        </div> 
      </div>
   );
 };
