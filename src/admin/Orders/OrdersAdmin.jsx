@@ -77,6 +77,31 @@ const LoadingSpinner = () => (
   </div>
 );
 
+// États
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [expandedRow, setExpandedRow] = useState(null);
+  const [statusModal, setStatusModal] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterStatus, setFilterStatus] = useState("All Orders");
+  const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const location = useLocation();
+
+  // ============================================
+  // CONFIGURATION
+  // ============================================
+  const adminPages = [
+    { id: 1, name: "Dashboard", icon: <FaChartLine />, path: "/admin/dashboard" },
+    { id: 2, name: "Orders", icon: <ShoppingBag size={20} />, path: "/admin/orders" },
+    { id: 3, name: "Menu", icon: <FaUtensils />, path: "/admin/menu" },
+    { id: 4, name: "Customers", icon: <FaUsers />, path: "/admin/customers" },
+    { id: 5, name: "Deliveries", icon: <FaTruck />, path: "/admin/deliveries" },
+    { id: 6, name: "Drivers", icon: <FaMotorcycle />, path: "/admin/drivers" },
+    { id: 7, name: "Reports", icon: <FaFileAlt />, path: "/admin/reports" },
+  ];
+
 
 function OrdersAdmin() {
   return <div className="orders-admin-wrapper"></div>;
