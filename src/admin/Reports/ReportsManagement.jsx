@@ -30,7 +30,7 @@ import {
   FaReply,
 } from "react-icons/fa";
 import "./ReportsManagement.css";
-import { deleteReport, getKPIs, markAsRead } from "../../api/Report.api";
+import { deleteReport, getKPIs, getReports, markAsRead } from "../../api/Report.api";
 function ReportsManagement() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -40,7 +40,10 @@ function ReportsManagement() {
   const [selectedReport, setSelectedReport] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-
+    const reportsPerPage = 10;
+  // Pagination
+  const totalPages = Math.ceil(reports.length / reportsPerPage);
+  
   const [kpis, setKpis] = useState({
     total_reports: 0,
     unread: 0,
@@ -392,7 +395,26 @@ function ReportsManagement() {
               </table>
             </div>
           )}
-
+          {/* Pagination */}
+          <div className="pagination">
+            <button
+              className="pagination-btn"
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              <FaChevronLeft /> Previous
+            </button>
+            <span className="pagination-info">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              className="pagination-btn"
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+            >
+              Next <FaChevronRight />
+            </button>
+          </div>
        </div>
 
     </div> 
