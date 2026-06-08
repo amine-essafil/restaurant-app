@@ -181,6 +181,52 @@ const calculateETA = (dateStr) => {
   }
 };
 
+  // ============================================
+  // FILTRAGE ET RECHERCHE
+  // ============================================
+  const statusCounts = useMemo(() => {
+    return {
+      "All Orders": orders.length,
+      Pending: orders.filter((o) => o.status.toLowerCase() === "pending")
+        .length,
+      Preparing: orders.filter((o) => o.status.toLowerCase() === "preparing")
+        .length,
+      on_delivery: orders.filter(
+        (o) => o.status.toLowerCase() === "on_delivery"
+      ).length,
+      Completed: orders.filter((o) => o.status.toLowerCase() === "completed")
+        .length,
+      Cancelled: orders.filter((o) => o.status.toLowerCase() === "cancelled")
+        .length,
+    };
+  }, [orders]);
+
+  const filteredOrders = useMemo(() => {
+    let result = orders;
+
+    // Filtre par statut - Fixed to handle on_delivery correctly
+    if (filterStatus !== "All Orders") {
+      result = result.filter((o) => {
+        const orderStatus = o.status.toLowerCase();
+        const selectedFilter = filterStatus.toLowerCase();
+        return orderStatus === selectedFilter;
+      });
+    }
+
+    // Recherche
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(
+        (o) =>
+          o.id.toLowerCase().includes(query) ||
+          o.customer.toLowerCase().includes(query) ||
+          o.phone.includes(query) ||
+          o.items.toLowerCase().includes(query)
+      );
+    }
+
+    return result;
+  }, [orders, filterStatus, searchQuery]);
 
 
 function OrdersAdmin() {
