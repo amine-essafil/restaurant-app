@@ -104,7 +104,65 @@ const LoadingSpinner = () => (
 
 
 function OrdersAdmin() {
-  return <div className="orders-admin-wrapper"></div>;
+  return (
+  <div className="orders-admin-wrapper">
+    {/* SIDEBAR */}
+      <div className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
+        <button
+          className="sidebar-toggle-btn"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          title={sidebarOpen ? "Fermer" : "Ouvrir"}
+        >
+          {sidebarOpen ? <FaTimes /> : <FaBars />}
+        </button>
+
+        <div className="sidebar-header">
+          {sidebarOpen ? (
+            <div className="logo-section">
+              <div className="logo-icon">
+                <FaUtensils />
+              </div>
+              <div className="logo-text">
+                <h1>FoodExpress</h1>
+                <p>Admin Panel</p>
+              </div>
+            </div>
+          ) : (
+            <div className="logo-icon-only">
+              <FaUtensils />
+            </div>
+          )}
+        </div>
+
+        <nav className="sidebar-nav">
+          {adminPages.map((page) => (
+            <Link
+              key={page.id}
+              to={page.path}
+              className={`nav-item ${
+                location.pathname === page.path ? "active" : ""
+              }`}
+            >
+              <span className="nav-icon">{page.icon}</span>
+              {sidebarOpen && (
+                <div className="nav-text">
+                  <p>{page.name}</p>
+                </div>
+              )}
+            </Link>
+          ))}
+        </nav>
+
+        {sidebarOpen && (
+          <div className="sidebar-footer">
+            <button className="logout-btn">
+              <span>🚪</span> Logout
+            </button>
+          </div>
+        )}
+      </div>
+  </div>
+  );
 }
 
 export default function OrdersAdminWithErrorBoundary() {
