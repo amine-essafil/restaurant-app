@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import LeftSideBar from '../AdminComponents/LeftSideBar'
 import Header from '../AdminComponents/Header'
 import {
@@ -27,28 +27,80 @@ import {
   FaBars,
 } from "react-icons/fa";
 import "./MenuManagement.css";
+import { getAllCategories } from '../../api/Categories.api';
+import { getAllProducts } from '../../api/Products.api';
 
 function MenuManagement() {
   const [showAddModal, setShowAddModal] = useState(false);
-  const [orders, setorders] = useState([]);
+  const [plats, setPlats] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [cat, setCat] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [viewMode, setViewMode] = useState("grid");
+
+  
+  const getCategoryIcon = (categoryName) => {
+    const iconMap = {
+      'pizza': '🍕',
+      'burgers': '🍔',
+      'tacos': '🌮',
+      'chicken': '🍗',
+      'sandwich': '🥪',
+    };
+    const normalizedName = categoryName?.toLowerCase().trim();
+    return iconMap[normalizedName] || '🍽️';
+  };
+
+ const fetchData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const catResponse = await getAllCategories();
+       console.log(catResponse.data.data);
+      const formattedCategories = catResponse.data.data.map((c) => ({
+        id: String(c.id), 
+        name: c.nom || "Other",
+        icon: getCategoryIcon(c.nom),
+        count: c.total_products || 0
+      }));
+      
+      setCat(formattedCategories);
+
+      const platsResponse = await getAllProducts();
+      console.log(platsResponse.data.data);
+      setPlats(platsResponse.data.data);
+    } catch (err) {
+      console.error("Erreur API:", err);
+      setError("Impossible de récupérer les données.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
 
-  const menuItems = useMemo(() => orders.map((order) => ({
-    id: order.id,
-    name: order.nom || "N/A",
-    category: String(order.category_id) || "other", 
-    description: order.description || "No description",
-    price: order.prix || 0,
-    image: order.image ,
-    isAvailable: order.isAvailable ?? true,
-    isPopular: order.isPopular || false,
-    isFeatured: order.isFeatured || false,
+  const menuItems = useMemo(() => plats.map((plat) => ({
+    id: plat.id,
+    name: plat.nom || "N/A",
+    category: String(plat.category_id) || "other", 
+    description: plat.description || "No description",
+    price: plat.prix || 0,
+    image: plat.image ,
+    isAvailable: plat.isAvailable ?? true,
+    isPopular: plat.isPopular || false,
+    isFeatured: plat.isFeatured || false,
     rating: 4.5,
-    reviews: order.review_count || 0,
-    discount: order.discount || 0,
+    reviews: plat.review_count || 0,
+    discount: plat.discount || 0,
     preparationTime: "15-20 min",
     calories: 0,
-  })), [orders]);
+  })), [plats]);
 
 
   return (
@@ -91,7 +143,7 @@ function MenuManagement() {
             </div>
           </div>
         </div>
-         
+
          <div className="menu-stats">
             <div className="stat-card total">
               <div className="stat-icon">
@@ -135,6 +187,56 @@ function MenuManagement() {
                 </span>
               </div>
             </div>
+
+            
+          <div className="categories-section">
+            <div className="categories-scroll">
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  className={`category-chip ${
+                    selectedCategory === category.id ? "active" : ""
+                  }`}
+                  onClick={() => setSelectedCategory(category.id)}
+                >
+                  <span className="category-icon">{category.icon}</span>
+                  <span className="category-name">{category.name}</span>
+                  <span className="category-count">{category.count}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="menu-toolbar">
+            <div className="search-filter-group">
+              <div className="search-box">
+                <FaSearch />
+                <input
+                  type="text"
+                  placeholder="Search menu items..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <button className="toolbar-btn">
+                <FaFilter />
+                Filters
+              </button>
+            </div>
+            <div className="view-toggle">
+              <button
+                className={`view-btn ${viewMode === "grid" ? "active" : ""}`}
+                onClick={() => setViewMode("grid")}
+              >
+                Grid
+              </button>
+              <button
+                className={`view-btn ${viewMode === "list" ? "active" : ""}`}
+                onClick={() => setViewMode("list")}
+              >
+                List
+              </button>
+            </div>
+          </div>
           </div>
 
     </div> 
