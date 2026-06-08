@@ -176,7 +176,65 @@ const DeliveriesManagement = () => {
   const openAssignModal = (orderId) => {
     setAssignModal(orderId);
     fetchAvailableDrivers(orderId);
-  };  
+  };
+  
+  // Assigner un livreur à une commande Assigned Driver
+  const handleAssignDriver = async (orderId, driverId) => {
+    setAssigningDriver(true);
+    setError(null);
+
+    try {
+      console.log("=== ASSIGNING DRIVER ===");
+      console.log("Order ID:", orderId);
+      console.log("Driver ID:", driverId);
+
+      const response = await ClientApi.assignToOrder({
+        commande_id: orderId,
+        driver_id: driverId,
+      });
+      console.log("Assign response:", response);
+
+      // Vérifie que la réponse contient bien data
+      const resData = response?.data;
+      if (!resData) {
+        throw new Error("Invalid response from server");
+      }
+
+      if (resData.success) {
+        const assignedDriver = drivers.find((d) => d.id === driverId);
+        console.log("Assigned driver:", assignedDriver);
+
+        const updatedOrders = orders.map((o) =>
+          o.id === orderId
+            ? {
+                ...o,
+                assignedDriver: driverId,
+                assignedDriverName: assignedDriver?.name,
+                status: "On Delivery",
+              }
+            : o
+        );
+
+        setOrders(updatedOrders);
+        setAssignModal(null);
+        setOpenMenu(null);
+
+        alert(
+          `Driver ${assignedDriver?.name} assigned successfully to order #${orderId}!`
+        );
+        console.log("=== ASSIGNMENT COMPLETE ===");
+        fetchData();
+      } else {
+        setError(resData.message || "Failed to assign driver");
+      }
+    } catch (error) {
+      console.error("Error assigning driver:", error);
+      setError(error.message || "Failed to assign driver. Please try again.");
+    } finally {
+      setAssigningDriver(false);
+    }
+  };
+    
   
 
   return (
