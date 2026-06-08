@@ -28,7 +28,7 @@ import {
 } from "react-icons/fa";
 import "./MenuManagement.css";
 import { getAllCategories } from '../../api/Categories.api';
-import { getAllProducts } from '../../api/Products.api';
+import { DeleteProduct, getAllProducts, PostProduct, UpdateProduct } from '../../api/Products.api';
 
 function MenuManagement() {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -40,6 +40,8 @@ function MenuManagement() {
   const [cat, setCat] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState("grid");
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   
   const getCategoryIcon = (categoryName) => {
@@ -102,6 +104,80 @@ function MenuManagement() {
     calories: 0,
   })), [plats]);
 
+
+    const handleEditItem = (item) => {
+    setSelectedItem(item);
+    setShowEditModal(true);
+  };
+
+  const filteredItems = menuItems.filter((item) => {
+    const matchesCategory = selectedCategory === "all" || item.category === selectedCategory;
+    const matchesSearch = 
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  
+  const handleToggleAvailability = async (itemId) => {
+    try {
+      const plat = plats.find(p => p.id === itemId);
+      if (!plat) return;
+
+      await UpdateProduct(itemId, { 
+        isAvailable: !plat.isAvailable 
+      });
+      fetchData();
+    } catch (err) {
+      console.error('Erreur toggle:', err);
+      alert('Erreur lors de la mise à jour');
+    }
+  };
+
+    const handleDeleteItem = async (itemId) => {
+    if (window.confirm("Are you sure you want to delete this item?")) {
+      try {
+        await DeleteProduct(itemId);
+        fetchData();
+        alert('Plat supprimé avec succès !');
+      } catch (err) {
+        console.error('Erreur suppression:', err);
+        alert('Erreur lors de la suppression du plat');
+      }
+    }
+  };
+
+  const handleCloneItem = async (item) => {
+    const clonedPlat = {
+      nom: `${item.name} (Copy)`,
+      category_id: item.category,
+      prix: item.price,
+      description: item.description,
+      discount: item.discount,
+      image: item.image,
+      isAvailable: item.isAvailable,
+      isPopular: false,
+      isFeatured: false,
+    };
+
+    try {
+      await PostProduct(clonedPlat);
+      fetchData();
+      alert('Plat cloné avec succès !');
+    } catch (err) {
+      console.error('Erreur clone:', err);
+      alert('Erreur lors du clonage');
+    }
+  };
+
+  if (loading) {
+    return <div className="loading-state">Chargement des données du menu...</div>;
+  }
+
+  if (error) {
+    return <div className="error-state">Erreur de chargement: {error}</div>;
+  }
+  
 
   return (
     <div className="menu-management-container">
@@ -236,6 +312,100 @@ function MenuManagement() {
                 List
               </button>
             </div>
+          </div>
+                    <div className={`menu-items ${viewMode}`}>
+            {filteredItems.map((item) => (
+              <div
+                key={item.id}
+                className={`menu-card ${!item.isAvailable ? "unavailable" : ""}`}
+              >
+                <div className="item-image-container">
+                  <img src={item.image} alt={item.name} className="item-image" />
+                  {item.discount > 0 && (
+                    <div className="discount-badge">
+                      <FaPercentage />
+                      {item.discount}% OFF
+                    </div>
+                  )}
+                  {!item.isAvailable && (
+                    <div className="unavailable-overlay">
+                      <span>Out of Stock</span>
+                    </div>
+                  )}
+                  <div className="image-badges">
+                    {item.isPopular && (
+                      <span className="badge popular-badge">
+                        <FaFire /> Popular
+                      </span>
+                    )}
+                    {item.isFeatured && (
+                      <span className="badge featured-badge">
+                        <FaStar /> Featured
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="item-info">
+                  <div className="item-header">
+                    <h3 className="item-name">{item.name}</h3>
+                    <div className="item-rating">
+                      <FaStar className="star-icon" />
+                      <span>{item.rating}</span>
+                      <span className="reviews-count">({item.reviews})</span>
+                    </div>
+                  </div>
+
+                  <p className="item-description">{item.description}</p>
+
+                  <div className="item-footer">
+                    <div className="item-pricing">
+                      {item.discount > 0 ? (
+                        <>
+                          <span className="original-price">{item.price} DH</span>
+                          <span className="discounted-price">
+                            {(item.price * (1 - item.discount / 100)).toFixed(2)} DH
+                          </span>
+                        </>
+                      ) : (
+                        <span className="current-price">{item.price} DH</span>
+                      )}
+                    </div>
+
+                    <div className="item-actions">
+                      <button
+                        className="action-btn toggle-btn"
+                        onClick={() => handleToggleAvailability(item.id)}
+                        title={item.isAvailable ? "Mark Unavailable" : "Mark Available"}
+                      >
+                        {item.isAvailable ? <FaToggleOn /> : <FaToggleOff />}
+                      </button>
+                      <button
+                        className="action-btn clone-btn"
+                        onClick={() => handleCloneItem(item)}
+                        title="Clone Item"
+                      >
+                        <FaClone />
+                      </button>
+                      <button
+                        className="action-btn edit-btn"
+                        onClick={() => handleEditItem(item)}
+                        title="Edit Item"
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        className="action-btn delete-btn"
+                        onClick={() => handleDeleteItem(item.id)}
+                        title="Delete Item"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
           </div>
 
