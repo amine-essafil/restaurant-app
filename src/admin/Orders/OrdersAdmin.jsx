@@ -148,6 +148,40 @@ const LoadingSpinner = () => (
     return configs[statusLower] || configs.preparing;
   };
 
+// ============================================
+// HELPERS
+// ============================================
+const getInitials = (name) => {
+  if (!name) return "?";
+  const parts = name.trim().split(" ");
+  if (parts.length > 1) return parts[0][0] + parts[1][0];
+  return name[0];
+};
+
+const formatTime = (dateStr) => {
+  if (!dateStr) return "00:00";
+  try {
+    const date = new Date(dateStr);
+    return date.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  } catch {
+    return "00:00";
+  }
+};
+
+const calculateETA = (dateStr) => {
+  if (!dateStr) return "Soon";
+  try {
+    const orderDate = new Date(dateStr);
+    const now = new Date();
+    const diffMinutes = Math.floor((now - orderDate) / 60000);
+    if (diffMinutes < 30) return `${30 - diffMinutes} min`;
+    return "Soon";
+  } catch {
+    return "Soon";
+  }
+};
+
+
 
 function OrdersAdmin() {
   return (
