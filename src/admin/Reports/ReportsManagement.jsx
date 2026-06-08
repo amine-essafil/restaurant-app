@@ -30,9 +30,17 @@ import {
   FaReply,
 } from "react-icons/fa";
 import "./ReportsManagement.css";
+import { deleteReport, getKPIs, markAsRead } from "../../api/Report.api";
 function ReportsManagement() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [reports, setReports] = useState([]);
+  const [selectedReport, setSelectedReport] = useState(null);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
   const [kpis, setKpis] = useState({
     total_reports: 0,
     unread: 0,
@@ -45,6 +53,100 @@ function ReportsManagement() {
     resolution_rate: 0,
     overdue_reports: 0,
   });
+
+   useEffect(() => {
+    fetchReports();
+    fetchKPIs();
+  }, [statusFilter, searchTerm, currentPage]);
+
+    const fetchReports = async () => {
+    try {
+      setLoading(true);
+      const params = {
+        status: statusFilter !== 'all' ? statusFilter : undefined,
+        search: searchTerm || undefined,
+        page: currentPage,
+        per_page: reportsPerPage,
+      };
+      
+    const response = await getReports(params);
+      console.log("API Reports:", response.data.data );
+    setReports(response.data.data || []);
+      setError(null);
+    } catch (err) {
+      setError('Erreur lors du chargement des reports');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchKPIs = async () => {
+    try {
+      const data = await getKPIs();
+      console.log(data);
+      setKpis(data.data);
+    } catch (err) {
+      console.error('Error fetching KPIs:', err);
+    }
+  };
+
+  const getStatusBadge = (status) => {
+    const statusConfig = {
+      unread: { color: "#f59e0b", icon: <FaEnvelope />, text: "Unread" },
+      read: { color: "#3b82f6", icon: <FaEnvelopeOpen />, text: "Read" },
+      resolved: { color: "#10b981", icon: <FaCheckCircle />, text: "Resolved" },
+    };
+    return statusConfig[status] || statusConfig.unread;
+  };
+
+
+ const getPriorityBadge = (priority) => {
+    const priorityConfig = {
+      high: { color: "#ef4444", text: "High" },
+      medium: { color: "#f59e0b", text: "Medium" },
+      low: { color: "#6b7280", text: "Low" },
+    };
+    return priorityConfig[priority] || priorityConfig.medium;
+  };
+ 
+   const handleMarkAsRead = async (reportId) => {
+    try {
+      await markAsRead(reportId);
+      // Rafraîchir les données
+      fetchReports();
+      fetchKPIs();
+      
+      // Mettre à jour le modal si ouvert
+      if (selectedReport?.id === reportId) {
+        setSelectedReport({ ...selectedReport, status: 'read' });
+      }
+    } catch (err) {
+      alert('Erreur lors de la mise à jour du statut');
+    }
+  };
+
+  const handleViewReport = async (report) => {
+    setSelectedReport(report);
+    setShowViewModal(true);
+    if (report.status === 'unread') {
+      await handleMarkAsRead(report.id);
+    }
+  };
+
+    const handleDeleteReport = async (reportId) => {
+    if (window.confirm("Êtes-vous sûr de vouloir supprimer ce report ?")) {
+      try {
+        await deleteReport(reportId);
+        fetchReports();
+        fetchKPIs();
+        alert('Report supprimé avec succès');
+      } catch (err) {
+        alert('Erreur lors de la suppression');
+      }
+    }
+  };
+
 
 
   return (
@@ -179,6 +281,117 @@ function ReportsManagement() {
             </div>
           </div>
           </div>
+          {/* Loading State */}
+          {loading && (
+            <div style={{ textAlign: 'center', padding: '2rem' }}>
+              <p>Chargement des reports...</p>
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && (
+            <div style={{ textAlign: 'center', padding: '2rem', color: 'red' }}>
+              <p>{error}</p>
+            </div>
+          )}
+          {/* Reports Table */}
+          {!loading && !error && (
+            <div className="reports-table-container">
+              <table className="reports-table">
+                <thead>
+                  <tr>
+                    <th>Reporter</th>
+                    <th>Contact</th>
+                    <th>Subject</th>
+                    <th>Message</th>
+                    <th>Date & Time</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reports.map((report) => {
+                    const statusBadge = getStatusBadge(report.status);
+                    const priorityBadge = getPriorityBadge(report.priority);
+
+                    return (
+                      <tr key={report.id}>
+                        <td>
+                          <div className="reporter-info">
+                            <div className="reporter-avatar">
+                              {report.name.charAt(0)}
+                            </div>
+                            <div className="reporter-details">
+                              <p className="reporter-name">{report.name}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div className="contact-info">
+                            <p className="contact-email">{report.email}</p>
+                          </div>
+                        </td>
+                        <td>
+                          <span className="subject-text">{report.subject}</span>
+                        </td>
+                        <td>
+                          <p className="message-preview">
+                            {report.message.substring(0, 50)}...
+                          </p>
+                        </td>
+                        <td>
+                          <div className="date-time">
+                            <p className="date">
+                              {new Date(report.created_at).toLocaleDateString()}
+                            </p>
+                            <p className="time">
+                              {new Date(report.created_at).toLocaleTimeString()}
+                            </p>
+                          </div>
+                        </td>
+                        <td>
+                          <span
+                            className="priority-badge"
+                            style={{ backgroundColor: priorityBadge.color }}
+                          >
+                            {priorityBadge.text}
+                          </span>
+                        </td>
+                        <td>
+                          <span
+                            className="status-badge"
+                            style={{ backgroundColor: statusBadge.color }}
+                          >
+                            {statusBadge.icon}
+                            {statusBadge.text}
+                          </span>
+                        </td>
+                        <td>
+                          <div className="table-actions">
+                            <button
+                              className="action-btn view-btn"
+                              onClick={() => handleViewReport(report)}
+                              title="View Details"
+                            >
+                              <FaEye />
+                            </button>
+                            <button
+                              className="action-btn delete-btn"
+                              onClick={() => handleDeleteReport(report.id)}
+                              title="Delete Report"
+                            >
+                              <FaTrash />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
 
        </div>
 
