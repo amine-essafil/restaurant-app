@@ -228,6 +228,83 @@ const calculateETA = (dateStr) => {
     return result;
   }, [orders, filterStatus, searchQuery]);
 
+  // ============================================
+  // HANDLERS
+  // ============================================
+  const updateStatus = async (orderIdx, newStatus) => {
+    const order = filteredOrders[orderIdx];
+
+    try {
+      // Appel API pour mettre à jour le statut
+      await ClientApi.PatchStatusCommande(order.rawId, newStatus);
+
+      // ✅ Mettre à jour localement ET maintenir le tri par date décroissante
+      const updatedOrders = orders
+        .map((o) => (o.rawId === order.rawId ? { ...o, status: newStatus } : o))
+        .sort((a, b) => {
+          const dateA = new Date(a.createdAt);
+          const dateB = new Date(b.createdAt);
+          return dateB - dateA; // Ordre décroissant: plus récent d'abord
+        });
+
+      setOrders(updatedOrders);
+
+      setStatusModal(null);
+    } catch (err) {
+      console.error("Erreur mise à jour statut:", err);
+      alert("Erreur lors de la mise à jour du statut");
+    }
+  };
+
+  const handleCall = (phone) => {
+    if (phone && phone !== "N/A") {
+      window.location.href = `tel:${phone}`;
+    }
+  };
+
+  const handleRefresh = () => {
+    fetchOrders();
+  };
+
+  const handleDeleteItem = async (orderId) => {
+    if (
+      !window.confirm("Êtes-vous sûr de vouloir supprimer cette commande ?")
+    ) {
+      return;
+    }
+
+    try {
+      await ClientApi.deleteCommande(orderId);
+      setOrders(orders.filter((o) => o.rawId !== orderId));
+    } catch (err) {
+      console.error("Erreur suppression:", err);
+      alert("Erreur lors de la suppression");
+    }
+  };
+
+  const getTimeAgo = () => {
+    const seconds = Math.floor((new Date() - lastUpdated) / 1000);
+    if (seconds < 60) return `${seconds}s`;
+    const minutes = Math.floor(seconds / 60);
+    return `${minutes}m`;
+  };
+
+
+  if (loading && orders.length === 0) {
+    return <LoadingSpinner />;
+  }
+
+  if (error && orders.length === 0) {
+    return (
+      <div className="error-container">
+        <AlertCircle size={48} color="#e74c3c" />
+        <h2>Erreur de chargement</h2>
+        <p>{error}</p>
+        <button onClick={handleRefresh}>Réessayer</button>
+      </div>
+    );
+  }
+
 
 function OrdersAdmin() {
   return (
