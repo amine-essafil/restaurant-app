@@ -76,6 +76,65 @@ const DeliveriesManagement = () => {
     { id: 7, name: "Reports", icon: <FaFileAlt />, path: "/admin/reports" },
   ];
 
+  // Charger les données initiales
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Charger les commandes
+      const commandesRes = await ClientApi.CommandesDashboard();
+      console.log("Commandes:", commandesRes.data);
+
+      const pendingOrders = commandesRes.data.Commandes.map((command) => {
+        return {
+          id: command.id,
+          displayId: `#${command.id}`,
+          customer: command.user.name,
+          initials: command.user.name.charAt(0).toUpperCase(),
+          phone: command.user.phone,
+          address: command?.adresse_livraison?.street_address || "N/A",
+          amount: `${command.prix_total} $`,
+          status: statusMap[command.statut?.toLowerCase()] || command.statut,
+          items: command.plats.map((plat) => plat.nom).join(", "),
+          time: new Date(command.created_at).toLocaleTimeString("fr-FR", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          assignedDriver: command.livreur_id,
+          assignedDriverName: command.livreur?.user?.name || null,
+          priority: command.priority || "Normal",
+          paymentMethod: command.paymentMethod,
+          deliveryInstructions:
+            command?.adresse_livraison?.delivery_instructions,
+          fullAddress: `${command?.adresse_livraison?.street_address || ""}, ${
+            command?.adresse_livraison?.full_name || ""
+          }`,
+          rawData: command,
+        };
+      });
+
+      setDashboard({
+        pending: commandesRes.data.pending || 0,
+        on_delivery: commandesRes.data.on_delivery || 0,
+        completed: commandesRes.data.completed || 0,
+        drivers: commandesRes.data.drivers || 0,
+      });
+
+      setOrders(pendingOrders);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError("Failed to load orders. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   return (
     <div className="deliveries-management-container">
       {/* LEFT SIDEBAR */}
