@@ -234,7 +234,60 @@ const DeliveriesManagement = () => {
       setAssigningDriver(false);
     }
   };
-    
+    // Désassigner un livreur
+  const handleCancelDelivery = async (orderId) => {
+    if (!window.confirm("Are you sure you want to unassign this driver?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/livreurs/unassign/${orderId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      });
+
+      const data = await response.json();
+      console.log("Unassign response:", data);
+
+      if (data.success) {
+        const updatedOrders = orders.map((o) =>
+          o.id === orderId
+            ? {
+                ...o,
+                assignedDriver: null,
+                assignedDriverName: null,
+                status: "Pending",
+              }
+            : o
+        );
+        setOrders(updatedOrders);
+        setOpenMenu(null);
+        alert("Driver unassigned successfully!");
+        fetchData();
+      } else {
+        setError(data.message || "Failed to unassign driver");
+      }
+    } catch (error) {
+      console.error("Error unassigning driver:", error);
+      setError("Failed to unassign driver. Please try again.");
+    }
+  };
+
+  const handleCompleteDelivery = (orderId) => {
+    const updatedOrders = orders.map((o) =>
+      o.id === orderId ? { ...o, status: "Completed" } : o
+    );
+    setOrders(updatedOrders);
+    setOpenMenu(null);
+  };
+
+  const handleCall = (phone) => {
+    window.location.href = `tel:${phone}`;
+  };
+  
   
 
   return (
