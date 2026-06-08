@@ -16,6 +16,7 @@ import PaymentPage from "../pages/Payment/Payment";
 import DeliveriesManagement from "../admin/Deliveries/DeliveriesManagement";
 import { useAuth } from "../context/AuthContext";
 import DriversManagement from "../admin/Drivers/DriversManagement";
+import ReportsManagement from "../admin/Reports/ReportsManagement";
 
 const AppRoutes = () => {
   const protectedElement = (Component) => (
@@ -92,6 +93,14 @@ const AdminRoute = ({ children }) => {
              element={
                       <AdminRoute>
                         <DriversManagement />
+                      </AdminRoute>
+                    }
+                  />
+      <Route
+             path="/admin/reports"
+             element={
+                      <AdminRoute>
+                        <ReportsManagement />
                       </AdminRoute>
                     }
                   />
