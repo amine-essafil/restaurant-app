@@ -102,6 +102,52 @@ const LoadingSpinner = () => (
     { id: 7, name: "Reports", icon: <FaFileAlt />, path: "/admin/reports" },
   ];
 
+    // ✅ Status flow: preparing → pending → on_delivery → completed (cancelled anytime)
+  const statusFlow = {
+    preparing: ["pending", "cancelled"],
+    pending: ["on_delivery", "cancelled"],
+    on_delivery: ["completed", "cancelled"],
+    completed: [],
+    cancelled: [],
+  };
+
+  const getStatusConfig = (status) => {
+    const statusLower = status?.toLowerCase() || "preparing";
+    const configs = {
+      preparing: {
+        bg: "#fef3c7",
+        text: "#92400e",
+        emoji: "👨‍🍳",
+        label: "Preparing",
+      },
+      pending: {
+        bg: "#fed7aa",
+        text: "#9a3412",
+        emoji: "⏳",
+        label: "Pending",
+      },
+      on_delivery: {
+        bg: "#dbeafe",
+        text: "#1e40af",
+        emoji: "🚚",
+        label: "On Delivery",
+      },
+      completed: {
+        bg: "#d1fae5",
+        text: "#065f46",
+        emoji: "✅",
+        label: "Completed",
+      },
+      cancelled: {
+        bg: "#fee2e2",
+        text: "#991b1b",
+        emoji: "❌",
+        label: "Cancelled",
+      },
+    };
+    return configs[statusLower] || configs.preparing;
+  };
+
 
 function OrdersAdmin() {
   return (
