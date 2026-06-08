@@ -134,6 +134,50 @@ const DeliveriesManagement = () => {
     }
   };
 
+  const fetchAvailableDrivers = async (orderId) => {
+    setLoadingDrivers(true);
+    setError(null);
+
+    try {
+      const response = await ClientApi.availableDrivers({
+        commande_id: orderId,
+      });
+      console.log("Available drivers (response):", response);
+      const driversData = response?.data; // Déclare la variable pour plus de clarté
+
+      if (driversData?.drivers?.length > 0) {
+        const formattedDrivers = driversData.drivers.map((driver) => ({
+          id: driver.id,
+          name: driver.user.name || "",
+          initials: driver.user.name.charAt(0) || "",
+          phone: driver.user.phone || "",
+          vehicle: vehicleMap[driver.vehicle_type] || driver.vehicle_type,
+          active: driver.statut === "active" && driver.available === 1,
+          currentDeliveries: driver.total_deliveries || 0,
+          vehiclePlate: driver.vehicle_plate || "",
+          currentLocation: driver.current_location || "",
+        }));
+
+        setDrivers(formattedDrivers);
+      } else {
+        setDrivers([]);
+        setError("No available drivers");
+      }
+    } catch (error) {
+      console.error("Error fetching drivers:", error);
+      setError("Failed to load drivers. Please try again.");
+      setDrivers([]);
+    } finally {
+      setLoadingDrivers(false);
+    }
+  };
+
+  // Ouvrir le modal et charger les livreurs
+  const openAssignModal = (orderId) => {
+    setAssignModal(orderId);
+    fetchAvailableDrivers(orderId);
+  };  
+  
 
   return (
     <div className="deliveries-management-container">
