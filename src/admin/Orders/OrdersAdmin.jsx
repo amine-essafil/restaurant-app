@@ -364,6 +364,39 @@ function OrdersAdmin() {
           </div>
         )}
       </div>
+
+      {/* MAIN CONTENT */}
+      <div className="main-content">
+        <div className="page-content">
+          {/* Header */}
+          <div className="orders-header">
+            <div className="header-left">
+              <div className="header-icon">
+                <ShoppingBag size={26} />
+              </div>
+              <div className="header-info">
+                <h1 className="header-title">Gestion des Commandes</h1>
+                <p className="header-subtitle">
+                  Gérez et suivez toutes vos commandes en temps réel
+                </p>
+              </div>
+              <div className="live-indicator">
+                <span className="live-dot"></span>
+                <span className="live-text">LIVE</span>
+                <span className="live-time">Mis à jour: {getTimeAgo()}</span>
+              </div>
+            </div>
+            <div className="header-actions">
+              <button
+                className="refresh-btn"
+                onClick={handleRefresh}
+                disabled={loading}
+              >
+                <RefreshCw size={18} className={loading ? "spinning" : ""} />
+                <span>Actualiser</span>
+              </button>
+            </div>
+          </div>
   </div>
   );
 }
