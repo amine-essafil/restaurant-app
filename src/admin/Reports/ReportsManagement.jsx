@@ -30,7 +30,7 @@ import {
   FaReply,
 } from "react-icons/fa";
 import "./ReportsManagement.css";
-import { deleteReport, getKPIs, getReports, markAsRead } from "../../api/Report.api";
+import { deleteReport, getKPIs, getReports, markAsRead, markAsResolved } from "../../api/Report.api";
 function ReportsManagement() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -147,6 +147,22 @@ function ReportsManagement() {
       } catch (err) {
         alert('Erreur lors de la suppression');
       }
+    }
+  };
+
+  const handleMarkAsResolved = async (reportId) => {
+    try {
+      await markAsResolved(reportId);
+      // Rafraîchir les données
+      fetchReports();
+      fetchKPIs();
+      
+      // Mettre à jour le modal si ouvert
+      if (selectedReport?.id === reportId) {
+        setSelectedReport({ ...selectedReport, status: 'resolved' });
+      }
+    } catch (err) {
+      alert('Erreur lors de la résolution du report');
     }
   };
 
@@ -416,7 +432,110 @@ function ReportsManagement() {
             </button>
           </div>
        </div>
+    {/* View Modal */}
+      {showViewModal && selectedReport && (
+        <div className="modal-overlay" onClick={() => setShowViewModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Report Details</h2>
+              <button
+                className="modal-close"
+                onClick={() => setShowViewModal(false)}
+              >
+                <FaTimes />
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="report-detail-section">
+                <h3>Reporter Information</h3>
+                <div className="detail-grid">
+                  <div className="detail-item">
+                    <FaUser className="detail-icon" />
+                    <div>
+                      <label>Name</label>
+                      <p>{selectedReport.name}</p>
+                    </div>
+                  </div>
+                  <div className="detail-item">
+                    <FaEnvelope className="detail-icon" />
+                    <div>
+                      <label>Email</label>
+                      <p>{selectedReport.email}</p>
+                    </div>
+                  </div>
+                  <div className="detail-item">
+                    <FaCalendarAlt className="detail-icon" />
+                    <div>
+                      <label>Date & Time</label>
+                      <p>
+                        {new Date(selectedReport.created_at).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
+              <div className="report-detail-section">
+                <h3>Report Content</h3>
+                <div className="detail-item full-width">
+                  <label>Subject</label>
+                  <p className="subject-full">{selectedReport.subject}</p>
+                </div>
+                <div className="detail-item full-width">
+                  <label>Message</label>
+                  <p className="message-full">{selectedReport.message}</p>
+                </div>
+              </div>
+
+              <div className="report-detail-section">
+                <h3>Status & Priority</h3>
+                <div className="detail-grid">
+                  <div className="detail-item">
+                    <label>Status</label>
+                    <span
+                      className="status-badge"
+                      style={{
+                        backgroundColor: getStatusBadge(selectedReport.status).color,
+                      }}
+                    >
+                      {getStatusBadge(selectedReport.status).icon}
+                      {getStatusBadge(selectedReport.status).text}
+                    </span>
+                  </div>
+                  <div className="detail-item">
+                    <label>Priority</label>
+                    <span
+                      className="priority-badge"
+                      style={{
+                        backgroundColor: getPriorityBadge(selectedReport.priority).color,
+                      }}
+                    >
+                      {getPriorityBadge(selectedReport.priority).text}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="modal-btn reply-btn">
+                <FaReply /> Reply to Customer
+              </button>
+              <button
+                className="modal-btn resolve-btn"
+                onClick={() => handleMarkAsResolved(selectedReport.id)}
+              >
+                <FaCheckCircle /> Mark as Resolved
+              </button>
+              <button
+                className="modal-btn close-btn"
+                onClick={() => setShowViewModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div> 
   )
 }
