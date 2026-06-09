@@ -397,7 +397,102 @@ function OrdersAdmin() {
               </button>
             </div>
           </div>
-        </div>
+                    <div className="orders-content">
+            {/* Modern Status Filters */}
+            <div className="status-filters-modern">
+              {[
+                {
+                  key: "All Orders",
+                  label: "All Orders",
+                  emoji: "📦",
+                  bg: "#f3f4f6",
+                  text: "#374151",
+                },
+                {
+                  key: "Pending",
+                  label: "Pending",
+                  emoji: "⏳",
+                  bg: "#fed7aa",
+                  text: "#9a3412",
+                },
+                {
+                  key: "Preparing",
+                  label: "Preparing",
+                  emoji: "👨‍🍳",
+                  bg: "#fef3c7",
+                  text: "#92400e",
+                },
+                {
+                  key: "on_delivery",
+                  label: "On Delivery",
+                  emoji: "🚚",
+                  bg: "#dbeafe",
+                  text: "#1e40af",
+                },
+                {
+                  key: "Completed",
+                  label: "Completed",
+                  emoji: "✅",
+                  bg: "#d1fae5",
+                  text: "#065f46",
+                },
+                {
+                  key: "Cancelled",
+                  label: "Cancelled",
+                  emoji: "❌",
+                  bg: "#fee2e2",
+                  text: "#991b1b",
+                },
+              ].map((filter) => {
+                const isActive = filterStatus === filter.key;
+                return (
+                  <button
+                    key={filter.key}
+                    onClick={() => setFilterStatus(filter.key)}
+                    className="modern-filter-badge"
+                    style={{
+                      backgroundColor: isActive ? filter.bg : "#ffffff",
+                      color: isActive ? filter.text : "#6b7280",
+                      border: isActive
+                        ? `2px solid ${filter.text}`
+                        : "2px solid #e5e7eb",
+                      fontWeight: isActive ? "700" : "500",
+                      transform: isActive ? "scale(1.05)" : "scale(1)",
+                    }}
+                  >
+                    <span className="filter-emoji">{filter.emoji}</span>
+                    <span className="filter-label">{filter.label}</span>
+                    <span className="filter-count">
+                      {statusCounts[filter.key] || 0}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Modern Search Bar */}
+            <div className="modern-search-container">
+              <div className="modern-search-box">
+                <Search size={20} className="search-icon" />
+                <input
+                  type="text"
+                  placeholder="🔍 Rechercher par ID, nom client ou téléphone..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="modern-search-input"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="clear-search-btn"
+                  >
+                    <XCircle size={18} />
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>  
       </div>
   </div>  
   
