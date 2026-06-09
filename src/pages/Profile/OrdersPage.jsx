@@ -55,7 +55,7 @@ const OrdersPage = () => {
       const OrderHistory = async()=>{
   try {
    const response =  await getClientOrders();
-    setOrders(response.data);
+    setOrders(response.data.data);
     console.log(response.data);
   } catch (error) {
     console.error(error);

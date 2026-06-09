@@ -13,10 +13,16 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import CartPage from "../pages/Cart/Cart";
 import CheckoutPage from "../pages/Checkout/Checkout";
 import PaymentPage from "../pages/Payment/Payment";
+import DeliveriesManagement from "../admin/Deliveries/DeliveriesManagement";
+import { useAuth } from "../context/AuthContext";
+import DriversManagement from "../admin/Drivers/DriversManagement";
+import ReportsManagement from "../admin/Reports/ReportsManagement";
+import MenuManagement from "../admin/Menu/MenuManagement";
 import DashboardSimple from "../admin/Dashboard/DashboardSimple";
 import { useAuth } from "../context/AuthContext";
 import CustomersManagement from "../admin/Customers/CustomersManagement";
 import OrdersAdmin from "../admin/Orders/OrdersAdmin";
+
 
 const AppRoutes = () => {
   const protectedElement = (Component) => (
@@ -24,6 +30,23 @@ const AppRoutes = () => {
         <Component />
       </ProtectedRoute>
     );
+
+    
+const AdminRoute = ({ children }) => {
+  const { isLoggedIn, user } = useAuth(); 
+  const location = useLocation();
+    if (!isLoggedIn) {
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+  if (user.role !== "admin") {
+    console.log("Access denied. Current role:", user.role);
+    return <Navigate to="/" replace />; 
+  }
+
+  return children;
+};
+
+
     const AdminRoute = ({ children }) => {
        const { isLoggedIn, user } = useAuth(); 
        const location = useLocation();
@@ -36,6 +59,7 @@ const AppRoutes = () => {
       }
       return children;
     };
+
   return (
     <Routes>  
       <Route  path="/"   element={<LandingPage />}/>
@@ -74,6 +98,40 @@ const AppRoutes = () => {
          element={protectedElement(PaymentPage)}
         />
       <Route path="/contact" element={<Contact />} />
+
+      
+       {/*  Admin Deliveries Route */}
+      <Route
+             path="/admin/deliveries"
+             element={
+                      <AdminRoute>
+                        <DeliveriesManagement />
+                      </AdminRoute>
+                    }
+                  />
+
+      <Route
+             path="/admin/drivers"
+             element={
+                      <AdminRoute>
+                        <DriversManagement />
+                      </AdminRoute>
+                    }
+                  />
+      <Route
+             path="/admin/reports"
+             element={
+                      <AdminRoute>
+                        <ReportsManagement />
+                      </AdminRoute>
+                    }
+                  />
+      <Route
+             path="/admin/menu"
+             element={
+                      <AdminRoute>
+                        <MenuManagement />
+
     
 
           {/* Admin Dashboard Route */}
@@ -98,10 +156,14 @@ const AppRoutes = () => {
                     element={
                       <AdminRoute>
                         <OrdersAdmin />
+
                       </AdminRoute>
                     }
                   />
     </Routes>
+
+
+
   );
 };
 
