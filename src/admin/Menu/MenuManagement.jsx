@@ -551,6 +551,88 @@ function MenuManagement() {
             </div>
           )}
 
+          {/* MODAL ÉDITION */}
+          {showEditModal && selectedItem && (
+            <div
+              className="modal-overlay"
+              onClick={() => setShowEditModal(false)}
+            >
+              <div className="modal-content large-modal" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                  <h2>Edit Item: {selectedItem.name}</h2>
+                  <button className="modal-close" onClick={() => setShowEditModal(false)}>
+                    <FaTimes />
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <form className="item-form" onSubmit={handleUpdateItem}>
+                    <div className="form-grid">
+                      <div className="form-group full-width">
+                        <label>Item Name</label>
+                        <input type="text" name="name" placeholder="Enter item name" defaultValue={selectedItem.name} required />
+                      </div>
+
+                      <div className="form-group">
+                        <label>Category</label>
+                        <select name="category" defaultValue={selectedItem.category} required>
+                          {cat.map((c) => (
+                            <option key={c.id} value={c.id}>{c.name}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="form-group">
+                        <label>Price (DH)</label>
+                        <input type="number" name="price" placeholder="0.00" step="0.01" defaultValue={selectedItem.price} required />
+                      </div>
+
+                      <div className="form-group full-width">
+                        <label>Description</label>
+                        <textarea name="description" rows="3" placeholder="Enter item description" defaultValue={selectedItem.description}></textarea>
+                      </div>
+
+                      <div className="form-group">
+                        <label>Discount (%)</label>
+                        <input type="number" name="discount" placeholder="0" min="0" max="100" defaultValue={selectedItem.discount} />
+                      </div>
+
+                      <div className="form-group">
+                        <label>Image URL</label>
+                        <input type="text" name="image" placeholder="Enter image URL" defaultValue={selectedItem.image} />
+                      </div>
+
+                      <div className="form-group full-width">
+                        <label>Options</label>
+                        <div className="checkbox-group">
+                          <label className="checkbox-label">
+                            <input type="checkbox" name="isAvailable" defaultChecked={selectedItem.isAvailable} />
+                            <span>Available</span>
+                          </label>
+                          <label className="checkbox-label">
+                            <input type="checkbox" name="isPopular" defaultChecked={selectedItem.isPopular} />
+                            <span>Popular</span>
+                          </label>
+                          <label className="checkbox-label">
+                            <input type="checkbox" name="isFeatured" defaultChecked={selectedItem.isFeatured} />
+                            <span>Featured</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="form-actions">
+                      <button type="button" className="btn-secondary" onClick={() => setShowEditModal(false)}>
+                        Cancel
+                      </button>
+                      <button type="submit" className="btn-primary">
+                        Save Changes
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
