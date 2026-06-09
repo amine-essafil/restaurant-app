@@ -643,9 +643,74 @@ function OrdersAdmin() {
             </div>
           </div>
           
-          </div>
-        </div>  
-      
+          
+          {/* Modal changement de statut */}
+          {statusModal !== null && filteredOrders[statusModal] && (
+            <div className="modal-overlay" onClick={() => setStatusModal(null)}>
+              <div
+                className="modal-content"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h2 className="modal-title">
+                  Modifier le statut : {filteredOrders[statusModal].id}
+                </h2>
+
+                <div className="current-status">
+                  <p className="status-label">Statut actuel :</p>
+                  <div
+                    className="status-badge large"
+                    style={{
+                      backgroundColor: getStatusConfig(
+                        filteredOrders[statusModal].status
+                      ).bg,
+                      color: getStatusConfig(filteredOrders[statusModal].status)
+                        .text,
+                    }}
+                  >
+                    {getStatusConfig(filteredOrders[statusModal].status).emoji}{" "}
+                    {getStatusConfig(filteredOrders[statusModal].status).label}
+                  </div>
+                </div>
+
+                <p className="status-label">Nouveau statut :</p>
+                <div className="status-options">
+                  {statusFlow[filteredOrders[statusModal].status.toLowerCase()]
+                    ?.length > 0 ? (
+                    statusFlow[
+                      filteredOrders[statusModal].status.toLowerCase()
+                    ].map((nextStatus) => (
+                      <button
+                        key={nextStatus}
+                        onClick={() => updateStatus(statusModal, nextStatus)}
+                        className="status-option"
+                        style={{
+                          backgroundColor: getStatusConfig(nextStatus).bg,
+                          color: getStatusConfig(nextStatus).text,
+                        }}
+                      >
+                        {getStatusConfig(nextStatus).emoji}{" "}
+                        {getStatusConfig(nextStatus).label}
+                      </button>
+                    ))
+                  ) : (
+                    <div className="no-options">
+                      <AlertCircle size={18} />
+                      <span>Aucune modification possible</span>
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => setStatusModal(null)}
+                  className="modal-cancel"
+                >
+                  Annuler
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>    
   </div>  
   
   );
