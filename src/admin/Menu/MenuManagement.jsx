@@ -108,7 +108,39 @@ function MenuManagement() {
     const handleEditItem = (item) => {
     setSelectedItem(item);
     setShowEditModal(true);
+  }; 
+
+    const handleUpdateItem = async (e) => {
+    e.preventDefault();
+    if (!selectedItem) return;
+
+    const formData = new FormData(e.target);
+    
+    const updatedPlat = {
+      nom: formData.get('name'),
+      category_id: formData.get('category'),
+      prix: parseFloat(formData.get('price')),
+      description: formData.get('description'),
+      discount: parseInt(formData.get('discount')) || 0,
+      image: formData.get('image'),
+      isAvailable: formData.get('isAvailable') === 'on',
+      isPopular: formData.get('isPopular') === 'on',
+      isFeatured: formData.get('isFeatured') === 'on',
+    };
+
+    try {
+      await UpdateProduct(selectedItem.id, updatedPlat);
+      setShowEditModal(false);
+      setSelectedItem(null);
+      fetchData();
+      e.target.reset(); 
+      alert('Plat modifié avec succès !');
+    } catch (err) {
+      console.error('Erreur modification:', err);
+      alert('Erreur lors de la modification du plat');
+    }
   };
+
 
   const filteredItems = menuItems.filter((item) => {
     const matchesCategory = selectedCategory === "all" || item.category === selectedCategory;
@@ -117,6 +149,34 @@ function MenuManagement() {
       item.description.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
   });
+
+   const handleAddItem = async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append("nom", e.target.name.value);
+        formData.append("category_id", e.target.category.value);
+        formData.append("prix", e.target.price.value);
+        formData.append("description", e.target.description.value);
+        formData.append("discount", e.target.discount.value || 0);
+        formData.append("isAvailable", e.target.isAvailable.checked ? 1 : 0);
+        formData.append("isPopular", e.target.isPopular.checked ? 1 : 0);
+        formData.append("isFeatured", e.target.isFeatured.checked ? 1 : 0);
+
+        formData.append("image", e.target.image.files[0]);
+
+        try {
+            await PostProduct(formData);
+            setShowAddModal(false);
+            fetchData();
+            e.target.reset();
+            alert("Plat ajouté avec succès !");
+        } catch (err) {
+            console.error("Erreur ajout:", err);
+            alert("Erreur lors de l'ajout du plat");
+        }
+        };
+
 
   
   const handleToggleAvailability = async (itemId) => {
@@ -183,8 +243,7 @@ function MenuManagement() {
     <div className="menu-management-container">
      <LeftSideBar/>
       <div className="main-content">
-        <Header/>
-      </div> 
+       <Header/>
         <div className="menu-management">
           <div className="menu-header">
             <div className="header-content">
@@ -218,9 +277,8 @@ function MenuManagement() {
               </div>
             </div>
           </div>
-        </div>
 
-         <div className="menu-stats">
+          <div className="menu-stats">
             <div className="stat-card total">
               <div className="stat-icon">
                 <FaUtensils />
@@ -263,8 +321,8 @@ function MenuManagement() {
                 </span>
               </div>
             </div>
+          </div>
 
-            
           <div className="categories-section">
             <div className="categories-scroll">
               {categories.map((category) => (
@@ -282,6 +340,7 @@ function MenuManagement() {
               ))}
             </div>
           </div>
+
           <div className="menu-toolbar">
             <div className="search-filter-group">
               <div className="search-box">
@@ -313,7 +372,8 @@ function MenuManagement() {
               </button>
             </div>
           </div>
-                    <div className={`menu-items ${viewMode}`}>
+
+          <div className={`menu-items ${viewMode}`}>
             {filteredItems.map((item) => (
               <div
                 key={item.id}
@@ -407,10 +467,94 @@ function MenuManagement() {
               </div>
             ))}
           </div>
-          </div>
 
-    </div> 
-     )
+          {/* MODAL AJOUT */}
+          {showAddModal && (
+            <div
+              className="modal-overlay"
+              onClick={() => setShowAddModal(false)}
+            >
+              <div className="modal-content large-modal" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                  <h2>Add New Item</h2>
+                  <button className="modal-close" onClick={() => setShowAddModal(false)}>
+                    <FaTimes />
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <form className="item-form" onSubmit={handleAddItem}>
+                    <div className="form-grid">
+                      <div className="form-group full-width">
+                        <label>Item Name</label>
+                        <input type="text" name="name" placeholder="Enter item name" required />
+                      </div>
+
+                      <div className="form-group">
+                        <label>Category</label>
+                        <select name="category" required>
+                          {cat.map((c) => (
+                            <option key={c.id} value={c.id}>{c.name}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="form-group">
+                        <label>Price (DH)</label>
+                        <input type="number" name="price" placeholder="0.00" step="0.01" required />
+                      </div>
+
+                      <div className="form-group full-width">
+                        <label>Description</label>
+                        <textarea name="description" rows="3" placeholder="Enter item description"></textarea>
+                      </div>
+
+                      <div className="form-group">
+                        <label>Discount (%)</label>
+                        <input type="number" name="discount" placeholder="0" min="0" max="100" />
+                      </div>
+
+                      <div className="form-group">
+                        <label>Image URL</label>
+                        <input type="file" name="image" accept="image/*" required />
+                      </div>
+
+                      <div className="form-group full-width">
+                        <label>Options</label>
+                        <div className="checkbox-group">
+                          <label className="checkbox-label">
+                            <input type="checkbox" name="isAvailable" defaultChecked />
+                            <span>Available</span>
+                          </label>
+                          <label className="checkbox-label">
+                            <input type="checkbox" name="isPopular" />
+                            <span>Popular</span>
+                          </label>
+                          <label className="checkbox-label">
+                            <input type="checkbox" name="isFeatured" />
+                            <span>Featured</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="form-actions">
+                      <button type="button" className="btn-secondary" onClick={() => setShowAddModal(false)}>
+                        Cancel
+                      </button>
+                      <button type="submit" className="btn-primary">
+                        Add Item
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          )}
+
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default MenuManagement
