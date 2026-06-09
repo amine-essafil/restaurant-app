@@ -702,4 +702,4 @@ useEffect(() => {
   )
 }
 
-export default DriversManagement
+export default DriversManagement;

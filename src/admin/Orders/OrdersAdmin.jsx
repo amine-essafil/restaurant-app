@@ -34,6 +34,7 @@ import {
 import "./OrdersAdmin.css";
 import { Utensils, DollarSign } from "lucide-react";
 import { deleteOrder, getOrderUsers, updateOrderStatus } from "../../api/Order.api";
+import { useAuth } from "../../context/AuthContext";
  
 // ============================================
 // COMPOSANT ERROR BOUNDARY
@@ -95,7 +96,7 @@ function OrdersAdmin() {
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const location = useLocation();
-
+  const {logout} = useAuth();
   // ============================================
   // CONFIGURATION
   // ============================================
@@ -107,7 +108,6 @@ function OrdersAdmin() {
     { id: 5, name: "Deliveries", icon: <FaTruck />, path: "/admin/deliveries" },
     { id: 6, name: "Drivers", icon: <FaMotorcycle />, path: "/admin/drivers" },
     { id: 7, name: "Reports", icon: <FaFileAlt />, path: "/admin/reports" },
-    { id: 8, name: "Analytics", icon: <FaChartLine />, path: "/admin/analytics" },
   ];
 
   const statusFlow = {
@@ -350,7 +350,23 @@ console.log(ordersApi)
       </div>
     );
   }
-
+      const handllogout = async () => {
+    console.log("Attempting to log out...");
+    try {
+        const res = await logout(); 
+            if (res.status === 201 || res.status === 200) { 
+               localStorage.removeItem('token');
+               setuser(null);
+              setIsLoggedIn(false);
+        navigate("/login");
+      } else if(res.data && res.data.status === 201){
+         navigate("/login");
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+    
+    }
+  };
   return (
     <div className="orders-admin-wrapper">
       {/* SIDEBAR */}
@@ -392,7 +408,7 @@ console.log(ordersApi)
 
         {sidebarOpen && (
           <div className="sidebar-footer">
-            <button className="logout-btn">
+            <button className="logout-btn" onClick={handllogout}>
               <span>🚪</span> Logout
             </button>
           </div>

@@ -1,28 +1,28 @@
-// Auth.api.js — Authentifiaction / auth endpoints
 import client from "./Client.api";
 
 // --- updateUsername ---
-export const updateUsername = ({id,name}) =>
-  client.patch(`/api/v1/modifier/${id}/username`, {
+export const updateUsername = ({name}) =>
+  client.put(`/api/v1/users/profile`, {
     name
   });
 
  // --- updateEmail ---
-export const updateEmail = ({id,email}) =>
-  client.patch(`/api/v1/modifier/${id}/email`, {
+export const updateEmail = ({email}) =>
+ client.put(`/api/v1/users/profile`, {
     email
   });
 
  // --- updatePhone ---
 export const updatePhone = (phone) =>
-  client.patch('/api/v1/modifier-phone', {
+ client.put(`/api/v1/users/profile`, {
     phone
   });
 
  // --- updatePassword ---
 export const updatePassword = (data) =>
-  client.patch('/api/v1/modifier-password', data);
-
+ client.put(`/api/v1/users/profile`, {
+    data
+  });
  // --- get All users ---
 export const getAllUsers = () =>
   client.get('/api/v1/users');
@@ -30,6 +30,3 @@ export const getAllUsers = () =>
  // --- Create users ---
 export const createUsers = (userData) =>
   client.post('/api/v1/users', userData);
-
- 
-

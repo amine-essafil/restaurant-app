@@ -105,7 +105,8 @@ const logout = async()=>{
     login,
     logout,
     register,
-    errors
+    errors,
+    setUser
   };
 
   return (

@@ -19,9 +19,12 @@ import {
   FaChevronUp,
   FaEdit,
 } from "react-icons/fa";
+import { useAuth } from "../../context/AuthContext";
 
 function LeftSideBar() {
       const [sidebarOpen, setSidebarOpen] = useState(true);
+      const {logout} = useAuth();
+      
       const adminPages = [
         {
           id: 1,
@@ -65,13 +68,26 @@ function LeftSideBar() {
           icon: <FaFileAlt />,
           path: "/admin/reports",
         },
-        {
-          id: 8,
-          name: "Analytics",
-          icon: <FaChartLine />,
-          path: "/admin/analytics",
-        },
+
       ];
+  
+      const handllogout = async () => {
+    console.log("Attempting to log out...");
+    try {
+        const res = await logout(); 
+            if (res.status === 201 || res.status === 200) { 
+               localStorage.removeItem('token');
+               setuser(null);
+              setIsLoggedIn(false);
+        navigate("/login");
+      } else if(res.data && res.data.status === 201){
+         navigate("/login");
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+    
+    }
+  };
   return (
    <div className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
         <button
@@ -124,7 +140,7 @@ function LeftSideBar() {
 
         {sidebarOpen && (
           <div className="sidebar-footer">
-            <button className="logout-btn">
+            <button className="logout-btn" onClick={handllogout} >
               <span>🚪</span> Logout
             </button>
           </div>

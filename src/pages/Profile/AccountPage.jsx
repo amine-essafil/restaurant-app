@@ -2,7 +2,7 @@
   import { useNavigate } from "react-router-dom";
   import { useAuth } from "../../context/AuthContext";
   import "./AccountPage.css";
-import { updatePhone, updateUsername } from "../../api/User.api";
+import { updateEmail, updatePhone, updateUsername } from "../../api/User.api";
 
   // Icons
   const EditIcon = () => (
@@ -62,7 +62,7 @@ import { updatePhone, updateUsername } from "../../api/User.api";
 
   const AccountPage = () => {
     const navigate = useNavigate();
-    const { user,setuser } = useAuth();
+    const { user,setUser } = useAuth();
    const[error,seterror]=useState({});
     // Local state for editing
     const [editMode, setEditMode] = useState({
@@ -86,10 +86,10 @@ import { updatePhone, updateUsername } from "../../api/User.api";
   const handleSave = async (field) => {
     try {
       if (field === "name") {
-        const response = await updateUsername({id : user.id,name: formData.name});
+        const response = await updateUsername({name: formData.name});
         console.log(response);
       } else if (field === "email") {
-      const response =  await updateEmail({id:user.id, email:formData.email});
+      const response =  await updateEmail({ email:formData.email});
         console.log(response);
       } else if (field === "phone") {
       const response =   await updatePhone(formData.phone);
@@ -97,18 +97,13 @@ import { updatePhone, updateUsername } from "../../api/User.api";
       }
 
       // Mise à jour du contexte user
-  setuser((prevUser) => ({
+  setUser((prevUser) => ({
         ...prevUser,
         [field]: formData[field],
       }));
       setEditMode((prev) => ({ ...prev, [field]: false }));
     } catch (error) {
       console.log("Erreur lors de la mise à jour :", error);
-      if (error.response.status === 422) { 
-        console.log(error.response.data.errors);
-           seterror(error.response.data.errors);
-        return;
-      }
     }
   };
 

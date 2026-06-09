@@ -145,7 +145,7 @@ const CustomersManagement = () => {
     // In production, open edit modal
     console.log("Edit customer:", customer);
   };
-join
+
   const handleDeleteCustomer = (customerId) => {
     if (window.confirm("Are you sure you want to delete this customer?")) {
       console.log("Delete customer:", customerId);

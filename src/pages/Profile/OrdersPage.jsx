@@ -4,7 +4,6 @@ import { useOrder } from "../../context/OrderContext";
 import emptyOrdersImage from "../../assets/images/empty-orders.svg";
 import { getClientOrders } from "../../api/Meals.api";
 import "./OrdersPage.css";
-
 // Icons
 const ChevronLeftIcon = () => (
   <svg
@@ -56,7 +55,7 @@ const OrdersPage = () => {
   try {
    const response =  await getClientOrders();
     setOrders(response.data.data);
-    console.log(response.data);
+    console.log(response.data.data);
   } catch (error) {
     console.error(error);
   }
@@ -77,8 +76,8 @@ const OrdersPage = () => {
 
   // Get first item image for order display
   const getOrderImage = (order) => {
-    if (order.plats && order.plats.length > 0) {
-      const firstItem = order.plats[0];
+    if (order.products && order.products.length > 0) {
+      const firstItem = order.products[0];
       return firstItem.image || "/src/assets/food/burgers/burger1.webp"; // fallback image
     }
     return "/src/assets/food/burgers/burger1.webp";
@@ -86,9 +85,9 @@ const OrdersPage = () => {
 
   // Format order items for display
   const getOrderSummary = (order) => {
-    if (!order.plats || order.plats.length === 0) return "No items";
+    if (!order.products || order.products.length === 0) return "No items";
 
-    const summary = order.plats
+    const summary = order.products
       .map((plat) => `${plat.pivot.quantite}x ${plat.nom}`)
       .join(", ");
 
@@ -174,10 +173,10 @@ const OrdersPage = () => {
                       </h3>
                       <span
                         className={`order-statut ${getstatutBadge(
-                          order.statut
+                          order.status
                         )}`}
                       >
-                        {order.statut}
+                        {order.status}
                       </span>
                     </div>
 
@@ -185,7 +184,7 @@ const OrdersPage = () => {
                       <div className="order-date">
                         <ClockIcon />
                         <span>
-                          {order.date_commande}
+                          {order.date}
                         </span>
                       </div>
                     </div>
@@ -198,7 +197,7 @@ const OrdersPage = () => {
                       <div className="order-total">
                         <span className="total-label">Total:</span>
                         <span className="total-amount">
-                          ${order.prix_total || "0.00"}
+                          ${order.total || "0.00"}
                         </span>
                       </div>
                     </div>
