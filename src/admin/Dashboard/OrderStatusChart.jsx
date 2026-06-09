@@ -8,7 +8,7 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 import "./OrderStatusChart.css";
-import { ClientApi } from "../../ClientApi/ClientApi";
+import { getOrderDistribution } from "../../api/Dashboard.api";
 
 const statusMeta = {
   completed: { color: "#10b981", icon: <FaCheckCircle /> },
@@ -29,9 +29,9 @@ const OrderStatusChart = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await ClientApi.getOrderDistribution(period);
+        const response = await getOrderDistribution(period);
         const data = response.data;
-        console.log(data);
+        console.log("voici data" + data);
         setdata(data);
       } catch (err) {
         console.error("Erreur API Revenue:", err);
@@ -72,7 +72,7 @@ const OrderStatusChart = () => {
 
       {/* Order Status Bars */}
       <div className="order-status-bars">
-        {data.distribution.map((order, index) => {
+        {data?.distribution.map((order, index) => {
           const meta = statusMeta[order.statut] || {
             color: "#6b7280",
             icon: <FaHourglassHalf />,
@@ -116,18 +116,18 @@ const OrderStatusChart = () => {
       <div className="order-summary">
         <div className="summary-item">
           <p className="summary-label">Total Orders</p>
-          <p className="summary-value">{data.total_orders.toLocaleString()}</p>
+          <p className="summary-value">{data?.total_orders.toLocaleString()}</p>
         </div>
         <div className="summary-divider"></div>
         <div className="summary-item">
           <p className="summary-label">Completion Rate</p>
-          <p className="summary-value success">{data.completion_rate}%</p>
+          <p className="summary-value success">{data?.completion_rate}%</p>
         </div>
         <div className="summary-divider"></div>
         <div className="summary-item">
           <p className="summary-label">Active Orders</p>
           <p className="summary-value active">
-            {data.active_orders.toLocaleString()}
+            {data?.active_orders.toLocaleString()}
           </p>
         </div>
       </div>

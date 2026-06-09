@@ -23,7 +23,13 @@ export const updatePhone = (phone) =>
 export const updatePassword = (data) =>
   client.patch('/api/modifier-password', data);
 
- 
+ // --- get All users ---
+export const getAllUsers = () =>
+  client.get('/api/v1/users');
+
+ // --- Create users ---
+export const createUsers = (userData) =>
+  client.post('/api/v1/users', userData);
 
  
 

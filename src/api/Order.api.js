@@ -7,3 +7,12 @@ export const createOrder = (data) =>
 // --- Update order status ---
 export const updateOrderStatus = ({id, statut}) =>
   client.patch(`/api/v1/orders/${id}`, { statut });
+
+// --- Delete order  ---
+export const deleteOrder = ({id}) =>
+  client.delete(`/api/v1/admin/orders/${id}`);
+
+
+// --- Get order Users  ---
+export const getOrderUsers = () =>
+  client.get("/api/v1/admin/orders/users");

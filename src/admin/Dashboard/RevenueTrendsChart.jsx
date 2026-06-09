@@ -13,7 +13,7 @@ import {
 import { Line } from "react-chartjs-2";
 import { FaCalendarAlt, FaArrowUp } from "react-icons/fa";
 import "./RevenueTrendsChart.css";
-import { ClientApi } from "../../ClientApi/ClientApi";
+import { getRevenueTrends } from "../../api/Dashboard.api";
 
 ChartJS.register(
   CategoryScale,
@@ -65,7 +65,7 @@ const RevenueTrendsChart = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await ClientApi.getRevenueTrends(period);
+        const response = await getRevenueTrends(period);
         const data = response.data; // { labels: [...], data: [...] }
         console.log(data);
         const total = data.data.reduce((sum, val) => sum + parseFloat(val), 0);

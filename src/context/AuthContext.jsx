@@ -90,7 +90,6 @@ const register = async (name, email, password, password_confirmation) => {
 // ----------LOGOUT---------------
 const logout = async()=>{
     try {
-      const resp= await getLogout();
             localStorage.removeItem('token')
             setIsLoggedIn(false);
            } catch(error){

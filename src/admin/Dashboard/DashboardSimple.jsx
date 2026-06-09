@@ -17,18 +17,19 @@ import {
   FaTimes,
   FaSearch,
 } from "react-icons/fa";
-import "./DashboardSimpl.css";
+import "./DashboardSimple.css";
 import RevenueTrendsChart from "./RevenueTrendsChart";
 import OrderStatusChart from "./OrderStatusChart";
 import axios from "axios";
-import { ClientApi } from "../../ClientApi/ClientApi";
+import { getStats } from "../../api/Dashboard.api";
+import { useAuth } from "../../context/AuthContext";
 
 const DashboardSimple = () => {
 const [sidebarOpen, setSidebarOpen] = useState(true);
 const [currentTime, setCurrentTime] = useState(new Date());
 const [stats, setstats] = useState({});
 const location = useLocation();
-
+ const {logout} = useAuth();
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
@@ -37,7 +38,7 @@ const location = useLocation();
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await ClientApi.getStats();
+        const response = await getStats();
         console.log(response.data);
         setstats(response.data);
       } catch (error) {
@@ -60,7 +61,7 @@ const location = useLocation();
   const handllogout = async () => {
     console.log("Attempting to log out...");
     try {
-      const res = await ClientApi.Logout();
+      const res = await logout();
       if (res.status === 201 || res.status === 200) {
         navigate("/login");
       } else if (res.data && res.data.status === 201) {

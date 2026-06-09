@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Home from "../pages/Home/Home";
 import LandingPage from "../pages/LandingPage/LandingPage";
 import LoginPage from "../pages/Login/Login";
@@ -13,6 +13,10 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import CartPage from "../pages/Cart/Cart";
 import CheckoutPage from "../pages/Checkout/Checkout";
 import PaymentPage from "../pages/Payment/Payment";
+import DashboardSimple from "../admin/Dashboard/DashboardSimple";
+import { useAuth } from "../context/AuthContext";
+import CustomersManagement from "../admin/Customers/CustomersManagement";
+import OrdersAdmin from "../admin/Orders/OrdersAdmin";
 
 const AppRoutes = () => {
   const protectedElement = (Component) => (
@@ -20,6 +24,18 @@ const AppRoutes = () => {
         <Component />
       </ProtectedRoute>
     );
+    const AdminRoute = ({ children }) => {
+       const { isLoggedIn, user } = useAuth(); 
+       const location = useLocation();
+        if (!isLoggedIn) {
+        return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+      }
+      if (user.role !== "admin") {
+        console.log("Accès refusé. Rôle actuel:", user.role);
+        return <Navigate to="/" replace />; 
+      }
+      return children;
+    };
   return (
     <Routes>  
       <Route  path="/"   element={<LandingPage />}/>
@@ -58,7 +74,33 @@ const AppRoutes = () => {
          element={protectedElement(PaymentPage)}
         />
       <Route path="/contact" element={<Contact />} />
+    
 
+          {/* Admin Dashboard Route */}
+       <Route
+                    path="/admin/dashboard"
+                    element={
+                      <AdminRoute>
+                        <DashboardSimple />
+                      </AdminRoute>
+                    }
+                  />
+       <Route
+                    path="/admin/customers"
+                    element={
+                      <AdminRoute>
+                        <CustomersManagement />
+                      </AdminRoute>
+                    }
+                  />
+       <Route
+                    path="/admin/orders"
+                    element={
+                      <AdminRoute>
+                        <OrdersAdmin />
+                      </AdminRoute>
+                    }
+                  />
     </Routes>
   );
 };

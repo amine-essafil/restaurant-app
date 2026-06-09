@@ -39,7 +39,7 @@ import {
 } from "react-icons/fa";
 import { SquarePen } from "lucide-react";
 import "./CustomersManagement.css";
-import { ClientApi } from "../../ClientApi/ClientApi";
+import { createUsers, getAllUsers } from "../../api/User.api";
 
 const CustomersManagement = () => {
 
@@ -81,7 +81,7 @@ const CustomersManagement = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await ClientApi.GetAllUsers();
+        const response = await getAllUsers();
         console.log(response.data);
         setcustomers(response.data);
       } catch (error) {
@@ -96,7 +96,7 @@ const CustomersManagement = () => {
   const handleAddCustomer = async (e) => {
     e.preventDefault();
     try {
-      const response = await ClientApi.AddCustomer(form);
+      const response = await createUsers(form);
       const data = response.data;
       console.log(data);
       if (response.status === 201) {
@@ -145,7 +145,7 @@ const CustomersManagement = () => {
     // In production, open edit modal
     console.log("Edit customer:", customer);
   };
-
+join
   const handleDeleteCustomer = (customerId) => {
     if (window.confirm("Are you sure you want to delete this customer?")) {
       console.log("Delete customer:", customerId);
