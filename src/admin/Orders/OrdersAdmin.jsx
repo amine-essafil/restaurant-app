@@ -491,9 +491,161 @@ function OrdersAdmin() {
                 )}
               </div>
             </div>
+            {/* Table des commandes */}
+            <div className="orders-table-container">
+              <table className="orders-table">
+                <thead>
+                  <tr>
+                    <th className="expand-col"></th>
+                    <th>ID</th>
+                    <th>Client</th>
+                    <th>Articles</th>
+                    <th>Montant</th>
+                    <th>Statut</th>
+                    <th>Heure</th>
+                    <th>Paiement</th>
+                    <th className="actions-col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredOrders.length > 0 ? (
+                    filteredOrders.map((order, idx) => (
+                      <React.Fragment key={order.rawId}>
+                        <tr className="order-row">
+                          <td className="expand-col">
+                            <button
+                              onClick={() =>
+                                setExpandedRow(expandedRow === idx ? null : idx)
+                              }
+                              className="expand-btn"
+                            >
+                              <ChevronDown
+                                size={18}
+                                className={expandedRow === idx ? "rotate" : ""}
+                              />
+                            </button>
+                          </td>
+                          <td>
+                            <span className="order-id">{order.id}</span>
+                          </td>
+                          <td>
+                            <div className="customer-info">
+                              <div className="customer-avatar">
+                                {order.initials}
+                              </div>
+                              <div className="customer-details">
+                                <div className="customer-name">
+                                  {order.customer}
+                                </div>
+                                <div className="customer-phone">
+                                  <Phone size={10} className="phone-icon" />
+                                  {order.phone}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="items-info">
+                              <div className="items-badge">
+                                <ShoppingBag size={11} className="items-icon" />
+                                {order.itemCount}
+                              </div>
+                              <span className="items-name">{order.items}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <span className="order-amount">
+                              {order.amount} $
+                            </span>
+                          </td>
+                          <td>
+                            <button
+                              onClick={() => setStatusModal(idx)}
+                              className="status-badge"
+                              style={{
+                                backgroundColor: getStatusConfig(order.status)
+                                  .bg,
+                                color: getStatusConfig(order.status).text,
+                              }}
+                            >
+                              {getStatusConfig(order.status).emoji}{" "}
+                              {getStatusConfig(order.status).label}
+                            </button>
+                          </td>
+                          <td>
+                            <div className="time-info">
+                              <div className="order-time">
+                                <Clock size={11} className="time-icon" />
+                                {order.orderTime}
+                              </div>
+                              <div className="order-eta">
+                                <Truck size={11} className="eta-icon" />
+                                {order.eta}
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="payment-badge">
+                              <Banknote size={12} className="payment-icon" />
+                              {order.payment}
+                            </div>
+                          </td>
+                          <td className="actions-col">
+                            <div className="action-buttons">
+                              <button
+                                onClick={() => handleCall(order.phone)}
+                                className="action-btn call-btn"
+                              >
+                                📞
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                        {expandedRow === idx && (
+                          <tr className="expanded-row">
+                            <td colSpan="9">
+                              <div className="expanded-content">
+                                <div className="expanded-item">
+                                  <p className="expanded-label">
+                                    <Phone size={14} /> Téléphone
+                                  </p>
+                                  <p className="expanded-value">
+                                    {order.phone}
+                                  </p>
+                                </div>
+                                <div className="expanded-item">
+                                  <p className="expanded-label">
+                                    <ShoppingBag size={14} /> Détails
+                                  </p>
+                                  <p className="expanded-value">
+                                    Commande {order.id} - {order.customer}
+                                  </p>
+                                  <p className="expanded-subvalue">
+                                    {order.items} ({order.itemCount} articles)
+                                  </p>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="9" className="empty-state">
+                        <AlertCircle size={48} />
+                        <p>Aucune commande trouvée</p>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
           </div>
         </div>  
-      </div>
+      
   </div>  
   
   );
